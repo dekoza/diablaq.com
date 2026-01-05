@@ -10,39 +10,35 @@
   </header>
 </section>
 
+{% if announcements %}
 <section>
   <header class="section-header">
     <h2>Zapowiedzi</h2>
     <a class="section-header__more" href="/zapowiedzi/">Zobacz wszystkie</a>
   </header>
 
-  {% if announcements %}
-    <div class="tiles tiles--editions">
-      {% for e in announcements %}
-        {% include "_partials/edition_tile.html" with context %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>Brak zapowiedzi.</p>
-  {% endif %}
+  <div class="tiles tiles--editions">
+    {% for e in announcements %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  </div>
 </section>
+{% endif %}
 
+{% if new_editions %}
 <section>
   <header class="section-header">
     <h2>Nowości</h2>
     <a class="section-header__more" href="/nowe/">Zobacz wszystkie</a>
   </header>
 
-  {% if new_editions %}
-    <div class="tiles tiles--editions">
-      {% for e in new_editions %}
-        {% include "_partials/edition_tile.html" with context %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>Brak nowości.</p>
-  {% endif %}
+  <div class="tiles tiles--editions">
+    {% for e in new_editions %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  </div>
 </section>
+{% endif %}
 
 <section>
   <header class="section-header">

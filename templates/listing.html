@@ -16,7 +16,11 @@
       {% endfor %}
     </div>
   {% else %}
-    <p>Brak pozycji.</p>
+    {% if empty_message %}
+      <p>{{ empty_message }}</p>
+    {% else %}
+      <p>Brak pozycji.</p>
+    {% endif %}
   {% endif %}
 </section>
 {% endblock %}

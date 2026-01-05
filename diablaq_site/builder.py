@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import quote
 
@@ -108,6 +108,36 @@ def _parse_date(value: str, *, source_path: Path) -> date:
         raise ValueError(
             f"Nieprawidłowe release_date={value!r} w {source_path}. Oczekiwany format YYYY-MM-DD."
         ) from exc
+
+
+def _parse_optional_date(value: object, *, source_path: Path) -> date | None:
+    if value is None:
+        return None
+    if value == "":
+        return None
+    return _parse_date(str(value), source_path=source_path)
+
+
+def _derive_flags(*, release_date: date | None, today: date) -> tuple[bool, bool]:
+    """Wylicza (is_new, is_announcement) bez ręcznych flag.
+
+    Zasady:
+    1) brak daty -> zapowiedź
+    2) przyszła data -> zapowiedź
+    3) data dziś lub przeszła -> nowość przez 6 tygodni od premiery
+    """
+
+    if release_date is None:
+        return False, True
+
+    if release_date > today:
+        return False, True
+
+    # release_date <= today
+    if today <= (release_date + timedelta(weeks=6)):
+        return True, False
+
+    return False, False
 
 
 def _read_markdown_file(path: Path) -> tuple[dict, str]:
@@ -362,21 +392,34 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         for edition_md in sorted((project_dir / "editions").glob("*.md")):
             emeta, ebody_html = _read_markdown_file(edition_md)
 
-            if "release_date" not in emeta:
-                raise ValueError(f"Brak release_date w {edition_md}")
+            # release_date może być brak/None: wtedy to zapowiedź
+            release_date = _parse_optional_date(
+                emeta.get("release_date"),
+                source_path=edition_md,
+            )
 
-            is_new = bool(emeta.get("is_new", False))
-            is_announcement = bool(emeta.get("is_announcement", False))
-            if is_new and is_announcement:
+            force_new = bool(emeta.get("force_new", False) or emeta.get("is_new", False))
+            force_announcement = bool(
+                emeta.get("force_announcement", False) or emeta.get("is_announcement", False)
+            )
+            if force_new and force_announcement:
                 raise ValueError(
-                    f"Pozycja nie może mieć jednocześnie is_new i is_announcement: {edition_md}"
+                    f"Pozycja nie może mieć jednocześnie force_new i force_announcement: {edition_md}"
                 )
 
-            release_date = _parse_date(str(emeta["release_date"]), source_path=edition_md)
+            auto_is_new, auto_is_announcement = _derive_flags(release_date=release_date, today=date.today())
+
+            is_new = force_new or (auto_is_new and not force_announcement)
+            is_announcement = force_announcement or (auto_is_announcement and not force_new)
+
             ed_slug = edition_md.stem
 
             # Kanoniczne URL-e dla wydań (wg planu):
             url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
+
+            # Jeśli release_date jest None, do sortowania/listingów przyjmujemy bardzo odległą przyszłość.
+            # Dzięki temu zapowiedzi bez daty nie giną na dole list.
+            sort_date = release_date or date(9999, 12, 31)
 
             cover_image, cover_alt = _pick_cover(emeta)
             covers = _parse_image_list(emeta, "covers", source_path=edition_md)
@@ -391,7 +434,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                     title=str(emeta.get("title") or ed_slug),
                     project_slug=slug,
                     release=str(emeta.get("release") or "") or None,
-                    release_date=release_date,
+                    release_date=sort_date,
                     is_new=is_new,
                     is_announcement=is_announcement,
                     presale_url=emeta.get("presale_url"),
@@ -470,6 +513,14 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         reverse=True,
     )
 
+    # Fallback: 4 najnowsze wydania niezależnie od klasyfikacji (ignorujemy datę 9999-12-31)
+    all_editions_sorted = sorted(
+        [e for e in editions if e.release_date.year < 9999],
+        key=lambda e: e.release_date,
+        reverse=True,
+    )
+    newest_anytime = all_editions_sorted[:4]
+
     blog_posts_sorted = sorted(blog_posts, key=lambda p: p.date, reverse=True)
 
     # Powiązane publikacje dla ludzi (po person_slug + fallback po nazwie)
@@ -523,19 +574,30 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     _write_html(out_dir / "index.html", html)
 
     # Listing pages
+    # /nowe/ – jeśli puste, pokaż 4 najnowsze wydania niezależnie od daty
+    nowe_items = new_editions if new_editions else newest_anytime
+    nowe_desc = (
+        "Najnowsze wydania Diablaq. \n"
+        "Jeśli w tej chwili nie ma aktywnych 'nowości' (okno 6 tygodni), pokazujemy ostatnie publikacje."
+    )
     html = render(
         "listing.html",
         canonical_url=_abs_url("/nowe/"),
         title="Nowości",
-        items=new_editions,
+        description=nowe_desc,
+        items=nowe_items,
     )
     _write_html(out_dir / "nowe" / "index.html", html)
 
+    # /zapowiedzi/ – jeśli puste, pokaż komunikat
+    zap_empty = "Już wkrótce ogłosimy kolejne zapowiedzi. Zajrzyj ponownie za jakiś czas."
     html = render(
         "listing.html",
         canonical_url=_abs_url("/zapowiedzi/"),
         title="Zapowiedzi",
+        description="Co nowego nadchodzi w Diablaq.",
         items=announcements,
+        empty_message=zap_empty if not announcements else None,
     )
     _write_html(out_dir / "zapowiedzi" / "index.html", html)
 

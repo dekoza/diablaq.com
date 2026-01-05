@@ -3,7 +3,8 @@
 ## TL;DR
 - Treści edytujemy w `content/` (nie w `dist/`).
 - Obrazki dodajemy do `img/` i linkujemy jako `/img/nazwa-pliku.jpg`.
-- Wydania muszą mieć `release_date: YYYY-MM-DD`.
+- `release_date` w wydaniach jest **zalecane**, ale może być puste/brak (wtedy pozycja jest zapowiedzią).
+- Nowości i zapowiedzi wyliczają się automatycznie podczas builda (bez ręcznego przerzucania między listami).
 - `is_new: true` i `is_announcement: true` **nie mogą** być ustawione jednocześnie.
 - Nazwy folderów/plików w `content/` są częścią adresu URL — nie zmieniaj ich bez konsultacji.
 
@@ -102,12 +103,26 @@ To jest strona konkretnego tomu/numeru.
 
 ### Pola obowiązkowe
 - `title` — tytuł wydania (np. `"Spółka ZŁO #1"`)
-- `release_date` — **obowiązkowe**, format `YYYY-MM-DD` (np. `2025-06-01`)
+
+### Daty i automatyczne „Nowości” / „Zapowiedzi”
+- `release_date` (zalecane) — data premiery w formacie `YYYY-MM-DD` (np. `2025-06-01`).
+
+Generator podczas builda automatycznie klasyfikuje wydania:
+1. Jeśli `release_date` jest puste lub nie ma go w pliku → **Zapowiedzi**.
+2. Jeśli `release_date` jest w przyszłości → **Zapowiedzi**.
+3. Jeśli `release_date` jest dziś lub w przeszłości → **Nowości** przez **6 tygodni** od premiery.
+
+Po 6 tygodniach pozycja wypada z „Nowości”.
+
+### Override (wymuszenie pozycji)
+Jeżeli chcesz wymusić obecność na liście niezależnie od daty, użyj:
+- `is_announcement: true` — wymusza „Zapowiedzi”
+- `is_new: true` — wymusza „Nowości”
+
+> Te pola działają jako override (wymuszenie). Nadal nie wolno ustawiać obu naraz.
 
 ### Pola bardzo często używane
 - `release` (tekst, opcjonalne) — ludzki opis daty, np. `"premiera - grudzień 2024"`
-- `is_new: true` — jeśli ma trafić na `/nowe/`
-- `is_announcement: true` — jeśli ma trafić na `/zapowiedzi/`
 - `presale_url` (URL, opcjonalne) — link do przedsprzedaży (zwykle tylko dla zapowiedzi)
 
 Ważne:
@@ -214,7 +229,7 @@ Treść Markdown poniżej to zawartość strony.
 ---
 
 ## Checklist przed wysłaniem Pull Request
-- Czy `release_date` jest w formacie `YYYY-MM-DD`?
+- Czy `release_date` (jeśli podane) jest w formacie `YYYY-MM-DD`?
 - Czy obrazki są w `img/` i mają ścieżki `/img/...`?
 - Czy nie ustawiono jednocześnie `is_new` i `is_announcement`?
 - Czy nie zmieniono nazw folderów/plików w `content/` bez potrzeby?
