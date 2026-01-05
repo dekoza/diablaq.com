@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ person.name }} – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header>
+  <h1>{{ person.name }}</h1>
+</header>
+
+<section>
+  {{ person.html_bio | safe }}
+</section>
+{% endblock %}
+

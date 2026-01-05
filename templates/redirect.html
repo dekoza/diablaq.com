@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Przekierowanie…</title>
+  <meta http-equiv="refresh" content="0; url={{ to_url }}">
+  <link rel="canonical" href="{{ to_url }}">
+</head>
+<body>
+  <p>Przekierowanie do: <a href="{{ to_url }}">{{ to_url }}</a></p>
+  <script>
+    window.location.replace({{ to_url | tojson }});
+  </script>
+</body>
+</html>
+

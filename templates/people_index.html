@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Ludzie – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header>
+  <h1>Ludzie</h1>
+</header>
+
+<ul>
+  {% for p in people %}
+    <li><a href="/ludzie/{{ p.slug }}/">{{ p.name }}</a></li>
+  {% else %}
+    <li>Brak profili.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<section>
+  <header><h2>Zapowiedzi</h2></header>
+  {% for e in announcements %}
+    <aside>
+      <figure>
+        <a href="{{ e.url }}"><img src="/img/icon.png" alt="{{ e.title }}"></a>
+        <figcaption>{{ e.title }}{% if e.release %}; {{ e.release }}{% endif %}</figcaption>
+      </figure>
+    </aside>
+  {% else %}
+    <p>Brak zapowiedzi.</p>
+  {% endfor %}
+  <p><a href="/zapowiedzi/">Zobacz wszystkie zapowiedzi</a></p>
+</section>
+
+<section>
+  <header><h2>Nowości</h2></header>
+  {% for e in new_editions %}
+    <aside>
+      <figure>
+        <a href="{{ e.url }}"><img src="/img/icon.png" alt="{{ e.title }}"></a>
+        <figcaption>{{ e.title }}{% if e.release %}; {{ e.release }}{% endif %}</figcaption>
+      </figure>
+    </aside>
+  {% else %}
+    <p>Brak nowości.</p>
+  {% endfor %}
+  <p><a href="/nowe/">Zobacz wszystkie nowości</a></p>
+</section>
+
+<section>
+  <header><h2>Projekty</h2></header>
+  {% for p in projects %}
+    <aside>
+      <a href="/{{ p.slug }}/">{{ p.title }}</a>
+    </aside>
+  {% endfor %}
+</section>
+{% endblock %}
+

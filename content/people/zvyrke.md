@@ -1,0 +1,6 @@
+---
+name: "Zvyrke"
+---
+
+Autor komiksów.
+

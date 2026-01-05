@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Wydawnictwo Diablaq{% endblock %}</title>
+
+  {# Na start korzystamy z istniejącego CSS. Pico dojdzie w kolejnym etapie. #}
+  <link rel="stylesheet" href="/css/mvp.css">
+  <link rel="stylesheet" href="/css/diablaq.css">
+  <link rel="icon" type="image/x-icon" href="/img/icon.png">
+</head>
+<body>
+<header>
+  <nav>
+    <a href="/"><img alt="Diablaq" src="/img/logo.png" height="70"></a>
+    <h1>Wydawnictwo Diablaq</h1>
+    <ul>
+      <li><a href="#">Publikacje</a>
+        <ul>
+          {% for p in nav_projects %}
+            <li><a href="/{{ p.slug }}/">{{ p.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </li>
+      <li><a href="/nowe/">Nowości</a></li>
+      <li><a href="/zapowiedzi/">Zapowiedzi</a></li>
+      <li><a href="/ludzie/">Ludzie</a></li>
+      <li><a href="https://strefakomiksu.pl/">Księgarnia</a></li>
+      <li><a href="/kontakt/">Kontakt</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer>
+  &copy; 2024 Diablaq sp.z o.o.
+</footer>
+</body>
+</html>
+

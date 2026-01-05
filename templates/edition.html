@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ edition.title }} – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header>
+  <h1>{{ edition.title }}</h1>
+  {% if edition.release %}<h2>{{ edition.release }}</h2>{% endif %}
+</header>
+
+<section>
+  {{ edition.html_body | safe }}
+</section>
+{% endblock %}
+
