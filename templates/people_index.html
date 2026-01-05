@@ -3,16 +3,24 @@
 {% block title %}Ludzie – Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
-<header>
+<header class="page-header">
   <h1>Ludzie</h1>
+  <p class="page-header__lead">Autorzy, rysownicy i osoby współtworzące nasze publikacje.</p>
 </header>
 
-<ul>
-  {% for p in people %}
-    <li><a href="/ludzie/{{ p.slug }}/">{{ p.name }}</a></li>
+<section>
+  {% if people %}
+    <div class="tiles tiles--projects">
+      {% for p in people %}
+        <article class="project-card">
+          <a class="project-card__cover project-card__cover--text" href="/ludzie/{{ p.slug }}/" aria-label="{{ p.name }}">
+            <span class="project-card__cover-text">{{ p.name }}</span>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
   {% else %}
-    <li>Brak profili.</li>
-  {% endfor %}
-</ul>
+    <p>Brak profili.</p>
+  {% endif %}
+</section>
 {% endblock %}
-

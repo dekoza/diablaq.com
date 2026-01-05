@@ -1,0 +1,28 @@
+{#
+  Karta wydania: okładka + tytuł + autorzy + data.
+  Używana na home/listing/project.
+#}
+<article class="edition-card">
+  <a class="edition-card__media" href="{{ e.url }}">
+    <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+  </a>
+
+  <div class="edition-card__body">
+    <h3 class="edition-card__title"><a href="{{ e.url }}">{{ e.title }}</a></h3>
+
+    {% if e.creator_names %}
+      <p class="edition-card__meta">{{ e.creator_names | join(', ') }}</p>
+    {% endif %}
+
+    <p class="edition-card__meta">
+      <small>{{ e.release_date.isoformat() }}{% if e.release %} · {{ e.release }}{% endif %}</small>
+    </p>
+
+    {% if show_badge and e.is_announcement %}
+      <mark>Zapowiedź</mark>
+    {% elif show_badge and e.is_new %}
+      <mark>Nowość</mark>
+    {% endif %}
+  </div>
+</article>
+

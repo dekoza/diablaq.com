@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Blog – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <h1>Blog</h1>
+  <p class="page-header__lead">Aktualności: targi, live, relacje i ogłoszenia.</p>
+</header>
+
+<section>
+  {% if posts %}
+    <div class="tiles tiles--blog">
+      {% for post in posts %}
+        {% include "_partials/blog_card.html" with context %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Brak wpisów.</p>
+  {% endif %}
+</section>
+{% endblock %}
+

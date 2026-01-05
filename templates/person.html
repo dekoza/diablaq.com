@@ -3,12 +3,28 @@
 {% block title %}{{ person.name }} – Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
-<header>
+<header class="page-header">
   <h1>{{ person.name }}</h1>
 </header>
 
 <section>
+  <header class="section-header">
+    <h2>O autorze</h2>
+  </header>
   {{ person.html_bio | safe }}
 </section>
-{% endblock %}
 
+{% if person.related_editions %}
+  <section>
+    <header class="section-header">
+      <h2>Powiązane publikacje</h2>
+    </header>
+
+    <div class="tiles tiles--editions">
+      {% for e in person.related_editions %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+{% endblock %}

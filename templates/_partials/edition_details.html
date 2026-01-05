@@ -1,0 +1,99 @@
+{#
+  Partial: szczegóły wydania.
+  Używane na:
+  - stronach wydań (`edition.html`)
+  - jednotomówkach (gdy projekt ma dokładnie 1 wydanie) w `project.html`
+
+  Zakłada, że w kontekście jest `edition` oraz `project`.
+#}
+
+<section class="edition-details">
+  <div class="edition-details__grid grid">
+    <div class="edition-details__media">
+      {% if edition.cover_image %}
+        <figure class="edition-details__cover">
+          <img src="{{ edition.cover_image }}" alt="{{ edition.cover_alt or edition.title }}">
+        </figure>
+      {% endif %}
+
+      {% if edition.covers %}
+        <h3 class="edition-details__subhead">Alternatywne okładki</h3>
+        <div class="thumb-grid">
+          {% for img in edition.covers %}
+            <a class="thumb" href="{{ img.image }}" target="_blank" rel="noopener">
+              <img src="{{ img.image }}" alt="{{ img.alt or edition.title }}" loading="lazy">
+              {% if img.caption %}<small>{{ img.caption }}</small>{% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if edition.previews %}
+        <h3 class="edition-details__subhead">Podgląd</h3>
+        <div class="thumb-grid">
+          {% for img in edition.previews %}
+            <a class="thumb" href="{{ img.image }}" target="_blank" rel="noopener">
+              <img src="{{ img.image }}" alt="{{ img.alt or edition.title }}" loading="lazy">
+              {% if img.caption %}<small>{{ img.caption }}</small>{% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="edition-details__meta">
+      <h2 class="edition-details__title">{{ edition.title }}</h2>
+      {% if edition.release %}<p class="edition-details__release">{{ edition.release }}</p>{% endif %}
+
+      {% if edition.creators %}
+        <h3 class="edition-details__subhead">Twórcy</h3>
+        <ul class="edition-details__creators">
+          {% for c in edition.creators %}
+            <li>
+              {% if c.role %}<strong>{{ c.role }}:</strong> {% endif %}
+              {% if c.person_slug %}
+                <a href="/ludzie/{{ c.person_slug }}/">{{ c.name }}</a>
+              {% else %}
+                {{ c.name }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <h3 class="edition-details__subhead">Data</h3>
+      <p class="edition-details__date"><small>{{ edition.release_date.isoformat() }}</small></p>
+
+      {% if edition.specs %}
+        <h3 class="edition-details__subhead">Parametry</h3>
+        <dl class="edition-details__specs">
+          {% for k, v in edition.specs.items() %}
+            <dt>{{ k }}</dt>
+            <dd>{{ v }}</dd>
+          {% endfor %}
+        </dl>
+      {% endif %}
+
+      {% if edition.buy_links or (edition.is_announcement and edition.presale_url) %}
+        <h3 class="edition-details__subhead">Gdzie kupić</h3>
+        <p class="edition-details__buy">
+          {% if edition.is_announcement and edition.presale_url %}
+            <a href="{{ edition.presale_url }}" role="button">Przedsprzedaż</a>
+          {% endif %}
+          {% for link in edition.buy_links %}
+            <a href="{{ link.url }}" role="button" class="secondary">{{ link.label }}</a>
+          {% endfor %}
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% if edition.html_body and edition.html_body.strip() %}
+  <section>
+    <header class="section-header">
+      <h2>O komiksie</h2>
+    </header>
+    {{ edition.html_body | safe }}
+  </section>
+{% endif %}

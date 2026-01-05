@@ -3,26 +3,20 @@
 {% block title %}{{ title }} – Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
-<header>
+<header class="page-header">
   <h1>{{ title }}</h1>
+  {% if description %}<p class="page-header__lead">{{ description }}</p>{% endif %}
 </header>
 
 <section>
-  {% for e in items %}
-    <article>
-      <header>
-        <h2><a href="{{ e.url }}">{{ e.title }}</a></h2>
-        <p>
-          {% if e.release %}{{ e.release }} · {% endif %}
-          {{ e.release_date.isoformat() }}
-          {% if e.is_announcement and e.presale_url %} · <a href="{{ e.presale_url }}">Przedsprzedaż</a>{% endif %}
-        </p>
-      </header>
-      {{ e.html_body | safe }}
-    </article>
+  {% if items %}
+    <div class="tiles tiles--editions">
+      {% for e in items %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
   {% else %}
     <p>Brak pozycji.</p>
-  {% endfor %}
+  {% endif %}
 </section>
 {% endblock %}
-

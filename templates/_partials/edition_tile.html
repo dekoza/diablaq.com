@@ -1,0 +1,16 @@
+<article class="edition-tile">
+  <a class="edition-tile__cover" href="{{ e.url }}" aria-label="{{ e.title }}">
+    <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+  </a>
+
+  <h3 class="edition-tile__title">
+    <a href="{{ e.url }}">{{ e.title }}</a>
+  </h3>
+
+  {% if e.creator_names %}
+    <p class="edition-tile__meta">{{ e.creator_names | join(", ") }}</p>
+  {% endif %}
+
+  <p class="edition-tile__meta"><small>{{ e.release_date.isoformat() }}</small></p>
+</article>
+

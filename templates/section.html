@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <h1>{{ title }}</h1>
+  {% if description %}<p class="page-header__lead">{{ description }}</p>{% endif %}
+</header>
+
+<section>
+  {% if projects %}
+    <div class="tiles tiles--projects">
+      {% for p in projects %}
+        {% include "_partials/project_card.html" with context %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Brak pozycji.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -3,43 +3,61 @@
 {% block title %}Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
+<section class="home-hero">
+  <header class="page-header">
+    <h1>Wydawnictwo Diablaq</h1>
+    <p class="page-header__lead">Komiksy · serie · studio</p>
+  </header>
+</section>
+
 <section>
-  <header><h2>Zapowiedzi</h2></header>
-  {% for e in announcements %}
-    <aside>
-      <figure>
-        <a href="{{ e.url }}"><img src="/img/icon.png" alt="{{ e.title }}"></a>
-        <figcaption>{{ e.title }}{% if e.release %}; {{ e.release }}{% endif %}</figcaption>
-      </figure>
-    </aside>
+  <header class="section-header">
+    <h2>Zapowiedzi</h2>
+    <a class="section-header__more" href="/zapowiedzi/">Zobacz wszystkie</a>
+  </header>
+
+  {% if announcements %}
+    <div class="tiles tiles--editions">
+      {% for e in announcements %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
   {% else %}
     <p>Brak zapowiedzi.</p>
-  {% endfor %}
-  <p><a href="/zapowiedzi/">Zobacz wszystkie zapowiedzi</a></p>
+  {% endif %}
 </section>
 
 <section>
-  <header><h2>Nowości</h2></header>
-  {% for e in new_editions %}
-    <aside>
-      <figure>
-        <a href="{{ e.url }}"><img src="/img/icon.png" alt="{{ e.title }}"></a>
-        <figcaption>{{ e.title }}{% if e.release %}; {{ e.release }}{% endif %}</figcaption>
-      </figure>
-    </aside>
+  <header class="section-header">
+    <h2>Nowości</h2>
+    <a class="section-header__more" href="/nowe/">Zobacz wszystkie</a>
+  </header>
+
+  {% if new_editions %}
+    <div class="tiles tiles--editions">
+      {% for e in new_editions %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
   {% else %}
     <p>Brak nowości.</p>
-  {% endfor %}
-  <p><a href="/nowe/">Zobacz wszystkie nowości</a></p>
+  {% endif %}
 </section>
 
 <section>
-  <header><h2>Projekty</h2></header>
-  {% for p in projects %}
-    <aside>
-      <a href="/{{ p.slug }}/">{{ p.title }}</a>
-    </aside>
-  {% endfor %}
+  <header class="section-header">
+    <h2>Katalog</h2>
+    <a class="section-header__more" href="/publikacje/">Zobacz wszystkie</a>
+  </header>
+
+  {% if projects %}
+    <div class="tiles tiles--projects">
+      {% for p in projects[:4] %}
+        {% include "_partials/project_card.html" with context %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Brak projektów w katalogu.</p>
+  {% endif %}
 </section>
 {% endblock %}
-

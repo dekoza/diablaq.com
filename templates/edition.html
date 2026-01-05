@@ -3,13 +3,13 @@
 {% block title %}{{ edition.title }} – Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
-<header>
+<header class="page-header">
   <h1>{{ edition.title }}</h1>
-  {% if edition.release %}<h2>{{ edition.release }}</h2>{% endif %}
+  <p class="page-header__lead">
+    <a href="{{ project.url }}">← {{ project.title }}</a>
+  </p>
 </header>
 
-<section>
-  {{ edition.html_body | safe }}
-</section>
+<!-- gallery-support: covers + previews -->
+{% include "_partials/edition_details.html" with context %}
 {% endblock %}
-

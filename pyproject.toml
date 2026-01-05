@@ -1,25 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-testpaths = ["tests"]
-[tool.pytest.ini_options]
-
-line-length = 100
-[tool.ruff]
-
-# optional: allows `uv sync` if you use uv
-[tool.uv]
-
-diablaq-build = "diablaq_site.cli:main"
-[project.scripts]
-
-]
-  "markdown>=3.6",
-  "python-frontmatter>=1.1",
-  "jinja2>=3.1",
-dependencies = [
-
-requires-python = ">=3.11"
-readme = "README.md"
-description = "Static site generator for diablaq.com (Jinja2 + Markdown frontmatter)."
-version = "0.1.0"
 name = "diablaq-site"
+version = "0.1.0"
+description = "Static site generator for diablaq.com (Jinja2 + Markdown frontmatter)."
+readme = "README.md"
+requires-python = ">=3.11"
 
+dependencies = [
+  "jinja2>=3.1",
+  "python-frontmatter>=1.1",
+  "markdown>=3.6",
+]
+
+[project.scripts]
+diablaq-build = "diablaq_site.cli:main"
+
+[tool.setuptools]
+packages = ["diablaq_site"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

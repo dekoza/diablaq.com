@@ -1,0 +1,18 @@
+<article class="blog-card">
+  <a class="blog-card__cover" href="{{ post.url }}" aria-label="{{ post.title }}">
+    {% if post.cover_image %}
+      <img src="{{ post.cover_image }}" alt="{{ post.cover_alt or post.title }}" loading="lazy">
+    {% else %}
+      <div class="blog-card__cover-placeholder"></div>
+    {% endif %}
+  </a>
+
+  <h3 class="blog-card__title"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+
+  {% if post.summary %}
+    <p class="blog-card__summary">{{ post.summary }}</p>
+  {% endif %}
+
+  <p class="blog-card__meta"><small>{{ post.date.isoformat() }}</small></p>
+</article>
+

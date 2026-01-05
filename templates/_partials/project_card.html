@@ -1,0 +1,15 @@
+{# Karta projektu: okładka + tytuł + opis. #}
+<article class="project-card">
+  <a class="project-card__cover" href="{{ p.url }}" aria-label="{{ p.title }}">
+    {% if p.cover_image %}
+      <img src="{{ p.cover_image }}" alt="{{ p.title }} - okładka" loading="lazy">
+    {% else %}
+      <img src="/img/icon.png" alt="{{ p.title }}" loading="lazy">
+    {% endif %}
+  </a>
+
+  <h3 class="project-card__title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+  {% if p.summary %}
+    <p class="project-card__summary">{{ p.summary }}</p>
+  {% endif %}
+</article>

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} – Blog – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <h1>{{ post.title }}</h1>
+  <p class="page-header__lead">
+    <time datetime="{{ post.date.isoformat() }}">{{ post.date.isoformat() }}</time>
+  </p>
+</header>
+
+<article class="blog-post">
+  {% if post.cover_image %}
+    <figure class="blog-post__cover">
+      <img src="{{ post.cover_image }}" alt="{{ post.cover_alt or post.title }}">
+    </figure>
+  {% endif %}
+
+  <div class="blog-post__body">
+    {{ post.html_body | safe }}
+  </div>
+
+  {% if post_tags %}
+    <footer class="blog-post__tags">
+      <h2 class="blog-post__tags-title">Tagi</h2>
+      <p>
+        {% for tag in post_tags %}
+          <a class="blog-tag" href="{{ tag.url }}">{{ tag.name }}</a>
+        {% endfor %}
+      </p>
+    </footer>
+  {% endif %}
+</article>
+{% endblock %}

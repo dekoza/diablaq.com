@@ -1,13 +1,35 @@
 from __future__ import annotations
 
+import os
 import shutil
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from urllib.parse import quote
 
 import frontmatter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown import markdown
+
+
+@dataclass(frozen=True)
+class BuyLink:
+    label: str
+    url: str
+
+
+@dataclass(frozen=True)
+class Creator:
+    role: str | None
+    name: str
+    person_slug: str | None
+
+
+@dataclass(frozen=True)
+class ImageRef:
+    image: str
+    alt: str | None
+    caption: str | None
 
 
 @dataclass(frozen=True)
@@ -21,6 +43,14 @@ class Edition:
     is_announcement: bool
     presale_url: str | None
     legacy_anchor: str | None
+    cover_image: str | None
+    cover_alt: str | None
+    covers: list[ImageRef]
+    previews: list[ImageRef]
+    creators: list[Creator]
+    creator_names: list[str]
+    specs: dict[str, str]
+    buy_links: list[BuyLink]
     html_body: str
 
 
@@ -32,6 +62,8 @@ class Project:
     summary: str | None
     legacy_path: str | None
     url: str
+    legacy_landing: bool
+    cover_image: str | None
     html_body: str
 
 
@@ -40,6 +72,32 @@ class Person:
     slug: str
     name: str
     html_bio: str
+    related_editions: list[Edition]
+
+
+@dataclass(frozen=True)
+class Page:
+    slug: str
+    title: str
+    html_body: str
+
+
+@dataclass(frozen=True)
+class BlogPost:
+    url: str
+    slug: str
+    title: str
+    date: date
+    summary: str | None
+    cover_image: str | None
+    cover_alt: str | None
+    tags: list[str]
+    html_body: str
+
+
+def _slugify_tag(tag: str) -> str:
+    # Do URL-i tagów stosujemy quote (w UTF-8) i zachowujemy spacje jako %20.
+    return quote(tag.strip(), safe="")
 
 
 def _parse_date(value: str, *, source_path: Path) -> date:
@@ -53,7 +111,7 @@ def _parse_date(value: str, *, source_path: Path) -> date:
 
 
 def _read_markdown_file(path: Path) -> tuple[dict, str]:
-    post = frontmatter.load(path)
+    post = frontmatter.load(str(path))
     meta = dict(post.metadata or {})
     body_md = post.content or ""
     body_html = markdown(body_md, extensions=["extra", "sane_lists"])
@@ -76,6 +134,163 @@ def _render(env: Environment, template_name: str, **ctx):
     return template.render(**ctx)
 
 
+def _coerce_str_list(value) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(x).strip() for x in value if str(x).strip()]
+    return [str(value).strip()] if str(value).strip() else []
+
+
+def _pick_cover(meta: dict) -> tuple[str | None, str | None]:
+    """Wybiera okładkę do skrótu (listing/home).
+
+    Obsługiwane formaty:
+    - `cover_image` / `cover_alt`
+    - `covers: [{image, alt, caption}, ...]`
+    """
+
+    cover_image = meta.get("cover_image")
+    cover_alt = meta.get("cover_alt")
+    if cover_image:
+        return str(cover_image), str(cover_alt) if cover_alt else None
+
+    covers = meta.get("covers")
+    if isinstance(covers, list) and covers:
+        first = covers[0]
+        if isinstance(first, dict) and first.get("image"):
+            return str(first.get("image")), str(first.get("alt") or "") or None
+
+    return None, None
+
+
+def _parse_image_list(meta: dict, key: str, *, source_path: Path) -> list[ImageRef]:
+    raw = meta.get(key)
+    if raw is None:
+        return []
+
+    if not isinstance(raw, list):
+        raise ValueError(f"{key} musi być listą w {source_path}")
+
+    out: list[ImageRef] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ValueError(f"{key}[{i}] musi być dict w {source_path}")
+        image = str(item.get("image") or "").strip()
+        if not image:
+            raise ValueError(f"{key}[{i}] musi mieć image w {source_path}")
+        alt = str(item.get("alt") or "").strip() or None
+        caption = str(item.get("caption") or "").strip() or None
+        out.append(ImageRef(image=image, alt=alt, caption=caption))
+
+    return out
+
+
+def _as_str(value) -> str:
+    return str(value).strip()
+
+
+def _parse_buy_links(meta: dict, *, source_path: Path) -> list[BuyLink]:
+    raw = meta.get("buy_links")
+    if raw is None:
+        return []
+
+    if not isinstance(raw, list):
+        raise ValueError(f"buy_links musi być listą w {source_path}")
+
+    links: list[BuyLink] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ValueError(f"buy_links[{i}] musi być dict w {source_path}")
+
+        label = _as_str(item.get("label") or "")
+        url = _as_str(item.get("url") or "")
+        if not label or not url:
+            raise ValueError(f"buy_links[{i}] musi mieć label i url w {source_path}")
+        links.append(BuyLink(label=label, url=url))
+
+    return links
+
+
+def _parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], list[str]]:
+    """Obsługuje:
+
+    - `creators: ["A", "B"]` (wstecznie)
+    - `creators: [{role, name, person_slug}, ...]` (docelowo)
+
+    Zwraca: (lista obiektów Creator, lista nazw do skrótów)
+    """
+
+    raw = meta.get("creators")
+    if raw is None:
+        return [], []
+
+    if isinstance(raw, list) and all(not isinstance(x, dict) for x in raw):
+        names = [str(x).strip() for x in raw if str(x).strip()]
+        creators = [Creator(role=None, name=n, person_slug=None) for n in names]
+        return creators, names
+
+    if not isinstance(raw, list):
+        raise ValueError(f"creators musi być listą w {source_path}")
+
+    creators: list[Creator] = []
+    names: list[str] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ValueError(f"creators[{i}] musi być obiektem (dict) w {source_path}")
+
+        name = str(item.get("name") or "").strip()
+        role = str(item.get("role") or "").strip() or None
+        person_slug = str(item.get("person_slug") or "").strip() or None
+
+        if not name:
+            raise ValueError(f"creators[{i}] musi mieć name w {source_path}")
+
+        creators.append(Creator(role=role, name=name, person_slug=person_slug))
+        names.append(name)
+
+    return creators, names
+
+
+def _parse_specs(meta: dict) -> dict[str, str]:
+    raw = meta.get("specs")
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        return {}
+
+    out: dict[str, str] = {}
+    for k, v in raw.items():
+        if v is None:
+            continue
+        key = _as_str(k)
+        val = _as_str(v)
+        if key and val:
+            out[key] = val
+    return out
+
+
+def _canonical_project_url(*, line: str, slug: str) -> str:
+    if line == "diablaq":
+        return f"/publikacje/{slug}/"
+    if line == "dobre-licho":
+        return f"/dobre-licho/{slug}/"
+    if line in {"mecenat", "studio"}:
+        return f"/{line}/{slug}/"
+    # fallback: traktuj jak publikacje
+    return f"/publikacje/{slug}/"
+
+
+def _canonical_edition_url(*, line: str, project_slug: str, edition_slug: str) -> str:
+    if line == "diablaq":
+        return f"/publikacje/{project_slug}/{edition_slug}/"
+    if line == "dobre-licho":
+        return f"/dobre-licho/{project_slug}/{edition_slug}/"
+    if line in {"mecenat", "studio"}:
+        return f"/{line}/{project_slug}/{edition_slug}/"
+    return f"/publikacje/{project_slug}/{edition_slug}/"
+
+
 def build_site(*, root: Path, out_dir: Path) -> None:
     templates_dir = root / "templates"
     content_dir = root / "content"
@@ -92,10 +307,24 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         autoescape=select_autoescape(["html", "xml"]),
     )
 
+    # Bazowy URL strony do canonical (opcjonalny, ale zalecany na produkcji).
+    # Jeśli nie ustawisz, canonical będzie ścieżką absolutną (np. /publikacje/spz/01/).
+    site_url = os.environ.get("DIABLAQ_SITE_URL", "").rstrip("/")
+
     # --- load content
     projects: list[Project] = []
     editions: list[Edition] = []
     people: list[Person] = []
+    pages: list[Page] = []
+    blog_posts: list[BlogPost] = []
+
+    # Pages (content/pages/*.md)
+    pages_root = content_dir / "pages"
+    for page_md in sorted(pages_root.glob("*.md")):
+        meta, body_html = _read_markdown_file(page_md)
+        slug = page_md.stem
+        title = str(meta.get("title") or slug)
+        pages.append(Page(slug=slug, title=title, html_body=body_html))
 
     # Projects (content/projects/<slug>/project.md)
     projects_root = content_dir / "projects"
@@ -110,7 +339,10 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         line = str(meta.get("line") or "diablaq")
         summary = meta.get("summary")
         legacy_path = meta.get("legacy_path")
-        url = f"/{slug}/"
+        legacy_landing = bool(meta.get("legacy_landing", False))
+        cover_image = str(meta.get("cover_image") or "").strip() or None
+
+        url = _canonical_project_url(line=line, slug=slug)
 
         projects.append(
             Project(
@@ -120,11 +352,13 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                 summary=summary,
                 legacy_path=legacy_path,
                 url=url,
+                legacy_landing=legacy_landing,
+                cover_image=cover_image,
                 html_body=body_html,
             )
         )
 
-        # Editions (content/projects/<slug>/editions/*.md)
+        # Editions
         for edition_md in sorted((project_dir / "editions").glob("*.md")):
             emeta, ebody_html = _read_markdown_file(edition_md)
 
@@ -140,7 +374,16 @@ def build_site(*, root: Path, out_dir: Path) -> None:
 
             release_date = _parse_date(str(emeta["release_date"]), source_path=edition_md)
             ed_slug = edition_md.stem
-            url = f"/{line}/{slug}/{ed_slug}/" if line in {"mecenat", "studio"} else f"/{slug}/{ed_slug}/"
+
+            # Kanoniczne URL-e dla wydań (wg planu):
+            url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
+
+            cover_image, cover_alt = _pick_cover(emeta)
+            covers = _parse_image_list(emeta, "covers", source_path=edition_md)
+            previews = _parse_image_list(emeta, "previews", source_path=edition_md)
+            creators, creator_names = _parse_creators(emeta, source_path=edition_md)
+            specs = _parse_specs(emeta)
+            buy_links = _parse_buy_links(emeta, source_path=edition_md)
 
             editions.append(
                 Edition(
@@ -153,6 +396,14 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                     is_announcement=is_announcement,
                     presale_url=emeta.get("presale_url"),
                     legacy_anchor=emeta.get("legacy_anchor"),
+                    cover_image=cover_image,
+                    cover_alt=cover_alt,
+                    covers=covers,
+                    previews=previews,
+                    creators=creators,
+                    creator_names=creator_names,
+                    specs=specs,
+                    buy_links=buy_links,
                     html_body=ebody_html,
                 )
             )
@@ -163,21 +414,108 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         meta, body_html = _read_markdown_file(person_md)
         slug = person_md.stem
         name = str(meta.get("name") or slug)
-        people.append(Person(slug=slug, name=name, html_bio=body_html))
+        people.append(Person(slug=slug, name=name, html_bio=body_html, related_editions=[]))
+
+    # Blog posts (content/blog/*.md)
+    blog_root = content_dir / "blog"
+    if blog_root.exists():
+        for post_md in sorted(blog_root.glob("*.md")):
+            meta, body_html = _read_markdown_file(post_md)
+
+            if bool(meta.get("draft", False)):
+                continue
+
+            title = str(meta.get("title") or post_md.stem)
+            if "date" not in meta:
+                raise ValueError(f"Brak date w {post_md}")
+
+            post_date = _parse_date(str(meta["date"]), source_path=post_md)
+            summary = str(meta.get("summary") or "").strip() or None
+            cover_image = str(meta.get("cover_image") or "").strip() or None
+            cover_alt = str(meta.get("cover_alt") or "").strip() or None
+            tags = _coerce_str_list(meta.get("tags"))
+
+            # slug: prefer frontmatter, fallback: filename without leading date prefix
+            raw_slug = str(meta.get("slug") or post_md.stem)
+            # if looks like YYYY-MM-DD-..., strip date prefix
+            parts = raw_slug.split("-", 3)
+            if len(parts) >= 4 and all(p.isdigit() for p in parts[:3]):
+                slug = parts[3]
+            else:
+                slug = raw_slug
+
+            url = f"/blog/{slug}/"
+
+            blog_posts.append(
+                BlogPost(
+                    url=url,
+                    slug=slug,
+                    title=title,
+                    date=post_date,
+                    summary=summary,
+                    cover_image=cover_image,
+                    cover_alt=cover_alt,
+                    tags=tags,
+                    html_body=body_html,
+                )
+            )
 
     # --- derived lists
     new_editions = sorted(
         [e for e in editions if e.is_new], key=lambda e: e.release_date, reverse=True
     )
     announcements = sorted(
-        [e for e in editions if e.is_announcement], key=lambda e: e.release_date, reverse=True
+        [e for e in editions if e.is_announcement],
+        key=lambda e: e.release_date,
+        reverse=True,
     )
+
+    blog_posts_sorted = sorted(blog_posts, key=lambda p: p.date, reverse=True)
+
+    # Powiązane publikacje dla ludzi (po person_slug + fallback po nazwie)
+    people_with_editions: list[Person] = []
+    for person in people:
+        related = [
+            e
+            for e in editions
+            if any(
+                (c.person_slug and c.person_slug == person.slug)
+                or (not c.person_slug and c.name.strip().lower() == person.name.strip().lower())
+                for c in e.creators
+            )
+        ]
+        related_sorted = sorted(related, key=lambda e: e.release_date, reverse=True)
+        people_with_editions.append(
+            Person(
+                slug=person.slug,
+                name=person.name,
+                html_bio=person.html_bio,
+                related_editions=related_sorted,
+            )
+        )
+
+    people = people_with_editions
+
+    nav_projects = sorted(projects, key=lambda p: p.title.lower())
+
+    def render(template_name: str, **ctx) -> str:
+        return _render(
+            env,
+            template_name,
+            nav_projects=nav_projects,
+            site_url=site_url,
+            **ctx,
+        )
+
+    def _abs_url(path: str) -> str:
+        path = "/" + path.lstrip("/")
+        return f"{site_url}{path}" if site_url else path
 
     # --- render pages
     # Home
-    html = _render(
-        env,
+    html = render(
         "home.html",
+        canonical_url=_abs_url("/"),
         projects=projects,
         new_editions=new_editions[:12],
         announcements=announcements[:12],
@@ -185,43 +523,190 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     _write_html(out_dir / "index.html", html)
 
     # Listing pages
-    html = _render(env, "listing.html", title="Nowości", items=new_editions)
+    html = render(
+        "listing.html",
+        canonical_url=_abs_url("/nowe/"),
+        title="Nowości",
+        items=new_editions,
+    )
     _write_html(out_dir / "nowe" / "index.html", html)
 
-    html = _render(env, "listing.html", title="Zapowiedzi", items=announcements)
+    html = render(
+        "listing.html",
+        canonical_url=_abs_url("/zapowiedzi/"),
+        title="Zapowiedzi",
+        items=announcements,
+    )
     _write_html(out_dir / "zapowiedzi" / "index.html", html)
 
+    # Pages
+    for page in pages:
+        html = render("page.html", canonical_url=_abs_url(f"/{page.slug}/"), page=page)
+        _write_html(out_dir / page.slug / "index.html", html)
+
     # People
-    html = _render(env, "people_index.html", people=people)
+    html = render("people_index.html", canonical_url=_abs_url("/ludzie/"), people=people)
     _write_html(out_dir / "ludzie" / "index.html", html)
 
     for p in people:
-        html = _render(env, "person.html", person=p)
+        html = render(
+            "person.html",
+            canonical_url=_abs_url(f"/ludzie/{p.slug}/"),
+            person=p,
+        )
         _write_html(out_dir / "ludzie" / p.slug / "index.html", html)
 
-        # legacy alias: /<slug>/ for people is handled later per explicit mapping.
+    # Blog
+    html = render("blog_index.html", canonical_url=_abs_url("/blog/"), posts=blog_posts_sorted)
+    _write_html(out_dir / "blog" / "index.html", html)
+
+    for post in blog_posts_sorted:
+        tags = [{"name": t, "url": f"/blog/tag/{_slugify_tag(t)}/"} for t in post.tags]
+        html = render(
+            "blog_post.html",
+            canonical_url=_abs_url(post.url),
+            post=post,
+            post_tags=tags,
+        )
+        _write_html(out_dir / post.url.strip("/") / "index.html", html)
+
+    # Tag listing pages
+    tag_map: dict[str, list[BlogPost]] = {}
+    for post in blog_posts_sorted:
+        for tag in post.tags:
+            t = tag.strip()
+            if not t:
+                continue
+            tag_map.setdefault(t, []).append(post)
+
+    for tag, items in sorted(tag_map.items(), key=lambda kv: kv[0].lower()):
+        tag_slug = _slugify_tag(tag)
+        html = render(
+            "blog_index.html",
+            canonical_url=_abs_url(f"/blog/tag/{tag_slug}/"),
+            posts=sorted(items, key=lambda p: p.date, reverse=True),
+        )
+        _write_html(out_dir / "blog" / "tag" / tag_slug / "index.html", html)
 
     # Projects and editions pages
     for pr in projects:
-        # legacy series page at /<slug>/
         pr_editions = [e for e in editions if e.project_slug == pr.slug]
         pr_editions_sorted = sorted(pr_editions, key=lambda e: e.release_date, reverse=True)
 
-        html = _render(env, "project.html", project=pr, editions=pr_editions_sorted)
-        _write_html(out_dir / pr.slug / "index.html", html)
+        # Jeśli jest wydanie o slugu `index`, traktujemy je jako treść jednotomówki
+        # pod URL projektu (bez /index/).
+        index_edition = next((e for e in pr_editions_sorted if e.url.endswith("/index/")), None)
+
+        # Render kanoniczna strona projektu
+        html = render(
+            "project.html",
+            canonical_url=_abs_url(pr.url),
+            project=pr,
+            editions=pr_editions_sorted,
+        )
+        _write_html(out_dir / pr.url.strip("/") / "index.html", html)
+
+        # Legacy landing: generuj dodatkowo stronę pod legacy_path (te same treści)
+        if (
+            pr.legacy_landing
+            and pr.legacy_path
+            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
+        ):
+            _write_html(out_dir / pr.legacy_path.strip("/") / "index.html", html)
+
+        # Legacy alias 1: alias /<slug>/ (jeśli kanoniczny URL jest inny)
+        legacy_slug_path = f"/{pr.slug}/"
+        if legacy_slug_path.rstrip("/") != pr.url.rstrip("/"):
+            if pr.legacy_landing and legacy_slug_path.rstrip("/") == (pr.legacy_path or "").rstrip(
+                "/"
+            ):
+                pass
+            else:
+                legacy_html = render(
+                    "redirect.html",
+                    canonical_url=_abs_url(pr.url),
+                    to_url=pr.url,
+                )
+                _write_html(out_dir / pr.slug / "index.html", legacy_html)
+
+        # Legacy alias 2: jeśli legacy_path jest inny niż kanoniczny i NIE jest landingiem
+        if (
+            pr.legacy_path
+            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
+            and not pr.legacy_landing
+            and pr.legacy_path.rstrip("/") != legacy_slug_path.rstrip("/")
+        ):
+            legacy_html = render(
+                "redirect.html",
+                canonical_url=_abs_url(pr.url),
+                to_url=pr.url,
+            )
+            _write_html(out_dir / pr.legacy_path.strip("/") / "index.html", legacy_html)
 
         for e in pr_editions_sorted:
-            # canonical edition page
-            html = _render(env, "edition.html", edition=e, project=pr)
+            # Jeśli jednotomówka siedzi w `index.md`, to jej podstrona to URL projektu.
+            # Nie generujemy więc /.../index/.
+            if e.url.endswith("/index/"):
+                continue
+
+            html = render(
+                "edition.html",
+                canonical_url=_abs_url(e.url),
+                edition=e,
+                project=pr,
+            )
             out_path = out_dir / e.url.strip("/") / "index.html"
             _write_html(out_path, html)
 
     # Special legacy alias rules (minimal): /zvyrke/ -> /ludzie/zvyrke/
-    # We implement as a lightweight redirect page for now.
     zv = next((p for p in people if p.slug == "zvyrke"), None)
     if zv is not None:
-        html = _render(env, "redirect.html", to_url=f"/ludzie/{zv.slug}/")
+        html = render(
+            "redirect.html",
+            canonical_url=_abs_url(f"/ludzie/{zv.slug}/"),
+            to_url=f"/ludzie/{zv.slug}/",
+        )
         _write_html(out_dir / "zvyrke" / "index.html", html)
+
+    # --- sections (landing pages)
+    def _write_section(path_slug: str, *, title: str, line: str, description: str | None = None) -> None:
+        items = [p for p in projects if p.line == line]
+        html = render(
+            "section.html",
+            canonical_url=_abs_url(f"/{path_slug}/"),
+            title=title,
+            description=description,
+            projects=items,
+        )
+        _write_html(out_dir / path_slug / "index.html", html)
+
+    _write_section(
+        "publikacje",
+        title="Publikacje",
+        line="diablaq",
+        description="Główna linia wydawnicza Diablaq.",
+    )
+    _write_section(
+        "dobre-licho",
+        title="Dobre Licho",
+        line="dobre-licho",
+        description="Imprint dla dzieci.",
+    )
+    _write_section(
+        "mecenat",
+        title="Mecenat",
+        line="mecenat",
+        description="Publikacje rozwijane w formule mecenatu.",
+    )
+
+    # Studio generujemy tylko, jeśli w ogóle są projekty studio
+    if any(p.line == "studio" for p in projects):
+        _write_section(
+            "studio",
+            title="Studio",
+            line="studio",
+            description="Produkcje komiksowe dla innych wydawnictw/klientów.",
+        )
 
     # --- copy static assets
     _copy_tree(root / "img", out_dir / "img")
@@ -231,4 +716,3 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         src = root / file_name
         if src.exists():
             shutil.copy2(src, out_dir / file_name)
-
