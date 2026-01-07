@@ -1,0 +1,77 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a855bf943d2a",
+  "name": "instagram",
+  "type": "group",
+  "x": 1914,
+  "y": 422,
+  "width": 32,
+  "height": 32,
+  "rotation": 0,
+  "selrect": {
+    "x": 1914,
+    "y": 422,
+    "width": 32,
+    "height": 32,
+    "x1": 1914,
+    "y1": 422,
+    "x2": 1946,
+    "y2": 454
+  },
+  "points": [
+    {
+      "x": 1914,
+      "y": 422
+    },
+    {
+      "x": 1946,
+      "y": 422
+    },
+    {
+      "x": 1946,
+      "y": 454
+    },
+    {
+      "x": 1914,
+      "y": 454
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "width": "500",
+    "height": "500",
+    "id": "Camada_1",
+    "version": "1.1",
+    "xmlSpace": "preserve"
+  },
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85570b9b395",
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d32",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d33",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d34",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d35"
+  ]
+}

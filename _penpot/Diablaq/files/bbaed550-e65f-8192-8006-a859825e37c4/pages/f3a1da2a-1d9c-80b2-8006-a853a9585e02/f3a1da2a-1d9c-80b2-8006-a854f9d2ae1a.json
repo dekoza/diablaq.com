@@ -1,0 +1,289 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a854f9d2ae1a",
+  "name": "NOWSZE WPISY\n\n",
+  "type": "text",
+  "x": 917,
+  "y": 1206,
+  "width": 128.00000000000023,
+  "height": 25,
+  "rotation": 0,
+  "selrect": {
+    "x": 917,
+    "y": 1206,
+    "width": 128.00000000000023,
+    "height": 25,
+    "x1": 917,
+    "y1": 1206,
+    "x2": 1045.0000000000002,
+    "y2": 1231
+  },
+  "points": [
+    {
+      "x": 917,
+      "y": 1206
+    },
+    {
+      "x": 1045.0000000000002,
+      "y": 1206
+    },
+    {
+      "x": 1045.0000000000002,
+      "y": 1231
+    },
+    {
+      "x": 917,
+      "y": 1231
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "18",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "NOWSZE WPISY"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "18",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "18",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "2tpku",
+            "fontSize": "18",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "18",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "igp7",
+            "fontSize": "18",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a853a9585e02",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": 1227.8000030517578,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "600",
+      "y1": -0.1999969482421875,
+      "width": 115.43333435058594,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 917,
+      "x1": 0,
+      "y2": 21.800003051757812,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 115.43333435058594,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "NOWSZE WPISY"
+    },
+    {
+      "y": 1249.3999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "600",
+      "y1": 21.399993896484375,
+      "width": 4.149993896484375,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 917,
+      "x1": 0,
+      "y2": 43.399993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 4.149993896484375,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "\u00a0"
+    },
+    {
+      "y": 1271,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "600",
+      "y1": 43,
+      "width": 4.149993896484375,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 917,
+      "x1": 0,
+      "y2": 65,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 4.149993896484375,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "\u00a0"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

@@ -1,0 +1,149 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a818707d5df5",
+  "name": "WYDAWNICTWO",
+  "type": "text",
+  "x": -3597.0000000000005,
+  "y": 4072,
+  "width": 235.9999999999991,
+  "height": 39,
+  "rotation": 0,
+  "selrect": {
+    "x": -3597.0000000000005,
+    "y": 4072,
+    "width": 235.9999999999991,
+    "height": 39,
+    "x1": -3597.0000000000005,
+    "y1": 4072,
+    "x2": -3361.0000000000014,
+    "y2": 4111
+  },
+  "points": [
+    {
+      "x": -3597.0000000000005,
+      "y": 4072
+    },
+    {
+      "x": -3361.0000000000014,
+      "y": 4072
+    },
+    {
+      "x": -3361.0000000000014,
+      "y": 4111
+    },
+    {
+      "x": -3597.0000000000005,
+      "y": 4111
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "WYDAWNICTWO"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "36",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": -3597.0000000000005,
+      "y": 4115.100006103516,
+      "width": 234.14999389648438,
+      "height": 43,
+      "x1": 0,
+      "y1": 0.100006103515625,
+      "x2": 234.14999389648438,
+      "y2": 43.100006103515625,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "WYDAWNICTWO"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

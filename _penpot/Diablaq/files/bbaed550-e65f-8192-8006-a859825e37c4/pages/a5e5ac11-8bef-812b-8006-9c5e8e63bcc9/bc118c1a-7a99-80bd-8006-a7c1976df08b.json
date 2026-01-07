@@ -1,0 +1,148 @@
+{
+  "id": "bc118c1a-7a99-80bd-8006-a7c1976df08b",
+  "name": "ZOBACZ WSZYSTKIE WPISY",
+  "type": "text",
+  "x": -4747,
+  "y": -2092,
+  "width": 161,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": -4747,
+    "y": -2092,
+    "width": 161,
+    "height": 16,
+    "x1": -4747,
+    "y1": -2092,
+    "x2": -4586,
+    "y2": -2076
+  },
+  "points": [
+    {
+      "x": -4747,
+      "y": -2092
+    },
+    {
+      "x": -4586,
+      "y": -2092
+    },
+    {
+      "x": -4586,
+      "y": -2076
+    },
+    {
+      "x": -4747,
+      "y": -2076
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "14",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "ZOBACZ WSZYSTKIE WPISY"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": -2074.8500061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "y1": -0.350006103515625,
+      "width": 156.8000030517578,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": -4747,
+      "x1": 0,
+      "y2": 17.149993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 156.8000030517578,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17.5,
+      "text": "ZOBACZ WSZYSTKIE WPISY"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

@@ -1,0 +1,79 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad667af6a0ff",
+  "name": "Stopka",
+  "type": "rect",
+  "x": 2609.448493029158,
+  "y": 2209.511214845933,
+  "width": 960,
+  "height": 2000,
+  "rotation": 0,
+  "selrect": {
+    "x": 2609.448493029158,
+    "y": 2209.511214845933,
+    "width": 960,
+    "height": 2000,
+    "x1": 2609.448493029158,
+    "y1": 2209.511214845933,
+    "x2": 3569.448493029158,
+    "y2": 4209.511214845933
+  },
+  "points": [
+    {
+      "x": 2609.448493029158,
+      "y": 2209.511214845933
+    },
+    {
+      "x": 3569.448493029158,
+      "y": 2209.511214845933
+    },
+    {
+      "x": 3569.448493029158,
+      "y": 4209.511214845933
+    },
+    {
+      "x": 2609.448493029158,
+      "y": 4209.511214845933
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "frameId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8516e116a75",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#1b1b1b",
+      "fillOpacity": 1
+    }
+  ]
+}

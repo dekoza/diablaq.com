@@ -1,0 +1,150 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad6a4856f960",
+  "name": "TYTU\u0141 NEWSA 2",
+  "type": "text",
+  "x": 2944.3032802827793,
+  "y": 1082.4214077582978,
+  "width": 324,
+  "height": 52,
+  "rotation": 0,
+  "selrect": {
+    "x": 2944.3032802827793,
+    "y": 1082.4214077582978,
+    "width": 324,
+    "height": 52,
+    "x1": 2944.3032802827793,
+    "y1": 1082.4214077582978,
+    "x2": 3268.3032802827793,
+    "y2": 1134.4214077582978
+  },
+  "points": [
+    {
+      "x": 2944.3032802827793,
+      "y": 1082.4214077582978
+    },
+    {
+      "x": 3268.3032802827793,
+      "y": 1082.4214077582978
+    },
+    {
+      "x": 3268.3032802827793,
+      "y": 1134.4214077582978
+    },
+    {
+      "x": 2944.3032802827793,
+      "y": 1134.4214077582978
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad693c89e655",
+  "frameId": "3cecb45f-59f2-8072-8006-ad693c89e655",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "48",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "TYTU\u0141 NEWSA 2"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "1m00h",
+            "fontSize": "48",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a853a9585e02",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2944.3032802827793,
+      "y": 1139.7214108100557,
+      "width": 318.66668701171875,
+      "height": 57,
+      "x1": 0,
+      "y1": 0.3000030517578125,
+      "x2": 318.66668701171875,
+      "y2": 57.30000305175781,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "TYTU\u0141 NEWSA 2"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

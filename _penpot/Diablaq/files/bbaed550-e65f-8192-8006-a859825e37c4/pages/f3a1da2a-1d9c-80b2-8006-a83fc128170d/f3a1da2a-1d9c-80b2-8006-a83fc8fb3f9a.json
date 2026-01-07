@@ -1,0 +1,150 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f9a",
+  "name": "ZAPOWIEDZI",
+  "type": "text",
+  "x": 1215,
+  "y": 1893,
+  "width": 75,
+  "height": 17,
+  "rotation": 0,
+  "selrect": {
+    "x": 1215,
+    "y": 1893,
+    "width": 75,
+    "height": 17,
+    "x1": 1215,
+    "y1": 1893,
+    "x2": 1290,
+    "y2": 1910
+  },
+  "points": [
+    {
+      "x": 1215,
+      "y": 1893
+    },
+    {
+      "x": 1290,
+      "y": 1893
+    },
+    {
+      "x": 1290,
+      "y": 1910
+    },
+    {
+      "x": 1215,
+      "y": 1910
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f89",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f89",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "ZAPOWIEDZI"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "14",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#121212",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a83fc128170d",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": 1909.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "y1": -0.100006103515625,
+      "width": 71.44999694824219,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1215,
+      "x1": 0,
+      "y2": 16.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 71.44999694824219,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17,
+      "text": "ZAPOWIEDZI"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

@@ -1,0 +1,317 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a8560f484e33",
+  "name": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in pharetra elit. Maecenas malesuada volutpat enim, in sagittis turpis luctus et. Sed dolor urna, varius vitae ante et, sagittis ornare lectus. Ut aliquet pellentesque placerat. Fusce fringilla tellus eu turpis bib",
+  "type": "text",
+  "x": 1146.9999999999998,
+  "y": 1185,
+  "width": 874,
+  "height": 114,
+  "rotation": 0,
+  "selrect": {
+    "x": 1146.9999999999998,
+    "y": 1185,
+    "width": 874,
+    "height": 114,
+    "x1": 1146.9999999999998,
+    "y1": 1185,
+    "x2": 2020.9999999999998,
+    "y2": 1299
+  },
+  "points": [
+    {
+      "x": 1146.9999999999998,
+      "y": 1185
+    },
+    {
+      "x": 2020.9999999999998,
+      "y": 1185
+    },
+    {
+      "x": 2020.9999999999998,
+      "y": 1299
+    },
+    {
+      "x": 1146.9999999999998,
+      "y": 1299
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "18",
+                "fontWeight": "700",
+                "textDirection": "ltr",
+                "fontVariantId": "700",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in pharetra elit. Maecenas malesuada volutpat enim, in sagittis turpis luctus et. Sed dolor urna, varius vitae ante et, sagittis ornare lectus. Ut aliquet pellentesque placerat. Fusce fringilla tellus eu turpis bibendum sodales. Nam magna massa, tempus at justo vel, mollis maximus elit. Mauris bibendum ullamcorper lobortis. Sed eu arcu elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam tellus est, bibendum vel egestas ut, dignissim sit amet purus. Donec eget pharetra nisl. "
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "18",
+            "fontWeight": "700",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "700",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "18",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "8cugf",
+            "fontSize": "18",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85570b9b395",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "y": 1206.8000030517578,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "y1": -0.1999969482421875,
+      "width": 873.316650390625,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 21.800003051757812,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 873.316650390625,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in pharetra elit. Maecenas malesuada volutpat enim, in "
+    },
+    {
+      "y": 1228.3999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "y1": 21.399993896484375,
+      "width": 836.2333374023438,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 43.399993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 836.2333374023438,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "sagittis turpis luctus et. Sed dolor urna, varius vitae ante et, sagittis ornare lectus. Ut aliquet pellentesque placerat. "
+    },
+    {
+      "y": 1250,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "y1": 43,
+      "width": 852.8333129882812,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 65,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 852.8333129882812,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "Fusce fringilla tellus eu turpis bibendum sodales. Nam magna massa, tempus at justo vel, mollis maximus elit. Mauris "
+    },
+    {
+      "y": 1271.6000061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "y1": 64.60000610351562,
+      "width": 854.7666625976562,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 86.60000610351562,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 854.7666625976562,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "bibendum ullamcorper lobortis. Sed eu arcu elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per "
+    },
+    {
+      "y": 1293.1999969482422,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "700",
+      "y1": 86.19999694824219,
+      "width": 821.7999877929688,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 108.19999694824219,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 821.7999877929688,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "inceptos himenaeos. Nam tellus est, bibendum vel egestas ut, dignissim sit amet purus. Donec eget pharetra nisl. "
+    },
+    {
+      "y": 1314.8000030517578,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "y1": 107.80000305175781,
+      "width": 4.133331298828125,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1146.9999999999998,
+      "x1": 0,
+      "y2": 129.8000030517578,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 4.133331298828125,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 22,
+      "text": "\u00a0"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

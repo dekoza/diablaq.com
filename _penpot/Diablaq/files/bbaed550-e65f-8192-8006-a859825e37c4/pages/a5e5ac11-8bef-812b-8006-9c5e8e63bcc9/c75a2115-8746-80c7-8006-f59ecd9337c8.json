@@ -1,0 +1,82 @@
+{
+  "id": "c75a2115-8746-80c7-8006-f59ecd9337c8",
+  "name": "Lunatyk_na_strone",
+  "type": "rect",
+  "x": -5039,
+  "y": -1775,
+  "width": 423,
+  "height": 509,
+  "rotation": 0,
+  "selrect": {
+    "x": -5039,
+    "y": -1775,
+    "width": 423,
+    "height": 509,
+    "x1": -5039,
+    "y1": -1775,
+    "x2": -4616,
+    "y2": -1266
+  },
+  "points": [
+    {
+      "x": -5039,
+      "y": -1775
+    },
+    {
+      "x": -4616,
+      "y": -1775
+    },
+    {
+      "x": -4616,
+      "y": -1266
+    },
+    {
+      "x": -5039,
+      "y": -1266
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "r2": 0,
+  "layoutItemHSizing": "fix",
+  "proportionLock": true,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 0.8333333333333334,
+  "r4": 0,
+  "fills": [
+    {
+      "fillOpacity": 1,
+      "fillImage": {
+        "width": 750,
+        "height": 900,
+        "mtype": "image\/png",
+        "id": "794377fd-803b-81c8-8006-f59ecd7a3f19",
+        "keepAspectRatio": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "id": "e4d1cffe-dcd0-80f8-8006-a7dd1bfeb23d",
+  "name": "ZAPISZ SI\u0118 I ZDOB\u0104D\u0179 DOST\u0118P DO EKSKLUZYWNEJ ZAWARTO\u015aCI, WCZE\u015aNIEJSZYCH ZAPOWIEDZI I SPECJALNYCH ZNI\u017bEK DO STREFY KOMIKSU!",
+  "type": "text",
+  "x": -5468,
+  "y": -1521,
+  "width": 311,
+  "height": 57,
+  "rotation": 0,
+  "selrect": {
+    "x": -5468,
+    "y": -1521,
+    "width": 311,
+    "height": 57,
+    "x1": -5468,
+    "y1": -1521,
+    "x2": -5157,
+    "y2": -1464
+  },
+  "points": [
+    {
+      "x": -5468,
+      "y": -1521
+    },
+    {
+      "x": -5157,
+      "y": -1521
+    },
+    {
+      "x": -5157,
+      "y": -1464
+    },
+    {
+      "x": -5468,
+      "y": -1464
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "14",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#121212",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "ZAPISZ SI\u0118 I ZDOB\u0104D\u0179 DOST\u0118P DO EKSKLUZYWNEJ ZAWARTO\u015aCI, WCZE\u015aNIEJSZYCH ZAPOWIEDZI I SPECJALNYCH ZNI\u017bEK DO STREFY KOMIKSU!"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#121212",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": -1503.8500061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "y1": -0.350006103515625,
+      "width": 296.566650390625,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5468,
+      "x1": 0,
+      "y2": 17.149993896484375,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 296.566650390625,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17.5,
+      "text": "ZAPISZ SI\u0118 I ZDOB\u0104D\u0179 DOST\u0118P DO EKSKLUZYWNEJ "
+    },
+    {
+      "y": -1487.0500030517578,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "y1": 16.449996948242188,
+      "width": 273.33331298828125,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5468,
+      "x1": 0,
+      "y2": 33.94999694824219,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 273.33331298828125,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17.5,
+      "text": "ZAWARTO\u015aCI, WCZE\u015aNIEJSZYCH ZAPOWIEDZI I "
+    },
+    {
+      "y": -1470.25,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "y1": 33.25,
+      "width": 256.0333251953125,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5468,
+      "x1": 0,
+      "y2": 50.75,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 256.0333251953125,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17.5,
+      "text": "SPECJALNYCH ZNI\u017bEK DO STREFY KOMIKSU!"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

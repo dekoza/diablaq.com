@@ -1,0 +1,139 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad14df48326b",
+  "name": "O komiksie MOBILE",
+  "type": "frame",
+  "x": 2477,
+  "y": 308,
+  "width": 960,
+  "height": 6398,
+  "rotation": 0,
+  "selrect": {
+    "x": 2477,
+    "y": 308,
+    "width": 960,
+    "height": 6398,
+    "x1": 2477,
+    "y1": 308,
+    "x2": 3437,
+    "y2": 6706
+  },
+  "points": [
+    {
+      "x": 2477,
+      "y": 308
+    },
+    {
+      "x": 3437,
+      "y": 308
+    },
+    {
+      "x": 3437,
+      "y": 6706
+    },
+    {
+      "x": 2477,
+      "y": 6706
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "blendMode": "normal",
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a83fc128170d",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "grids": [
+    {
+      "type": "column",
+      "params": {
+        "size": null,
+        "type": "stretch",
+        "itemLength": 119.33333333333333,
+        "gutter": 8,
+        "margin": 200,
+        "color": {
+          "color": "#DE4762",
+          "opacity": 0.1
+        }
+      },
+      "display": false
+    }
+  ],
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0a0a0a",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "3cecb45f-59f2-8072-8006-ad14df483270",
+    "3cecb45f-59f2-8072-8006-ad14df483271",
+    "3cecb45f-59f2-8072-8006-ad14df483294",
+    "3cecb45f-59f2-8072-8006-ad14df483272",
+    "3cecb45f-59f2-8072-8006-ad14df483273",
+    "3cecb45f-59f2-8072-8006-ad14df483279",
+    "3cecb45f-59f2-8072-8006-ad14df48327a",
+    "3cecb45f-59f2-8072-8006-ad14df48327b",
+    "3cecb45f-59f2-8072-8006-ad14df48327c",
+    "3cecb45f-59f2-8072-8006-ad14df48327d",
+    "3cecb45f-59f2-8072-8006-ad14df48327e",
+    "3cecb45f-59f2-8072-8006-ad14df483282",
+    "3cecb45f-59f2-8072-8006-ad14df483283",
+    "3cecb45f-59f2-8072-8006-ad14df483284",
+    "3cecb45f-59f2-8072-8006-ad14df48327f",
+    "3cecb45f-59f2-8072-8006-ad14df483280",
+    "3cecb45f-59f2-8072-8006-ad14df483281",
+    "3cecb45f-59f2-8072-8006-ad14df483285",
+    "3cecb45f-59f2-8072-8006-ad15e358bb3d",
+    "3cecb45f-59f2-8072-8006-ad14df483286",
+    "3cecb45f-59f2-8072-8006-ad14df483287",
+    "3cecb45f-59f2-8072-8006-ad1a5bd584e1",
+    "3cecb45f-59f2-8072-8006-ad15e358bb3e",
+    "3cecb45f-59f2-8072-8006-ad15e358bb3f",
+    "3cecb45f-59f2-8072-8006-ad15e358bb40",
+    "3cecb45f-59f2-8072-8006-ad14df483288",
+    "3cecb45f-59f2-8072-8006-ad14df483289",
+    "3cecb45f-59f2-8072-8006-ad156f780eaa",
+    "3cecb45f-59f2-8072-8006-ad14df483290",
+    "b42da105-0f30-80fa-8006-f26591c28ba7",
+    "3cecb45f-59f2-8072-8006-ad14df483291",
+    "3cecb45f-59f2-8072-8006-ad14df483293",
+    "3cecb45f-59f2-8072-8006-ad1abb0ce671",
+    "3cecb45f-59f2-8072-8006-ad1abb0ce672",
+    "3cecb45f-59f2-8072-8006-ad1abb0ce66f",
+    "3cecb45f-59f2-8072-8006-ad1abb0ce670",
+    "3cecb45f-59f2-8072-8006-ad15b2327356",
+    "3cecb45f-59f2-8072-8006-ad15b2327357",
+    "3cecb45f-59f2-8072-8006-ad1a9bc6544f",
+    "3cecb45f-59f2-8072-8006-ad1a9bc6544e",
+    "3cecb45f-59f2-8072-8006-ad1a9bc6544d",
+    "3cecb45f-59f2-8072-8006-ad15b2327355",
+    "3cecb45f-59f2-8072-8006-ad167df029cb"
+  ]
+}

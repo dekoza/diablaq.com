@@ -1,0 +1,147 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a84ee4f39125",
+  "name": "LISTOPAD 2025",
+  "type": "text",
+  "x": 828.0000000000001,
+  "y": 633,
+  "width": 167.0000000000001,
+  "height": 29,
+  "rotation": 0,
+  "selrect": {
+    "x": 828.0000000000001,
+    "y": 633,
+    "width": 167.0000000000001,
+    "height": 29,
+    "x1": 828.0000000000001,
+    "y1": 633,
+    "x2": 995.0000000000002,
+    "y2": 662
+  },
+  "points": [
+    {
+      "x": 828,
+      "y": 633
+    },
+    {
+      "x": 995,
+      "y": 633
+    },
+    {
+      "x": 995,
+      "y": 662
+    },
+    {
+      "x": 828,
+      "y": 662
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a84e98eee46d",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a84e98eee46d",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "24",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "LISTOPAD 2025"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "24",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a84e8d2d6cb3",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "y": 661.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "y1": -0.100006103515625,
+      "width": 150.93333435058594,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 828.0000000000001,
+      "x1": 0,
+      "y2": 28.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 150.93333435058594,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 29,
+      "text": "LISTOPAD 2025"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

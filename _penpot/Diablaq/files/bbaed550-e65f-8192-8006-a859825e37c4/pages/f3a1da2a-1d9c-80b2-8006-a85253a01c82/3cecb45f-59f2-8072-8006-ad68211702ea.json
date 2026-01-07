@@ -1,0 +1,149 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad68211702ea",
+  "name": "OFERTA",
+  "type": "text",
+  "x": 2900,
+  "y": 2559.5,
+  "width": 120,
+  "height": 44,
+  "rotation": 0,
+  "selrect": {
+    "x": 2900,
+    "y": 2559.5,
+    "width": 120,
+    "height": 44,
+    "x1": 2900,
+    "y1": 2559.5,
+    "x2": 3020,
+    "y2": 2603.5
+  },
+  "points": [
+    {
+      "x": 2900,
+      "y": 2559.5
+    },
+    {
+      "x": 3020,
+      "y": 2559.5
+    },
+    {
+      "x": 3020,
+      "y": 2603.5
+    },
+    {
+      "x": 2900,
+      "y": 2603.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad68211702d9",
+  "frameId": "3cecb45f-59f2-8072-8006-ad68211702d9",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "OFERTA"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "36",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85253a01c82",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2900,
+      "y": 2602.6000061035156,
+      "width": 114.06666564941406,
+      "height": 43,
+      "x1": 0,
+      "y1": 0.100006103515625,
+      "x2": 114.06666564941406,
+      "y2": 43.100006103515625,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "OFERTA"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

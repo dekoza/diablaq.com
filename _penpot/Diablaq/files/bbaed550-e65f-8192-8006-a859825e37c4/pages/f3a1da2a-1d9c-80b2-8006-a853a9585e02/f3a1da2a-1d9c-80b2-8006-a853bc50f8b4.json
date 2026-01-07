@@ -1,0 +1,148 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a853bc50f8b4",
+  "name": "TYTU\u0141 NEWSA 2",
+  "type": "text",
+  "x": 1143,
+  "y": 694,
+  "width": 200,
+  "height": 33,
+  "rotation": 0,
+  "selrect": {
+    "x": 1143,
+    "y": 694,
+    "width": 200,
+    "height": 33,
+    "x1": 1143,
+    "y1": 694,
+    "x2": 1343,
+    "y2": 727
+  },
+  "points": [
+    {
+      "x": 1143,
+      "y": 694
+    },
+    {
+      "x": 1343,
+      "y": 694
+    },
+    {
+      "x": 1343,
+      "y": 727
+    },
+    {
+      "x": 1143,
+      "y": 727
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "14",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "TYTU\u0141 NEWSA 2"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "1m00h",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a853a9585e02",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": 710.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "y1": -0.100006103515625,
+      "width": 92.94999694824219,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1143,
+      "x1": 0,
+      "y2": 16.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 92.94999694824219,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 17,
+      "text": "TYTU\u0141 NEWSA 2"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

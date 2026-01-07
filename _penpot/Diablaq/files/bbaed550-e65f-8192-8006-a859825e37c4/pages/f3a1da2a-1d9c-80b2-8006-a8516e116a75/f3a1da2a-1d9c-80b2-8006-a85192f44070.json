@@ -1,0 +1,149 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a85192f44070",
+  "name": "BLOG",
+  "type": "text",
+  "x": 1549,
+  "y": 417,
+  "width": 45,
+  "height": 24,
+  "rotation": 0,
+  "selrect": {
+    "x": 1549,
+    "y": 417,
+    "width": 45,
+    "height": 24,
+    "x1": 1549,
+    "y1": 417,
+    "x2": 1594,
+    "y2": 441
+  },
+  "points": [
+    {
+      "x": 1549,
+      "y": 417
+    },
+    {
+      "x": 1594,
+      "y": 417
+    },
+    {
+      "x": 1594,
+      "y": 441
+    },
+    {
+      "x": 1549,
+      "y": 441
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a85192f4406a",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a85192f4406a",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "20",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "BLOG"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fn8ng",
+            "fontSize": "20",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8516e116a75",
+  "layoutItemVSizing": "fix",
+  "hidden": false,
+  "positionData": [
+    {
+      "y": 441,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "20px",
+      "fontWeight": "600",
+      "y1": 0,
+      "width": 43.866668701171875,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1549,
+      "x1": 0,
+      "y2": 24,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 43.866668701171875,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 24,
+      "text": "BLOG"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

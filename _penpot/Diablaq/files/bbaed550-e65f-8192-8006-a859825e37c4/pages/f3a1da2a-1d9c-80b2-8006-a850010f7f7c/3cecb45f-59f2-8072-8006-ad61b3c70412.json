@@ -1,0 +1,149 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad61b3c70412",
+  "name": "PRZYK\u0141ADOWE PLANSZE",
+  "type": "text",
+  "x": 2615,
+  "y": 1718,
+  "width": 494.00000000000045,
+  "height": 81,
+  "rotation": 0,
+  "selrect": {
+    "x": 2615,
+    "y": 1718,
+    "width": 494.00000000000045,
+    "height": 81,
+    "x1": 2615,
+    "y1": 1718,
+    "x2": 3109.0000000000005,
+    "y2": 1799
+  },
+  "points": [
+    {
+      "x": 2615,
+      "y": 1718
+    },
+    {
+      "x": 3109.0000000000005,
+      "y": 1718
+    },
+    {
+      "x": 3109.0000000000005,
+      "y": 1799
+    },
+    {
+      "x": 2615,
+      "y": 1799
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "frameId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "48",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "PRZYK\u0141ADOWE PLANSZE"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "48",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2615,
+      "y": 1775.3000030517578,
+      "width": 493.1333312988281,
+      "height": 57,
+      "x1": 0,
+      "y1": 0.3000030517578125,
+      "x2": 493.1333312988281,
+      "y2": 57.30000305175781,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "PRZYK\u0141ADOWE PLANSZE"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

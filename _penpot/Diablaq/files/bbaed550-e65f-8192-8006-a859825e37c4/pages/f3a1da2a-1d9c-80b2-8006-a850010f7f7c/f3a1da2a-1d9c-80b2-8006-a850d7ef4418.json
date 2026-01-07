@@ -1,0 +1,79 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a850d7ef4418",
+  "name": "Sekcja o komiksie",
+  "type": "rect",
+  "x": 880,
+  "y": 2747,
+  "width": 960,
+  "height": 793,
+  "rotation": 0,
+  "selrect": {
+    "x": 880,
+    "y": 2747,
+    "width": 960,
+    "height": 793,
+    "x1": 880,
+    "y1": 2747,
+    "x2": 1840,
+    "y2": 3540
+  },
+  "points": [
+    {
+      "x": 880,
+      "y": 2747
+    },
+    {
+      "x": 1840,
+      "y": 2747
+    },
+    {
+      "x": 1840,
+      "y": 3540
+    },
+    {
+      "x": 880,
+      "y": 3540
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd5",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd5",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#1b1b1b",
+      "fillOpacity": 1
+    }
+  ]
+}

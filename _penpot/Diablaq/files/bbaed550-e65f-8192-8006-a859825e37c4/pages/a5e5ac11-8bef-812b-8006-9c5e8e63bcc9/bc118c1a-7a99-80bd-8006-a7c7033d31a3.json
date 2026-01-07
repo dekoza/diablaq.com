@@ -1,0 +1,149 @@
+{
+  "id": "bc118c1a-7a99-80bd-8006-a7c7033d31a3",
+  "name": "11.09.2001",
+  "type": "text",
+  "x": -5016,
+  "y": -1847,
+  "width": 165,
+  "height": 12,
+  "rotation": 0,
+  "selrect": {
+    "x": -5016,
+    "y": -1847,
+    "width": 165,
+    "height": 12,
+    "x1": -5016,
+    "y1": -1847,
+    "x2": -4851,
+    "y2": -1835
+  },
+  "points": [
+    {
+      "x": -5016,
+      "y": -1847
+    },
+    {
+      "x": -4851,
+      "y": -1847
+    },
+    {
+      "x": -4851,
+      "y": -1835
+    },
+    {
+      "x": -5016,
+      "y": -1835
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "lastResizeDirection": "vertical",
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "10",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "11.09.2001"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "arklp",
+            "fontSize": "10",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": -1834.75,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "10px",
+      "fontWeight": "400",
+      "y1": -0.25,
+      "width": 44.73333740234375,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": -5016,
+      "x1": 0,
+      "y2": 12.25,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 44.73333740234375,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 12.5,
+      "text": "11.09.2001"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

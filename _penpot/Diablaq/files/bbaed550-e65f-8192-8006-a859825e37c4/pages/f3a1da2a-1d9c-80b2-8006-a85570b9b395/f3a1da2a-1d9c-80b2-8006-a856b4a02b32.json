@@ -1,0 +1,148 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a856b4a02b32",
+  "name": "NAG\u0141\u00d3WEK H2",
+  "type": "text",
+  "x": 1147,
+  "y": 1561,
+  "width": 165,
+  "height": 29,
+  "rotation": 0,
+  "selrect": {
+    "x": 1147,
+    "y": 1561,
+    "width": 165,
+    "height": 29,
+    "x1": 1147,
+    "y1": 1561,
+    "x2": 1312,
+    "y2": 1590
+  },
+  "points": [
+    {
+      "x": 1147,
+      "y": 1561
+    },
+    {
+      "x": 1312,
+      "y": 1561
+    },
+    {
+      "x": 1312,
+      "y": 1590
+    },
+    {
+      "x": 1147,
+      "y": 1590
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "24",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "NAG\u0141\u00d3WEK H2"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "24",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85570b9b395",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": 1589.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "y1": -0.100006103515625,
+      "width": 144.73333740234375,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1147,
+      "x1": 0,
+      "y2": 28.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 144.73333740234375,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 29,
+      "text": "NAG\u0141\u00d3WEK H2"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

@@ -1,0 +1,77 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a855bf943d2b",
+  "name": "tiktok",
+  "type": "group",
+  "x": 1961,
+  "y": 422,
+  "width": 32.40899999999965,
+  "height": 32.409000000000106,
+  "rotation": 0,
+  "selrect": {
+    "x": 1961,
+    "y": 422,
+    "width": 32.40899999999965,
+    "height": 32.409000000000106,
+    "x1": 1961,
+    "y1": 422,
+    "x2": 1993.4089999999997,
+    "y2": 454.4090000000001
+  },
+  "points": [
+    {
+      "x": 1961,
+      "y": 422
+    },
+    {
+      "x": 1993.4089999999997,
+      "y": 422
+    },
+    {
+      "x": 1993.4089999999997,
+      "y": 454.4090000000001
+    },
+    {
+      "x": 1961,
+      "y": 454.4090000000001
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a855bf943cf0",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "xmlSpace": "preserve",
+    "width": "810.229",
+    "height": "810.229",
+    "version": "1.1",
+    "id": "svg1"
+  },
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85570b9b395",
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d39",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d3a",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d3b",
+    "f3a1da2a-1d9c-80b2-8006-a855bf943d3c"
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "id": "e4d1cffe-dcd0-80f8-8006-a7dc5f7a41ca",
+  "name": "DO\u0141\u0104CZ DO DIABELNEGO NEWSLETTERA",
+  "type": "text",
+  "x": -5470,
+  "y": -1714,
+  "width": 428,
+  "height": 118,
+  "rotation": 0,
+  "selrect": {
+    "x": -5470,
+    "y": -1714,
+    "width": 428,
+    "height": 118,
+    "x1": -5470,
+    "y1": -1714,
+    "x2": -5042,
+    "y2": -1596
+  },
+  "points": [
+    {
+      "x": -5470,
+      "y": -1714
+    },
+    {
+      "x": -5042,
+      "y": -1714
+    },
+    {
+      "x": -5042,
+      "y": -1596
+    },
+    {
+      "x": -5470,
+      "y": -1596
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "48",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#121212",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "DO\u0141\u0104CZ DO DIABELNEGO NEWSLETTERA"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "48",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#121212",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "y": -1656.4499969482422,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "y1": 0.0500030517578125,
+      "width": 239.0500030517578,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5470,
+      "x1": 0,
+      "y2": 57.55000305175781,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 239.0500030517578,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 57.5,
+      "text": "DO\u0141\u0104CZ DO "
+    },
+    {
+      "y": -1598.8500061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "y1": 57.649993896484375,
+      "width": 263.3500061035156,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5470,
+      "x1": 0,
+      "y2": 115.14999389648438,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 263.3500061035156,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 57.5,
+      "text": "DIABELNEGO "
+    },
+    {
+      "y": -1541.25,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "y1": 115.25,
+      "width": 292.23333740234375,
+      "textDecoration": "rgb(18, 18, 18)",
+      "letterSpacing": "normal",
+      "x": -5470,
+      "x1": 0,
+      "y2": 172.75,
+      "fills": [
+        {
+          "fillColor": "#121212",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 292.23333740234375,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 57.5,
+      "text": "NEWSLETTERA"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

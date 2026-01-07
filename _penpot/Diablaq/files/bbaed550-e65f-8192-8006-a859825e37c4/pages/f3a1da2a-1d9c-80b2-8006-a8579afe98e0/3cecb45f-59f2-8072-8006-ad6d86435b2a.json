@@ -1,0 +1,149 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad6d86435b2a",
+  "name": "PUBLIKACJE",
+  "type": "text",
+  "x": 2413,
+  "y": 549,
+  "width": 372,
+  "height": 81,
+  "rotation": 0,
+  "selrect": {
+    "x": 2413,
+    "y": 549,
+    "width": 372,
+    "height": 81,
+    "x1": 2413,
+    "y1": 549,
+    "x2": 2785,
+    "y2": 630
+  },
+  "points": [
+    {
+      "x": 2413,
+      "y": 549
+    },
+    {
+      "x": 2785,
+      "y": 549
+    },
+    {
+      "x": 2785,
+      "y": 630
+    },
+    {
+      "x": 2413,
+      "y": 630
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad6d86435b11",
+  "frameId": "3cecb45f-59f2-8072-8006-ad6d86435b11",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "72",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "PUBLIKACJE"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "72",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8579afe98e0",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2413,
+      "y": 634.6999969482422,
+      "width": 368.6333312988281,
+      "height": 85,
+      "x1": 0,
+      "y1": 0.6999969482421875,
+      "x2": 368.6333312988281,
+      "y2": 85.69999694824219,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "72px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "PUBLIKACJE"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

@@ -1,0 +1,79 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad68211702de",
+  "name": "tiktok",
+  "type": "group",
+  "x": 3052,
+  "y": 3652.5,
+  "width": 91.99999999999818,
+  "height": 92,
+  "rotation": 0,
+  "selrect": {
+    "x": 3052,
+    "y": 3652.5,
+    "width": 91.99999999999818,
+    "height": 92,
+    "x1": 3052,
+    "y1": 3652.5,
+    "x2": 3143.999999999998,
+    "y2": 3744.5
+  },
+  "points": [
+    {
+      "x": 3052,
+      "y": 3652.5
+    },
+    {
+      "x": 3143.999999999998,
+      "y": 3652.5
+    },
+    {
+      "x": 3143.999999999998,
+      "y": 3744.4999999999964
+    },
+    {
+      "x": 3052,
+      "y": 3744.4999999999964
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad68211702d9",
+  "frameId": "3cecb45f-59f2-8072-8006-ad68211702d9",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "xmlSpace": "preserve",
+    "width": "810.229",
+    "height": "810.229",
+    "version": "1.1",
+    "id": "svg1"
+  },
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85253a01c82",
+  "layoutItemVSizing": "fix",
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "3cecb45f-59f2-8072-8006-ad6821170304",
+    "3cecb45f-59f2-8072-8006-ad6821170305",
+    "3cecb45f-59f2-8072-8006-ad6821170306",
+    "3cecb45f-59f2-8072-8006-ad6821170307"
+  ]
+}

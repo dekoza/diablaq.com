@@ -1,0 +1,161 @@
+{
+  "id": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "name": "Strona g\u0142\u00f3wna DESKTOP",
+  "type": "frame",
+  "x": -5991,
+  "y": -3799,
+  "width": 1920,
+  "height": 2699.9999999999995,
+  "rotation": 0,
+  "selrect": {
+    "x": -5991,
+    "y": -3799,
+    "width": 1920,
+    "height": 2699.9999999999995,
+    "x1": -5991,
+    "y1": -3799,
+    "x2": -4071,
+    "y2": -1099.0000000000005
+  },
+  "points": [
+    {
+      "x": -5991,
+      "y": -3799
+    },
+    {
+      "x": -4071,
+      "y": -3799
+    },
+    {
+      "x": -4071,
+      "y": -1099.0000000000005
+    },
+    {
+      "x": -5991,
+      "y": -1099.0000000000005
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "blendMode": "normal",
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "grids": [
+    {
+      "type": "column",
+      "params": {
+        "size": null,
+        "type": "stretch",
+        "itemLength": 119.33333333333333,
+        "gutter": 8,
+        "margin": 200,
+        "color": {
+          "color": "#DE4762",
+          "opacity": 0.1
+        }
+      },
+      "display": false
+    }
+  ],
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0a0a0a",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "bc118c1a-7a99-80bd-8006-a7bff598a9c0",
+    "c75a2115-8746-80c7-8006-f59ecd9337c8",
+    "bc118c1a-7a99-80bd-8006-a7c048d10eab",
+    "e4d1cffe-dcd0-80f8-8006-a7dc5f7a41ca",
+    "e4d1cffe-dcd0-80f8-8006-a7dd1bfeb23d",
+    "e4d1cffe-dcd0-80f8-8006-a7e21032b76d",
+    "e4d1cffe-dcd0-80f8-8006-a7e2d9ca4753",
+    "e4d1cffe-dcd0-80f8-8006-a7e378717242",
+    "e4d1cffe-dcd0-80f8-8006-a7e38a15b537",
+    "e4d1cffe-dcd0-80f8-8006-a7e4037371c5",
+    "e4d1cffe-dcd0-80f8-8006-a7e4128761eb",
+    "e4d1cffe-dcd0-80f8-8006-a7e2fb29902f",
+    "e4d1cffe-dcd0-80f8-8006-a7e352329868",
+    "e4d1cffe-dcd0-80f8-8006-a7e28cb29d08",
+    "e4d1cffe-dcd0-80f8-8006-a7e3418a7f8e",
+    "e4d1cffe-dcd0-80f8-8006-a7e3cca28090",
+    "e4d1cffe-dcd0-80f8-8006-a7e22e95b225",
+    "e4d1cffe-dcd0-80f8-8006-a7e245b58f4c",
+    "e4d1cffe-dcd0-80f8-8006-a7e2615c9107",
+    "bc118c1a-7a99-80bd-8006-a7c10d1604b2",
+    "bc118c1a-7a99-80bd-8006-a7c5c48d7a2e",
+    "bc118c1a-7a99-80bd-8006-a7c5f9efd2ec",
+    "bc118c1a-7a99-80bd-8006-a7c60d4c8487",
+    "bc118c1a-7a99-80bd-8006-a7c617b08e45",
+    "bc118c1a-7a99-80bd-8006-a7c6bf6cbcb1",
+    "bc118c1a-7a99-80bd-8006-a7c6eea3a35a",
+    "bc118c1a-7a99-80bd-8006-a7c7033d31a3",
+    "bc118c1a-7a99-80bd-8006-a7c711a481ee",
+    "bc118c1a-7a99-80bd-8006-a7c4c769b37a",
+    "bc118c1a-7a99-80bd-8006-a7c4eaa56c96",
+    "bc118c1a-7a99-80bd-8006-a7c4ed299160",
+    "bc118c1a-7a99-80bd-8006-a7c4efe165e3",
+    "bc118c1a-7a99-80bd-8006-a7c10d1604b3",
+    "bc118c1a-7a99-80bd-8006-a7c1976df08b",
+    "8641257f-6f63-8081-8006-a5dd5650f831",
+    "bc118c1a-7a99-80bd-8006-a7c2d41a21d4",
+    "bc118c1a-7a99-80bd-8006-a7c3a963e624",
+    "bc118c1a-7a99-80bd-8006-a7c3abf68ec5",
+    "bc118c1a-7a99-80bd-8006-a7c3b08cf6e9",
+    "bc118c1a-7a99-80bd-8006-a7c0a867924d",
+    "bc118c1a-7a99-80bd-8006-a7c15e27d1c9",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cd9",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cda",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cdb",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cdc",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cdd",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cde",
+    "f3a1da2a-1d9c-80b2-8006-a8178af45cdf",
+    "8641257f-6f63-8081-8006-a586c8ee3752",
+    "8641257f-6f63-8081-8006-a56926561a6e",
+    "8641257f-6f63-8081-8006-a567fee71004",
+    "8641257f-6f63-8081-8006-a5d6f0ae29b3",
+    "f3a1da2a-1d9c-80b2-8006-a8136a9a6c4e",
+    "8641257f-6f63-8081-8006-a5d84e9a0fcc",
+    "8641257f-6f63-8081-8006-a5d8641f1c80",
+    "8641257f-6f63-8081-8006-a5d877b9dfc6",
+    "8641257f-6f63-8081-8006-a5d8b2edde4c",
+    "e4d1cffe-dcd0-80f8-8006-a7da8fb02500",
+    "e4d1cffe-dcd0-80f8-8006-a7dab5ba0769",
+    "e4d1cffe-dcd0-80f8-8006-a7db7a299fa6",
+    "e4d1cffe-dcd0-80f8-8006-a7de1f1f42b2",
+    "e4d1cffe-dcd0-80f8-8006-a7de441adba0",
+    "e4d1cffe-dcd0-80f8-8006-a7e1ac13871d"
+  ]
+}

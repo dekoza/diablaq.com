@@ -1,0 +1,79 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a853bc50f8b2",
+  "name": "Sekcja Newsy",
+  "type": "rect",
+  "x": 876,
+  "y": 421,
+  "width": 960,
+  "height": 900,
+  "rotation": 0,
+  "selrect": {
+    "x": 876,
+    "y": 421,
+    "width": 960,
+    "height": 900,
+    "x1": 876,
+    "y1": 421,
+    "x2": 1836,
+    "y2": 1321
+  },
+  "points": [
+    {
+      "x": 876,
+      "y": 421
+    },
+    {
+      "x": 1836,
+      "y": 421
+    },
+    {
+      "x": 1836,
+      "y": 1321
+    },
+    {
+      "x": 876,
+      "y": 1321
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a853bc50f89f",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a853a9585e02",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#1b1b1b",
+      "fillOpacity": 1
+    }
+  ]
+}

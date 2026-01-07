@@ -1,0 +1,147 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a850d7ef441f",
+  "name": "PRZYK\u0141ADOWE PLANSZE",
+  "type": "text",
+  "x": 932,
+  "y": 3337,
+  "width": 258,
+  "height": 29,
+  "rotation": 0,
+  "selrect": {
+    "x": 932,
+    "y": 3337,
+    "width": 258,
+    "height": 29,
+    "x1": 932,
+    "y1": 3337,
+    "x2": 1190,
+    "y2": 3366
+  },
+  "points": [
+    {
+      "x": 932,
+      "y": 3337
+    },
+    {
+      "x": 1190,
+      "y": 3337
+    },
+    {
+      "x": 1190,
+      "y": 3366
+    },
+    {
+      "x": 932,
+      "y": 3366
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd5",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd5",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "24",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "PRZYK\u0141ADOWE PLANSZE"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "24",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "y": 3365.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "y1": -0.100006103515625,
+      "width": 246.60000610351562,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 932,
+      "x1": 0,
+      "y2": 28.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 246.60000610351562,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 29,
+      "text": "PRZYK\u0141ADOWE PLANSZE"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

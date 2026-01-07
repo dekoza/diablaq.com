@@ -1,0 +1,147 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a852ae006ca2",
+  "name": "MASZ DODATKOWE PYTANIA?",
+  "type": "text",
+  "x": 1538,
+  "y": 666,
+  "width": 303,
+  "height": 29,
+  "rotation": 0,
+  "selrect": {
+    "x": 1538,
+    "y": 666,
+    "width": 303,
+    "height": 29,
+    "x1": 1538,
+    "y1": 666,
+    "x2": 1841,
+    "y2": 695
+  },
+  "points": [
+    {
+      "x": 1538,
+      "y": 666
+    },
+    {
+      "x": 1841,
+      "y": 666
+    },
+    {
+      "x": 1841,
+      "y": 695
+    },
+    {
+      "x": 1538,
+      "y": 695
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a852615207f5",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a852615207f5",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "24",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "MASZ DODATKOWE PYTANIA?"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "24",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85253a01c82",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "y": 694.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "y1": -0.100006103515625,
+      "width": 291.2833251953125,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1538,
+      "x1": 0,
+      "y2": 28.899993896484375,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 291.2833251953125,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 29,
+      "text": "MASZ DODATKOWE PYTANIA?"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

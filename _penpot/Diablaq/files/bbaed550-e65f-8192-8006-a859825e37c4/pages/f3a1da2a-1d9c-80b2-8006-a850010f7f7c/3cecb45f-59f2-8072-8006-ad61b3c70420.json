@@ -1,0 +1,81 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad61b3c70420",
+  "name": "BUY_button",
+  "type": "rect",
+  "x": 2500,
+  "y": 3150,
+  "width": 725,
+  "height": 348.9999999999991,
+  "rotation": 0,
+  "selrect": {
+    "x": 2500,
+    "y": 3150,
+    "width": 725,
+    "height": 348.9999999999991,
+    "x1": 2500,
+    "y1": 3150,
+    "x2": 3225,
+    "y2": 3498.999999999999
+  },
+  "points": [
+    {
+      "x": 2500,
+      "y": 3150
+    },
+    {
+      "x": 3225,
+      "y": 3150
+    },
+    {
+      "x": 3225,
+      "y": 3498.999999999999
+    },
+    {
+      "x": 2500,
+      "y": 3498.999999999999
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "frameId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "flipX": null,
+  "flipY": null,
+  "r2": 0,
+  "proportionLock": true,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 2.0733333333333333,
+  "r4": 0,
+  "fills": [
+    {
+      "fillImage": {
+        "mtype": "image\/png",
+        "name": "BUY_button",
+        "keepAspectRatio": true,
+        "width": 311,
+        "id": "bbaed550-e65f-8192-8006-a859825f528b",
+        "height": 150
+      },
+      "fillOpacity": 1
+    }
+  ]
+}

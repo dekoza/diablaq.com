@@ -1,0 +1,147 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a81d852f3d2f",
+  "name": "ZAPISUJE SI\u0118",
+  "type": "text",
+  "x": -3616.0000000000005,
+  "y": 2353,
+  "width": 293,
+  "height": 59,
+  "rotation": 0,
+  "selrect": {
+    "x": -3616.0000000000005,
+    "y": 2353,
+    "width": 293,
+    "height": 59,
+    "x1": -3616.0000000000005,
+    "y1": 2353,
+    "x2": -3323.0000000000005,
+    "y2": 2412
+  },
+  "points": [
+    {
+      "x": -3616.0000000000005,
+      "y": 2353
+    },
+    {
+      "x": -3323.0000000000005,
+      "y": 2353
+    },
+    {
+      "x": -3323.0000000000005,
+      "y": 2412
+    },
+    {
+      "x": -3616.0000000000005,
+      "y": 2412
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "48",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "ZAPISUJE SI\u0118"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "3p9fs",
+            "fontSize": "48",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "x": -3616.0000000000005,
+      "y": 2410.300003051758,
+      "width": 267.16668701171875,
+      "height": 57,
+      "x1": 0,
+      "y1": 0.3000030517578125,
+      "x2": 267.16668701171875,
+      "y2": 57.30000305175781,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "ZAPISUJE SI\u0118"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

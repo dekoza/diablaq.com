@@ -1,0 +1,84 @@
+{
+  "id": "8641257f-6f63-8081-8006-a567fee71004",
+  "name": "Logo",
+  "type": "rect",
+  "x": -5509,
+  "y": -3799,
+  "width": 51.99999999999909,
+  "height": 60,
+  "rotation": 0,
+  "selrect": {
+    "x": -5509,
+    "y": -3799,
+    "width": 51.99999999999909,
+    "height": 60,
+    "x1": -5509,
+    "y1": -3799,
+    "x2": -5457.000000000001,
+    "y2": -3739
+  },
+  "points": [
+    {
+      "x": -5509,
+      "y": -3799
+    },
+    {
+      "x": -5457.000000000001,
+      "y": -3799
+    },
+    {
+      "x": -5457.000000000001,
+      "y": -3739
+    },
+    {
+      "x": -5509,
+      "y": -3739
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "r2": 0,
+  "layoutItemHSizing": "fix",
+  "proportionLock": true,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 0.8955223880597015,
+  "r4": 0,
+  "fills": [
+    {
+      "fillImage": {
+        "mtype": "image\/png",
+        "name": "obraz",
+        "keepAspectRatio": true,
+        "width": 120,
+        "id": "bbaed550-e65f-8192-8006-a859825f528a",
+        "height": 134
+      },
+      "fillOpacity": 1
+    }
+  ]
+}

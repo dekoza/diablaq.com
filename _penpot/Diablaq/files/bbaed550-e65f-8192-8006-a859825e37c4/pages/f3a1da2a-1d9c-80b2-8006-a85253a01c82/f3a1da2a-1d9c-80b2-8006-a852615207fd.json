@@ -1,0 +1,147 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a852615207fd",
+  "name": "KONTAKT",
+  "type": "text",
+  "x": 1623,
+  "y": 484,
+  "width": 79,
+  "height": 27,
+  "rotation": 0,
+  "selrect": {
+    "x": 1623,
+    "y": 484,
+    "width": 79,
+    "height": 27,
+    "x1": 1623,
+    "y1": 484,
+    "x2": 1702,
+    "y2": 511
+  },
+  "points": [
+    {
+      "x": 1623,
+      "y": 484
+    },
+    {
+      "x": 1702,
+      "y": 484
+    },
+    {
+      "x": 1702,
+      "y": 511
+    },
+    {
+      "x": 1623,
+      "y": 511
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a852615207f5",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a852615207f5",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "20",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "KONTAKT"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fn8ng",
+            "fontSize": "20",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85253a01c82",
+  "hidden": false,
+  "positionData": [
+    {
+      "y": 508,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "20px",
+      "fontWeight": "600",
+      "y1": 0,
+      "width": 78.10000610351562,
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "x": 1623,
+      "x1": 0,
+      "y2": 24,
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "x2": 78.10000610351562,
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "height": 24,
+      "text": "KONTAKT"
+    }
+  ],
+  "strokes": [],
+  "blocked": false,
+  "fills": []
+}

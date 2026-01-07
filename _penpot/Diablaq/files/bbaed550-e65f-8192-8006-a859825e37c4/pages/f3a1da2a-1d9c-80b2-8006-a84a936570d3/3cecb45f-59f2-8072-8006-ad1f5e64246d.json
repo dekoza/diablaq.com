@@ -1,0 +1,149 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad1f5e64246d",
+  "name": "IMI\u0118 NAZWISKO",
+  "type": "text",
+  "x": 2688.5,
+  "y": 601,
+  "width": 477,
+  "height": 81,
+  "rotation": 0,
+  "selrect": {
+    "x": 2688.5,
+    "y": 601,
+    "width": 477,
+    "height": 81,
+    "x1": 2688.5,
+    "y1": 601,
+    "x2": 3165.5,
+    "y2": 682
+  },
+  "points": [
+    {
+      "x": 2688.5,
+      "y": 601
+    },
+    {
+      "x": 3165.5,
+      "y": 601
+    },
+    {
+      "x": 3165.5,
+      "y": 682
+    },
+    {
+      "x": 2688.5,
+      "y": 682
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad1f5e642452",
+  "frameId": "3cecb45f-59f2-8072-8006-ad1f5e642452",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "72",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "IMI\u0118 NAZWISKO"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "72",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a84a936570d3",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2688.5,
+      "y": 686.6999969482422,
+      "width": 464.2166748046875,
+      "height": 85,
+      "x1": 0,
+      "y1": 0.6999969482421875,
+      "x2": 464.2166748046875,
+      "y2": 85.69999694824219,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "72px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "IMI\u0118 NAZWISKO"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

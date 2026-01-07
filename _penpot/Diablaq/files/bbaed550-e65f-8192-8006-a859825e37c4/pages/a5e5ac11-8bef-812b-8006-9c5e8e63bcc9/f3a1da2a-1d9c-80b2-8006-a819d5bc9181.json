@@ -1,0 +1,74 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a819d5bc9181",
+  "name": "facebook",
+  "type": "group",
+  "x": -3715.0000000000005,
+  "y": 4499,
+  "width": 147.99999999999818,
+  "height": 100,
+  "rotation": 0,
+  "selrect": {
+    "x": -3715.0000000000005,
+    "y": 4499,
+    "width": 147.99999999999818,
+    "height": 100,
+    "x1": -3715.0000000000005,
+    "y1": 4499,
+    "x2": -3567.0000000000023,
+    "y2": 4599
+  },
+  "points": [
+    {
+      "x": -3715.0000000000005,
+      "y": 4499
+    },
+    {
+      "x": -3567.0000000000023,
+      "y": 4499
+    },
+    {
+      "x": -3567.0000000000023,
+      "y": 4599
+    },
+    {
+      "x": -3715.0000000000005,
+      "y": 4599
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a818707d5de6",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "width": "520.35",
+    "height": "520.35"
+  },
+  "layoutItemHSizing": "fix",
+  "proportionLock": true,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "layoutItemVSizing": "fix",
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1.485714268843376,
+  "fills": [],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a819d5bc9182",
+    "f3a1da2a-1d9c-80b2-8006-a819d5bc9183"
+  ]
+}

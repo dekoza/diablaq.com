@@ -1,0 +1,149 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad693c8a2bb6",
+  "name": "DLA MEDI\u00d3W",
+  "type": "text",
+  "x": 2771.3032802827793,
+  "y": 4074.421407758298,
+  "width": 192.9999999999991,
+  "height": 42.000000000000455,
+  "rotation": 0,
+  "selrect": {
+    "x": 2771.3032802827793,
+    "y": 4074.421407758298,
+    "width": 192.9999999999991,
+    "height": 42.000000000000455,
+    "x1": 2771.3032802827793,
+    "y1": 4074.421407758298,
+    "x2": 2964.3032802827784,
+    "y2": 4116.421407758298
+  },
+  "points": [
+    {
+      "x": 2771.3032802827793,
+      "y": 4074.421407758298
+    },
+    {
+      "x": 2964.3032802827784,
+      "y": 4074.421407758298
+    },
+    {
+      "x": 2964.3032802827784,
+      "y": 4116.421407758298
+    },
+    {
+      "x": 2771.3032802827793,
+      "y": 4116.421407758298
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad693c89e655",
+  "frameId": "3cecb45f-59f2-8072-8006-ad693c89e655",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "DLA MEDI\u00d3W"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "kkmk",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a853a9585e02",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2771.3032802827793,
+      "y": 4117.521413861814,
+      "width": 190.73333740234375,
+      "height": 43,
+      "x1": 0,
+      "y1": 0.100006103515625,
+      "x2": 190.73333740234375,
+      "y2": 43.100006103515625,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "DLA MEDI\u00d3W"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

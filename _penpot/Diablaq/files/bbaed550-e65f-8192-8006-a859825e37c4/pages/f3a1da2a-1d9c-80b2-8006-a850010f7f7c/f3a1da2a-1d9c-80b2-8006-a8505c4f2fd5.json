@@ -1,0 +1,173 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd5",
+  "name": "Nowo\u015bci DESKTOP",
+  "type": "frame",
+  "x": 398,
+  "y": 309,
+  "width": 1920,
+  "height": 3481,
+  "rotation": 0,
+  "selrect": {
+    "x": 398,
+    "y": 309,
+    "width": 1920,
+    "height": 3481,
+    "x1": 398,
+    "y1": 309,
+    "x2": 2318,
+    "y2": 3790
+  },
+  "points": [
+    {
+      "x": 398,
+      "y": 308.99999999999994
+    },
+    {
+      "x": 2318,
+      "y": 308.99999999999994
+    },
+    {
+      "x": 2318,
+      "y": 3790
+    },
+    {
+      "x": 398,
+      "y": 3790
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "blendMode": "normal",
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "grids": [
+    {
+      "type": "column",
+      "params": {
+        "size": null,
+        "type": "stretch",
+        "itemLength": 119.33333333333333,
+        "gutter": 8,
+        "margin": 200,
+        "color": {
+          "color": "#DE4762",
+          "opacity": 0.1
+        }
+      },
+      "display": false
+    }
+  ],
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0a0a0a",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd6",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd7",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd8",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fd9",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fda",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fdb",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fdc",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fdd",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fde",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fdf",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe0",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe1",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe2",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe3",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe4",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe5",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe6",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe7",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe8",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fe9",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fea",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2feb",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fec",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fed",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fee",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2fef",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff0",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff1",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff5",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff6",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff7",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff8",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ff9",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ffa",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f2ffb",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f3001",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f3002",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f3003",
+    "f3a1da2a-1d9c-80b2-8006-a8505c4f3004",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a712e",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a712f",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7130",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7131",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7132",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7133",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7134",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7135",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7136",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7137",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7138",
+    "f3a1da2a-1d9c-80b2-8006-a850ba4a7139",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c48d",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c48e",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c48f",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c490",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c491",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c492",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c493",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c494",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c495",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c496",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c497",
+    "f3a1da2a-1d9c-80b2-8006-a850cd95c498",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4418",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4419",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441a",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441b",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441c",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441d",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441e",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef441f",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4420",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4421",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4422",
+    "f3a1da2a-1d9c-80b2-8006-a850d7ef4423"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "e4d1cffe-dcd0-80f8-8006-a7dab5bbd929",
+  "name": "svg-node",
+  "type": "svg-raw",
+  "x": -4699,
+  "y": -3785,
+  "width": 32,
+  "height": 32,
+  "rotation": 0,
+  "selrect": {
+    "x": -4699,
+    "y": -3785,
+    "width": 32,
+    "height": 32,
+    "x1": -4699,
+    "y1": -3785,
+    "x2": -4667,
+    "y2": -3753
+  },
+  "points": [
+    {
+      "x": -4699,
+      "y": -3785
+    },
+    {
+      "x": -4667,
+      "y": -3785
+    },
+    {
+      "x": -4667,
+      "y": -3753
+    },
+    {
+      "x": -4699,
+      "y": -3753
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "e4d1cffe-dcd0-80f8-8006-a7dab5bbd928",
+  "frameId": "eefb50ea-ad8d-80bd-8006-a54ba31f79df",
+  "flipX": null,
+  "flipY": null,
+  "content": ".st0{fill:#FFFFFF;}",
+  "svgAttrs": {},
+  "proportionLock": true,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "svgViewbox": {
+    "y": 0,
+    "y1": 0,
+    "width": 20,
+    "x": 0,
+    "x1": 0,
+    "y2": 20,
+    "x2": 20,
+    "height": 20
+  },
+  "svgDefs": {},
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "fills": []
+}

@@ -1,0 +1,143 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a84e98eee46d",
+  "name": "Zapowiedzi DESKTOP",
+  "type": "frame",
+  "x": 293,
+  "y": 383.9999999999999,
+  "width": 1920,
+  "height": 1477.0000000000002,
+  "rotation": 0,
+  "selrect": {
+    "x": 293,
+    "y": 383.9999999999999,
+    "width": 1920,
+    "height": 1477.0000000000002,
+    "x1": 293,
+    "y1": 383.9999999999999,
+    "x2": 2213,
+    "y2": 1861
+  },
+  "points": [
+    {
+      "x": 293,
+      "y": 383.99999999999994
+    },
+    {
+      "x": 2213,
+      "y": 383.99999999999994
+    },
+    {
+      "x": 2213,
+      "y": 1861.0000000000002
+    },
+    {
+      "x": 293,
+      "y": 1861.0000000000002
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "blendMode": "normal",
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8579afe98e0",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "grids": [
+    {
+      "type": "column",
+      "params": {
+        "size": null,
+        "type": "stretch",
+        "itemLength": 119.33333333333333,
+        "gutter": 8,
+        "margin": 200,
+        "color": {
+          "color": "#DE4762",
+          "opacity": 0.1
+        }
+      },
+      "display": false
+    }
+  ],
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0a0a0a",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef1095",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef1096",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef1097",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef1098",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef1099",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109a",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109b",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109c",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109d",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109e",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef109f",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a0",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a1",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a2",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a3",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a4",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a5",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a6",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a7",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a8",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10a9",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10aa",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10ab",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10ac",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10b4",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10b5",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10b6",
+    "f3a1da2a-1d9c-80b2-8006-a84e98ef10b7",
+    "f3a1da2a-1d9c-80b2-8006-a84ee4f39122",
+    "f3a1da2a-1d9c-80b2-8006-a84ee4f39123",
+    "f3a1da2a-1d9c-80b2-8006-a84ee4f39124",
+    "f3a1da2a-1d9c-80b2-8006-a857b4c0aa66",
+    "f3a1da2a-1d9c-80b2-8006-a857b4c0aa67",
+    "f3a1da2a-1d9c-80b2-8006-a857b4c0aa68",
+    "f3a1da2a-1d9c-80b2-8006-a857e0e5b91f",
+    "f3a1da2a-1d9c-80b2-8006-a857e0e5b920",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9f7f1b",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9f7f1c",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9ed",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9ee",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9ef",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9f0",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9f1",
+    "f3a1da2a-1d9c-80b2-8006-a857ed9fa9f2",
+    "f3a1da2a-1d9c-80b2-8006-a84ef6d9f657"
+  ]
+}

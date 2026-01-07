@@ -1,0 +1,78 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a8235503b087",
+  "name": "MENU BACKGROUND",
+  "type": "rect",
+  "x": -1895.9999999999995,
+  "y": -3719,
+  "width": 960,
+  "height": 1600,
+  "rotation": 0,
+  "selrect": {
+    "x": -1895.9999999999995,
+    "y": -3719,
+    "width": 960,
+    "height": 1600,
+    "x1": -1895.9999999999995,
+    "y1": -3719,
+    "x2": -935.9999999999995,
+    "y2": -2119
+  },
+  "points": [
+    {
+      "x": -1895.9999999999995,
+      "y": -3719
+    },
+    {
+      "x": -935.9999999999995,
+      "y": -3719
+    },
+    {
+      "x": -935.9999999999995,
+      "y": -2119
+    },
+    {
+      "x": -1895.9999999999995,
+      "y": -2119
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a8235503b06b",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a8235503b06b",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#ac351f",
+      "fillOpacity": 1
+    }
+  ]
+}

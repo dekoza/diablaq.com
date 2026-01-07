@@ -1,0 +1,777 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad6c9d6d8e7b",
+  "name": " Integer eros nisi, auctor et sodales nec, dignissim ut nibh. Cras tempor venenatis tristique. Donec et mauris velit. Mauris commodo nibh diam, sed ultrices magna condimentum sit amet. Phasellus finibus arcu quis est vehicula, at faucibus massa mollis. Praesent dolor magna, ultri",
+  "type": "text",
+  "x": 2677.8942900294137,
+  "y": 1574.6360097146517,
+  "width": 812,
+  "height": 744,
+  "rotation": 0,
+  "selrect": {
+    "x": 2677.8942900294137,
+    "y": 1574.6360097146517,
+    "width": 812,
+    "height": 744,
+    "x1": 2677.8942900294137,
+    "y1": 1574.6360097146517,
+    "x2": 3489.8942900294137,
+    "y2": 2318.6360097146517
+  },
+  "points": [
+    {
+      "x": 2677.8942900294137,
+      "y": 1574.6360097146517
+    },
+    {
+      "x": 3489.8942900294137,
+      "y": 1574.6360097146517
+    },
+    {
+      "x": 3489.8942900294137,
+      "y": 2318.6360097146517
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2318.6360097146517
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad6b6982ca76",
+  "frameId": "3cecb45f-59f2-8072-8006-ad6b6982ca76",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": " Integer eros nisi, auctor et sodales nec, dignissim ut nibh. Cras tempor venenatis tristique. Donec et mauris velit. Mauris commodo nibh diam, sed ultrices magna condimentum sit amet. Phasellus finibus arcu quis est vehicula, at faucibus massa mollis. Praesent dolor magna, ultricies id turpis vitae, condimentum pulvinar justo. Curabitur accumsan lacus id sapien suscipit, ultricies condimentum lectus dignissim."
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "c2rvk",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "Mauris sagittis lobortis massa et condimentum. Praesent blandit pretium libero, id luctus diam mollis at. Proin non lacus mi. Duis ut lorem vel dui elementum dictum quis in mauris. Morbi rutrum neque tincidunt sodales ullamcorper. Curabitur at gravida tortor. Cras vel nisi et ex tempus posuere. Sed ut ipsum nibh. Curabitur finibus est orci, id pellentesque arcu malesuada ac. Nulla facilisi. Mauris pellentesque dignissim feugiat. "
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "8adbr",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "6m5pd",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          },
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "36",
+                "fontWeight": "400",
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": ""
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "6jbeg",
+            "fontSize": "36",
+            "fontWeight": "400",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a85570b9b395",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "x": 2677.8942900294137,
+      "y": 1617.7360158181673,
+      "width": 754.86669921875,
+      "height": 43,
+      "x1": 0,
+      "y1": 0.100006103515625,
+      "x2": 754.86669921875,
+      "y2": 43.100006103515625,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": " Integer eros nisi, auctor et sodales nec, dignissim ut "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1660.9360127664095,
+      "width": 780.11669921875,
+      "height": 43,
+      "x1": 0,
+      "y1": 43.30000305175781,
+      "x2": 780.11669921875,
+      "y2": 86.30000305175781,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "nibh. Cras tempor venenatis tristique. Donec et mauris "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1704.1360097146517,
+      "width": 767.0999755859375,
+      "height": 43,
+      "x1": 0,
+      "y1": 86.5,
+      "x2": 767.0999755859375,
+      "y2": 129.5,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "velit. Mauris commodo nibh diam, sed ultrices magna "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1747.3360066628939,
+      "width": 776.7999877929688,
+      "height": 43,
+      "x1": 0,
+      "y1": 129.6999969482422,
+      "x2": 776.7999877929688,
+      "y2": 172.6999969482422,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "condimentum sit amet. Phasellus finibus arcu quis est "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1790.536003611136,
+      "width": 721.88330078125,
+      "height": 43,
+      "x1": 0,
+      "y1": 172.89999389648438,
+      "x2": 721.88330078125,
+      "y2": 215.89999389648438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "vehicula, at faucibus massa mollis. Praesent dolor "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1833.7360158181673,
+      "width": 766.1666870117188,
+      "height": 43,
+      "x1": 0,
+      "y1": 216.10000610351562,
+      "x2": 766.1666870117188,
+      "y2": 259.1000061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "magna, ultricies id turpis vitae, condimentum pulvinar "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1876.9359975076204,
+      "width": 729.066650390625,
+      "height": 43,
+      "x1": 0,
+      "y1": 259.29998779296875,
+      "x2": 729.066650390625,
+      "y2": 302.29998779296875,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "justo. Curabitur accumsan lacus id sapien suscipit, "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1920.1360097146517,
+      "width": 566.9166870117188,
+      "height": 43,
+      "x1": 0,
+      "y1": 302.5,
+      "x2": 566.9166870117188,
+      "y2": 345.5,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "ultricies condimentum lectus dignissim."
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 1963.336021921683,
+      "width": 8.26666259765625,
+      "height": 43,
+      "x1": 0,
+      "y1": 345.70001220703125,
+      "x2": 8.26666259765625,
+      "y2": 388.70001220703125,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "\u00a0"
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2006.536003611136,
+      "width": 688.4000244140625,
+      "height": 43,
+      "x1": 0,
+      "y1": 388.8999938964844,
+      "x2": 688.4000244140625,
+      "y2": 431.8999938964844,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "Mauris sagittis lobortis massa et condimentum. "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2049.7360158181673,
+      "width": 800.4000244140625,
+      "height": 43,
+      "x1": 0,
+      "y1": 432.1000061035156,
+      "x2": 800.4000244140625,
+      "y2": 475.1000061035156,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "Praesent blandit pretium libero, id luctus diam mollis at. "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2092.9359975076204,
+      "width": 744.8499755859375,
+      "height": 43,
+      "x1": 0,
+      "y1": 475.29998779296875,
+      "x2": 744.8499755859375,
+      "y2": 518.2999877929688,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "Proin non lacus mi. Duis ut lorem vel dui elementum "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2136.1360097146517,
+      "width": 744.7000122070312,
+      "height": 43,
+      "x1": 0,
+      "y1": 518.5,
+      "x2": 744.7000122070312,
+      "y2": 561.5,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "dictum quis in mauris. Morbi rutrum neque tincidunt "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2179.336021921683,
+      "width": 807.75,
+      "height": 43,
+      "x1": 0,
+      "y1": 561.7000122070312,
+      "x2": 807.75,
+      "y2": 604.7000122070312,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "sodales ullamcorper. Curabitur at gravida tortor. Cras vel "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2222.536034128714,
+      "width": 792.0833129882812,
+      "height": 43,
+      "x1": 0,
+      "y1": 604.9000244140625,
+      "x2": 792.0833129882812,
+      "y2": 647.9000244140625,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "nisi et ex tempus posuere. Sed ut ipsum nibh. Curabitur "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2265.735985300589,
+      "width": 734.5333251953125,
+      "height": 43,
+      "x1": 0,
+      "y1": 648.0999755859375,
+      "x2": 734.5333251953125,
+      "y2": 691.0999755859375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "finibus est orci, id pellentesque arcu malesuada ac. "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2308.9359975076204,
+      "width": 753.0166625976562,
+      "height": 43,
+      "x1": 0,
+      "y1": 691.2999877929688,
+      "x2": 753.0166625976562,
+      "y2": 734.2999877929688,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "Nulla facilisi. Mauris pellentesque dignissim feugiat. "
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2352.1360097146517,
+      "width": 8.26666259765625,
+      "height": 43,
+      "x1": 0,
+      "y1": 734.5,
+      "x2": 8.26666259765625,
+      "y2": 777.5,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "\u00a0"
+    },
+    {
+      "x": 2677.8942900294137,
+      "y": 2395.336021921683,
+      "width": 8.26666259765625,
+      "height": 43,
+      "x1": 0,
+      "y1": 777.7000122070312,
+      "x2": 8.26666259765625,
+      "y2": 820.7000122070312,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "36px",
+      "fontWeight": "400",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "\u00a0"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

@@ -1,0 +1,147 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad6696ef53ee",
+  "name": "O NAS",
+  "type": "text",
+  "x": 2671.948493029158,
+  "y": 582.5112148459332,
+  "width": 191,
+  "height": 78,
+  "rotation": 0,
+  "selrect": {
+    "x": 2671.948493029158,
+    "y": 582.5112148459332,
+    "width": 191,
+    "height": 78,
+    "x1": 2671.948493029158,
+    "y1": 582.5112148459332,
+    "x2": 2862.948493029158,
+    "y2": 660.5112148459332
+  },
+  "points": [
+    {
+      "x": 2671.948493029158,
+      "y": 582.5112148459332
+    },
+    {
+      "x": 2862.948493029158,
+      "y": 582.5112148459332
+    },
+    {
+      "x": 2862.948493029158,
+      "y": 660.5112148459332
+    },
+    {
+      "x": 2671.948493029158,
+      "y": 660.5112148459332
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "frameId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "72",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "O NAS"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "72",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8516e116a75",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "x": 2671.948493029158,
+      "y": 668.2112117941754,
+      "width": 186.03334045410156,
+      "height": 85,
+      "x1": 0,
+      "y1": 0.6999969482421875,
+      "x2": 186.03334045410156,
+      "y2": 85.69999694824219,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "72px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "O NAS"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

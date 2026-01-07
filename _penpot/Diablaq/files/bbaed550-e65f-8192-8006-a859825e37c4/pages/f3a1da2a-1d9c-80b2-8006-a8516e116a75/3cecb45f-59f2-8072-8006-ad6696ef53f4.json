@@ -1,0 +1,147 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad6696ef53f4",
+  "name": "CO\u015a O NASZYCH KOMIKSACH",
+  "type": "text",
+  "x": 2660.948493029158,
+  "y": 1716.5112148459332,
+  "width": 580,
+  "height": 86,
+  "rotation": 0,
+  "selrect": {
+    "x": 2660.948493029158,
+    "y": 1716.5112148459332,
+    "width": 580,
+    "height": 86,
+    "x1": 2660.948493029158,
+    "y1": 1716.5112148459332,
+    "x2": 3240.948493029158,
+    "y2": 1802.5112148459332
+  },
+  "points": [
+    {
+      "x": 2660.948493029158,
+      "y": 1716.5112148459332
+    },
+    {
+      "x": 3240.948493029158,
+      "y": 1716.5112148459332
+    },
+    {
+      "x": 3240.948493029158,
+      "y": 1802.5112148459332
+    },
+    {
+      "x": 2660.948493029158,
+      "y": 1802.5112148459332
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "frameId": "3cecb45f-59f2-8072-8006-ad667af6a0fe",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-roboto-condensed",
+                "fontSize": "48",
+                "fontWeight": "600",
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Roboto Condensed",
+                "text": "CO\u015a O NASZYCH KOMIKSACH"
+              }
+            ],
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-roboto-condensed",
+            "key": "fdm9s",
+            "fontSize": "48",
+            "fontWeight": "600",
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#ffffff",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Roboto Condensed"
+          }
+        ]
+      }
+    ]
+  },
+  "hideInViewer": false,
+  "layoutItemHSizing": "fix",
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a8516e116a75",
+  "layoutItemVSizing": "fix",
+  "positionData": [
+    {
+      "x": 2660.948493029158,
+      "y": 1773.811217897691,
+      "width": 576.2833251953125,
+      "height": 57,
+      "x1": 0,
+      "y1": 0.3000030517578125,
+      "x2": 576.2833251953125,
+      "y2": 57.30000305175781,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "48px",
+      "fontWeight": "600",
+      "textDecoration": "rgb(255, 255, 255)",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#ffffff",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Roboto Condensed\"",
+      "text": "CO\u015a O NASZYCH KOMIKSACH"
+    }
+  ],
+  "strokes": [],
+  "fills": []
+}

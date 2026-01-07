@@ -1,0 +1,79 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad14df483270",
+  "name": "Stopka",
+  "type": "rect",
+  "x": 2477,
+  "y": 4808,
+  "width": 960,
+  "height": 1898,
+  "rotation": 0,
+  "selrect": {
+    "x": 2477,
+    "y": 4808,
+    "width": 960,
+    "height": 1898,
+    "x1": 2477,
+    "y1": 4808,
+    "x2": 3437,
+    "y2": 6706
+  },
+  "points": [
+    {
+      "x": 2477,
+      "y": 4808
+    },
+    {
+      "x": 3437,
+      "y": 4808
+    },
+    {
+      "x": 3437,
+      "y": 6706
+    },
+    {
+      "x": 2477,
+      "y": 6706
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad14df48326b",
+  "frameId": "3cecb45f-59f2-8072-8006-ad14df48326b",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a83fc128170d",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#1b1b1b",
+      "fillOpacity": 1
+    }
+  ]
+}

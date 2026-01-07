@@ -1,0 +1,74 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a84ced9f2d7c",
+  "name": "DIABLAQ_white",
+  "type": "group",
+  "x": 980,
+  "y": 1345,
+  "width": 161,
+  "height": 150,
+  "rotation": 0,
+  "selrect": {
+    "x": 980,
+    "y": 1345,
+    "width": 161,
+    "height": 150,
+    "x1": 980,
+    "y1": 1345,
+    "x2": 1141,
+    "y2": 1495
+  },
+  "points": [
+    {
+      "x": 980,
+      "y": 1345
+    },
+    {
+      "x": 1141,
+      "y": 1345
+    },
+    {
+      "x": 1141,
+      "y": 1495
+    },
+    {
+      "x": 980,
+      "y": 1495
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f3a1da2a-1d9c-80b2-8006-a84b02c05ac9",
+  "frameId": "f3a1da2a-1d9c-80b2-8006-a84b02c05ac9",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "width": "1090.56",
+    "height": "1016.16"
+  },
+  "proportionLock": true,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a84a936570d3",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1.0743801652892637,
+  "fills": [],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a84ced9f2d7d",
+    "f3a1da2a-1d9c-80b2-8006-a84ced9f2d7e"
+  ]
+}

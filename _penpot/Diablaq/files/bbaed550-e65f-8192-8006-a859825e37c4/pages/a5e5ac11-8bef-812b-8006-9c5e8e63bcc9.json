@@ -1,0 +1,19 @@
+{
+  "id": "a5e5ac11-8bef-812b-8006-9c5e8e63bcc9",
+  "name": "Strona g\u0142\u00f3wna",
+  "guides": {
+    "f3a1da2a-1d9c-80b2-8006-a823550751ae": {
+      "id": "f3a1da2a-1d9c-80b2-8006-a823550751ae",
+      "frameId": "f3a1da2a-1d9c-80b2-8006-a8235503b06b",
+      "position": -937,
+      "axis": "x"
+    },
+    "3cecb45f-59f2-8072-8006-ac3c94005614": {
+      "position": -1800,
+      "frameId": "f3a1da2a-1d9c-80b2-8006-a8235503b06b",
+      "id": "3cecb45f-59f2-8072-8006-ac3c94005614",
+      "axis": "x"
+    }
+  },
+  "index": 0
+}

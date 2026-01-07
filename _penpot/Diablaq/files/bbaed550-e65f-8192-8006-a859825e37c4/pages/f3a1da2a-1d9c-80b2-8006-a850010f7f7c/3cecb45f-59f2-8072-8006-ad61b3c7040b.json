@@ -1,0 +1,79 @@
+{
+  "id": "3cecb45f-59f2-8072-8006-ad61b3c7040b",
+  "name": "Sekcja Nowo\u015bci",
+  "type": "rect",
+  "x": 2382,
+  "y": 387.93770325233436,
+  "width": 960,
+  "height": 3254.0000000000005,
+  "rotation": 0,
+  "selrect": {
+    "x": 2382,
+    "y": 387.93770325233436,
+    "width": 960,
+    "height": 3254.0000000000005,
+    "x1": 2382,
+    "y1": 387.93770325233436,
+    "x2": 3342,
+    "y2": 3641.937703252335
+  },
+  "points": [
+    {
+      "x": 2382,
+      "y": 387.93770325233436
+    },
+    {
+      "x": 3342,
+      "y": 387.93770325233436
+    },
+    {
+      "x": 3342,
+      "y": 3641.937703252335
+    },
+    {
+      "x": 2382,
+      "y": 3641.937703252335
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "frameId": "3cecb45f-59f2-8072-8006-ad61b3c6dfb7",
+  "flipX": null,
+  "flipY": null,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a850010f7f7c",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#1b1b1b",
+      "fillOpacity": 1
+    }
+  ]
+}

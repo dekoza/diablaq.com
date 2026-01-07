@@ -1,0 +1,145 @@
+{
+  "id": "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f89",
+  "name": "O Komiksie DESKTOP",
+  "type": "frame",
+  "x": 410,
+  "y": 307.9999999999999,
+  "width": 1920,
+  "height": 1720,
+  "rotation": 0,
+  "selrect": {
+    "x": 410,
+    "y": 307.9999999999999,
+    "width": 1920,
+    "height": 1720,
+    "x1": 410,
+    "y1": 307.9999999999999,
+    "x2": 2330,
+    "y2": 2028
+  },
+  "points": [
+    {
+      "x": 410,
+      "y": 308
+    },
+    {
+      "x": 2330,
+      "y": 308
+    },
+    {
+      "x": 2330,
+      "y": 2028.0000000000002
+    },
+    {
+      "x": 410,
+      "y": 2028.0000000000002
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "growType": "fixed",
+  "hideInViewer": false,
+  "blendMode": "normal",
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "f3a1da2a-1d9c-80b2-8006-a83fc128170d",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "r1": 0,
+  "hidden": false,
+  "strokes": [],
+  "blocked": false,
+  "proportion": 1,
+  "grids": [
+    {
+      "type": "column",
+      "params": {
+        "size": null,
+        "type": "stretch",
+        "itemLength": 119.33333333333333,
+        "gutter": 8,
+        "margin": 200,
+        "color": {
+          "color": "#DE4762",
+          "opacity": 0.1
+        }
+      },
+      "display": false
+    }
+  ],
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0a0a0a",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f8a",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f8e",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f8f",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f90",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f91",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f92",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f93",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f94",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f95",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f96",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f97",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f98",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f99",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f9a",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3f9b",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fba",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fbb",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fbc",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fbd",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fbe",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fbf",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc0",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc1",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fab",
+    "f3a1da2a-1d9c-80b2-8006-a840d07bd2ce",
+    "f3a1da2a-1d9c-80b2-8006-a8439e0a69f8",
+    "f3a1da2a-1d9c-80b2-8006-a843aa5d5ef6",
+    "f3a1da2a-1d9c-80b2-8006-a843afbf597e",
+    "f3a1da2a-1d9c-80b2-8006-a849b2ac2efe",
+    "f3a1da2a-1d9c-80b2-8006-a849b2ac2eff",
+    "f3a1da2a-1d9c-80b2-8006-a849b2ac2f00",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc2",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc3",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc4",
+    "f3a1da2a-1d9c-80b2-8006-a83fc8fb3fc7",
+    "f3a1da2a-1d9c-80b2-8006-a8413b800c97",
+    "f3a1da2a-1d9c-80b2-8006-a841e92fde8f",
+    "f3a1da2a-1d9c-80b2-8006-a8437d20468e",
+    "f3a1da2a-1d9c-80b2-8006-a8499464f19f",
+    "f3a1da2a-1d9c-80b2-8006-a849cb6106d8",
+    "f3a1da2a-1d9c-80b2-8006-a849cb6106d9",
+    "f3a1da2a-1d9c-80b2-8006-a849cb6106da",
+    "f3a1da2a-1d9c-80b2-8006-a849cb6106db",
+    "f3a1da2a-1d9c-80b2-8006-a8416bfbbd4c",
+    "f3a1da2a-1d9c-80b2-8006-a841ffb829ec",
+    "f3a1da2a-1d9c-80b2-8006-a84322ca9ade",
+    "f3a1da2a-1d9c-80b2-8006-a8493a0036b1"
+  ]
+}
