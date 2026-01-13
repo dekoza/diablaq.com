@@ -1,6 +1,6 @@
 {# Kafelek wydania na stronie osoby - wyświetla role osoby zamiast nazw twórców #}
 <article class="edition-tile">
-  <a class="edition-tile__cover" href="{{ e.url }}" aria-label="{{ e.title }}">
+  <a class="edition-tile__cover {{ e.cover_aspect_class }}" href="{{ e.url }}" aria-label="{{ e.title }}">
     {% if e.issue_number_display %}<span class="edition-tile__number">#{{ e.issue_number_display }}</span>{% endif %}
     <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
   </a>

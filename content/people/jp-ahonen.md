@@ -1,5 +1,5 @@
 ---
 name: JP Ahonen
-photo: /img/people/jp-ahonen.jpg
+photo: /img/people/jp-ahonen.png
 ---
 

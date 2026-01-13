@@ -3,7 +3,7 @@
   Używana na home/listing/project.
 #}
 <article class="edition-card">
-  <a class="edition-card__media" href="{{ e.url }}">
+  <a class="edition-card__media {{ e.cover_aspect_class }}" href="{{ e.url }}">
     <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
   </a>
 

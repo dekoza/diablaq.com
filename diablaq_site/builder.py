@@ -47,6 +47,7 @@ class Edition:
     legacy_anchor: str | None
     cover_image: str | None
     cover_alt: str | None
+    cover_aspect_class: str
     covers: list[ImageRef]
     previews: list[ImageRef]
     creators: list[Creator]
@@ -70,6 +71,7 @@ class Project:
     url: str
     legacy_landing: bool
     cover_image: str | None
+    cover_aspect_class: str
     html_body: str
 
 
@@ -160,6 +162,35 @@ def _copy_tree(src: Path, dst: Path) -> None:
     if not src.exists():
         return
     shutil.copytree(src, dst, dirs_exist_ok=True)
+
+
+def _get_cover_aspect_class(cover_path: str | None, root: Path) -> str:
+    """Zwraca klasę CSS na podstawie proporcji okładki.
+
+    - cover--tall: ratio < 0.6 (wysoka okładka) -> object-position: top
+    - cover--wide: ratio > 0.75 (szeroka okładka) -> object-fit: contain
+    - cover--standard: pozostałe -> object-position: center
+    """
+    if not cover_path:
+        return "cover--standard"
+
+    # Usuń leading slash i znajdź plik
+    relative_path = cover_path.lstrip("/")
+    full_path = root / relative_path
+
+    if not full_path.exists():
+        return "cover--standard"
+
+    try:
+        with Image.open(full_path) as img:
+            ratio = img.width / img.height
+            if ratio > 0.75:
+                return "cover--wide"
+            elif ratio < 0.6:
+                return "cover--tall"
+            return "cover--standard"
+    except Exception:
+        return "cover--standard"
 
 
 def _generate_thumbnail(src: Path, dst: Path, size: tuple[int, int] = (300, 300)) -> None:
@@ -403,6 +434,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         legacy_path = meta.get("legacy_path")
         legacy_landing = bool(meta.get("legacy_landing", False))
         cover_image = str(meta.get("cover_image") or "").strip() or None
+        cover_aspect_class = _get_cover_aspect_class(cover_image, root)
 
         url = _canonical_project_url(line=line, slug=slug)
 
@@ -416,6 +448,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                 url=url,
                 legacy_landing=legacy_landing,
                 cover_image=cover_image,
+                cover_aspect_class=cover_aspect_class,
                 html_body=body_html,
             )
         )
@@ -488,6 +521,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             ed_url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
 
             cover_image, cover_alt = _pick_cover(emeta)
+            cover_aspect_class = _get_cover_aspect_class(cover_image, root)
             covers = _parse_image_list(emeta, "covers", source_path=project_dir / "editions" / f"{ed_slug}.md")
             previews = _parse_image_list(emeta, "previews", source_path=project_dir / "editions" / f"{ed_slug}.md")
             creators, creator_names = _parse_creators(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
@@ -517,6 +551,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                     legacy_anchor=emeta.get("legacy_anchor"),
                     cover_image=cover_image,
                     cover_alt=cover_alt,
+                    cover_aspect_class=cover_aspect_class,
                     covers=covers,
                     previews=previews,
                     creators=creators,

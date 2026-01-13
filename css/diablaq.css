@@ -482,11 +482,13 @@ footer a:focus-visible {
 
 .project-card__cover {
     display: block;
+    position: relative;
 }
 
 /* kompatybilność wsteczna (stare klasy) */
 .project-tile__cover {
     display: block;
+    position: relative;
 }
 
 .project-card__cover img,
@@ -494,8 +496,21 @@ footer a:focus-visible {
     width: 100%;
     aspect-ratio: 180 / 255;
     object-fit: cover;
+    object-position: center;
     border-radius: var(--pico-border-radius);
     display: block;
+}
+
+/* Proporcje okładek dla projektów */
+.project-card__cover.cover--tall img,
+.project-tile__cover.cover--tall img {
+    object-position: top;
+}
+
+.project-card__cover.cover--wide img,
+.project-tile__cover.cover--wide img {
+    object-fit: contain;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
 }
 
 .project-card__title {
@@ -633,8 +648,27 @@ footer.container {
     width: 100%;
     aspect-ratio: 180 / 255;
     object-fit: cover;
+    object-position: center;
     border-radius: var(--pico-border-radius);
     display: block;
+}
+
+/* Proporcje okładek - automatycznie wykrywane przez builder */
+
+/* Wysoka okładka (ratio < 0.6) - pokaż górę (tytuł) */
+.cover--tall img {
+    object-position: top;
+}
+
+/* Szeroka okładka (ratio > 0.75) - dopasuj całość */
+.cover--wide img {
+    object-fit: contain;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+}
+
+/* Standardowa - wyśrodkuj (domyślnie) */
+.cover--standard img {
+    object-position: center;
 }
 
 .edition-tile__number {
@@ -667,6 +701,50 @@ footer.container {
 .issue-number {
     color: var(--diablaq-red);
     font-weight: 700;
+}
+
+/* --- Karta wydania (edition-card) --- */
+.edition-card {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.edition-card__media {
+    display: block;
+    position: relative;
+}
+
+.edition-card__media img {
+    width: 100%;
+    aspect-ratio: 180 / 255;
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--pico-border-radius);
+    display: block;
+}
+
+/* Proporcje okładek dla edition-card */
+.edition-card__media.cover--tall img {
+    object-position: top;
+}
+
+.edition-card__media.cover--wide img {
+    object-fit: contain;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+}
+
+.edition-card__title {
+    margin: 0.5rem 0 0.25rem;
+    font-family: var(--diablaq-font-heading), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1rem;
+}
+
+.edition-card__meta {
+    margin: 0;
+    color: var(--pico-muted-color);
 }
 
 /* Newsletter (dół strony) */
