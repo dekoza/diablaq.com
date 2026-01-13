@@ -9,6 +9,7 @@ standalone: true
 creators:
   - role: "Autorka"
     name: "Kasia Mazur"
+    person_slug: "kasia-mazur"
 specs:
   "Liczba stron": "112"
   "Oprawa": "miękka ze skrzydełkami"

@@ -25,7 +25,7 @@
 
       <div class="tiles tiles--editions tiles--compact">
         {% for e in person.related_editions[:3] %}
-          {% include "_partials/edition_tile.html" with context %}
+          {% include "_partials/edition_tile_for_person.html" with context %}
         {% endfor %}
       </div>
 
@@ -34,7 +34,7 @@
         <summary class="person-hero__more-btn">Rozwiń ({{ person.related_editions | length - 3 }} więcej)</summary>
         <div class="tiles tiles--editions tiles--compact person-hero__more-tiles">
           {% for e in person.related_editions[3:] %}
-            {% include "_partials/edition_tile.html" with context %}
+            {% include "_partials/edition_tile_for_person.html" with context %}
           {% endfor %}
         </div>
       </details>

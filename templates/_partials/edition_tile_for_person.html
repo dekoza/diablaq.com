@@ -1,0 +1,27 @@
+{# Kafelek wydania na stronie osoby - wyświetla role osoby zamiast nazw twórców #}
+<article class="edition-tile">
+  <a class="edition-tile__cover" href="{{ e.url }}" aria-label="{{ e.title }}">
+    {% if e.issue_number_display %}<span class="edition-tile__number">#{{ e.issue_number_display }}</span>{% endif %}
+    <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+  </a>
+
+  <h3 class="edition-tile__title">
+    <a href="{{ e.url }}">{{ e.title }}</a>
+  </h3>
+
+  {# Wyświetl role tej osoby w tym wydaniu #}
+  {% set person_roles = [] %}
+  {% for c in e.creators %}
+    {% if (c.person_slug and c.person_slug == person.slug) or (not c.person_slug and c.name.strip().lower() == person.name.strip().lower()) %}
+      {% if c.role %}
+        {% set _ = person_roles.append(c.role) %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if person_roles %}
+    <p class="edition-tile__meta">{{ person_roles | join(", ") }}</p>
+  {% endif %}
+
+  <p class="edition-tile__meta"><small>{{ e.release_date.isoformat() }}</small></p>
+</article>
+
