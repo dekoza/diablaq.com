@@ -79,9 +79,15 @@ To jest strona "serii" albo "projektu".
 - `legacy_landing` (`true/false`, opcjonalne) — czy pod starym adresem ma być landing z treścią (zamiast przekierowania)
 
 ### Jednotomówki (np. `mama`, `pzg`)
-Jednotomówka nadal jest trzymana jako „projekt”, ale zwykle ma **tylko jedno wydanie** w folderze `editions/`:
-- `content/projects/mama/editions/01.md`
-- `content/projects/pzg/editions/01.md`
+Jednotomówka nadal jest trzymana jako „projekt", ale zwykle ma **tylko jedno wydanie** w folderze `editions/`:
+- `content/projects/mama/editions/index.md`
+- `content/projects/pzg/editions/index.md`
+
+> **Konwencja nazewnictwa plików wydań:**
+> - **Jednotomówki** (standalone): używaj `index.md`
+> - **Serie numerowane**: używaj `01.md`, `02.md`, `03.md`...
+> - **Podserie**: możesz używać prefixu np. `x1.md`, `x2.md` dla eXXXtra
+> - **Wydania specjalne**: używaj opisowych nazw np. `cudowni.md`, `drzazga.md`
 
 To znaczy: dane są takie jak w serii, ale **strona projektu** w serwisie jest wygodniejsza:
 - jeśli projekt ma dokładnie **1 wydanie**, strona projektu pokaże od razu szczegóły (okładka, metryczka, opis),
@@ -212,7 +218,7 @@ Jeśli komiks jest jednotomówką i nie powinien mieć numeru, dodaj:
 standalone: true
 ```
 
-Przykład (`content/projects/mama/editions/01.md`):
+Przykład (`content/projects/mama/editions/index.md`):
 ```yaml
 ---
 title: "Mama zabiła mi psa"
@@ -296,8 +302,8 @@ Treść Markdown poniżej to zawartość strony.
 
 Jeśli jednotomówka (np. "Pisto") dostaje kontynuację i staje się serią:
 
-### Krok 1: Usuń `standalone: true` z pierwszego wydania
-Edytuj `content/projects/pisto/editions/01.md`:
+### Krok 1: Zmień nazwę pliku i usuń `standalone: true`
+Zmień nazwę `content/projects/pisto/editions/index.md` → `01.md` i edytuj:
 ```yaml
 ---
 title: "Pisto #1"
@@ -330,8 +336,9 @@ Po rebuildzie strona projektu automatycznie zmieni się z widoku jednotomówki n
 Jeśli seria zostaje wycofana i zostaje tylko jeden tom:
 
 1. Usuń niepotrzebne pliki wydań z `editions/`.
-2. Do pozostałego wydania dodaj `standalone: true`.
-3. Opcjonalnie usuń numer z tytułu.
+2. Zmień nazwę pozostałego pliku na `index.md`.
+3. Do pozostałego wydania dodaj `standalone: true`.
+4. Opcjonalnie usuń numer z tytułu.
 
 ---
 

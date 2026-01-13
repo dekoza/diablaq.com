@@ -340,6 +340,10 @@ def _canonical_project_url(*, line: str, slug: str) -> str:
 
 
 def _canonical_edition_url(*, line: str, project_slug: str, edition_slug: str) -> str:
+    # Specjalny przypadek: index.md -> URL projektu (bez /index/)
+    if edition_slug == "index":
+        return _canonical_project_url(line=line, slug=project_slug)
+
     if line == "diablaq":
         return f"/publikacje/{project_slug}/{edition_slug}/"
     if line == "dobre-licho":

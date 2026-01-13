@@ -24,3 +24,4 @@ buy_links:
 ---
 
 Odcięta od pogrążonego w apokalipsie zombie świata placówka badawcza na samotnej wyspie. Bezowocne prace nad szczepionką, która może ten świat uratować. Czterech wirusologów i jeden mutant. Biały gmach, zielona dżungla, niezwykła przyjaźń i odwieczne ludzkie dążenie do bycia częścią czegoś wielkiego.
+
