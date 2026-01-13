@@ -7,24 +7,40 @@
   <h1>{{ person.name }}</h1>
 </header>
 
-<section>
-  <header class="section-header">
-    <h2>O autorze</h2>
-  </header>
-  {{ person.html_bio | safe }}
-</section>
+<section class="person-hero">
+  {% if person.photo %}
+  <figure class="person-hero__photo">
+    <img src="{{ person.photo }}" alt="{{ person.name }}">
+  </figure>
+  {% endif %}
 
-{% if person.related_editions %}
-  <section>
-    <header class="section-header">
-      <h2>Powiązane publikacje</h2>
-    </header>
-
-    <div class="tiles tiles--editions">
-      {% for e in person.related_editions %}
-        {% include "_partials/edition_tile.html" with context %}
-      {% endfor %}
+  <div class="person-hero__content">
+    <div class="person-hero__bio">
+      {{ person.html_bio | safe }}
     </div>
-  </section>
-{% endif %}
+
+    {% if person.related_editions %}
+    <div class="person-hero__publications">
+      <h2 class="person-hero__publications-title">Publikacje</h2>
+
+      <div class="tiles tiles--editions tiles--compact">
+        {% for e in person.related_editions[:3] %}
+          {% include "_partials/edition_tile.html" with context %}
+        {% endfor %}
+      </div>
+
+      {% if person.related_editions | length > 3 %}
+      <details class="person-hero__more">
+        <summary class="person-hero__more-btn">Rozwiń ({{ person.related_editions | length - 3 }} więcej)</summary>
+        <div class="tiles tiles--editions tiles--compact person-hero__more-tiles">
+          {% for e in person.related_editions[3:] %}
+            {% include "_partials/edition_tile.html" with context %}
+          {% endfor %}
+        </div>
+      </details>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

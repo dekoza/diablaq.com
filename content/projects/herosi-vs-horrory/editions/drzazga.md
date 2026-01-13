@@ -3,6 +3,7 @@ title: "Drzazga"
 release_date: 2025-01-01
 release: "(brak dokładnej daty)"
 cover_alt: "Drzazga – okładka"
+standalone: true
 creators:
   - role: "Rysunki"
     name: "Zvyrke"

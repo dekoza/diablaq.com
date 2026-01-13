@@ -4,7 +4,7 @@ title: "Kontakt"
 
 **Diablaq sp. z o.o.**  
 
-ul. Legionów 52A
+ul. Legionów 52A<br>
 43-300 Bielsko-Biała
 
 

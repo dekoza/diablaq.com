@@ -7,6 +7,8 @@
 - Nowości i zapowiedzi wyliczają się automatycznie podczas builda (bez ręcznego przerzucania między listami).
 - `is_new: true` i `is_announcement: true` **nie mogą** być ustawione jednocześnie.
 - Nazwy folderów/plików w `content/` są częścią adresu URL — nie zmieniaj ich bez konsultacji.
+- **Numeracja wydań** jest automatyczna (chronologicznie). Dla jednotomówek użyj `standalone: true`.
+- **Podserie** (np. BZIK eXXXtra) mają własną numerację — użyj `subseries: "nazwa"`.
 
 Ta strona jest generowana automatycznie z plików tekstowych (Markdown). Nie trzeba edytować HTML.
 
@@ -200,6 +202,50 @@ buy_links:
 ### Pola legacy (zgodność ze starymi linkami)
 - `legacy_anchor` — jeśli stara strona miała linki w stylu `/bzik/#bzik3`.
 
+### Numeracja wydań (automatyczna)
+
+Generator automatycznie nadaje numery wydaniom w serii na podstawie `release_date` (chronologicznie od najstarszego). Numer wyświetlany jest jako badge na okładce (np. `#01`, `#02`).
+
+#### Jednotomówki (bez numeracji)
+Jeśli komiks jest jednotomówką i nie powinien mieć numeru, dodaj:
+```yaml
+standalone: true
+```
+
+Przykład (`content/projects/mama/editions/01.md`):
+```yaml
+---
+title: "Mama zabiła mi psa"
+release_date: 2024-08-12
+standalone: true
+cover_image: "/img/mama.jpg"
+---
+```
+
+#### Podserie (niezależna numeracja)
+Jeśli projekt ma kilka podserii z niezależną numeracją (np. BZIK ma serię główną i eXXXtra), użyj pola `subseries`:
+
+```yaml
+# Seria główna (bez subseries) - numeracja: #01, #02, #03...
+---
+title: "BZIK #1"
+release_date: 2024-01-01
+---
+
+# Podseria eXXXtra - własna numeracja: #01, #02, #03...
+---
+title: "BZIK eXXXtra #1"
+release_date: 2024-05-01
+subseries: "eXXXtra"
+---
+```
+
+#### Ręczne nadpisanie numeru
+Jeśli chcesz wymusić konkretny numer (np. dla numerów specjalnych), użyj:
+```yaml
+issue_number: 0
+```
+
 ---
 
 ## Profile osób (`content/people/<slug>.md`)
@@ -225,6 +271,67 @@ Treść Markdown poniżej to zawartość strony.
    - opis w Markdown
 4. Dodaj okładkę do `img/` (jeśli to nowy plik) i wpisz ścieżkę w `cover_image` lub w `covers`.
 5. Jeśli to zapowiedź, ustaw `is_announcement: true`. Jeśli nowość, `is_new: true`.
+
+---
+
+## Dodanie nowego projektu/serii (krok po kroku)
+1. Utwórz folder w `content/projects/` o nazwie będącej slug-iem (krótka nazwa bez spacji, np. `nowa-seria`).
+2. W tym folderze utwórz plik `project.md`:
+   ```yaml
+   ---
+   title: "Nowa Seria"
+   line: "diablaq"  # lub mecenat, dobre-licho, studio
+   summary: "Krótki opis do listingów"
+   cover_image: "/img/nowa-seria.jpg"
+   ---
+   
+   Dłuższy opis projektu/serii (opcjonalny).
+   ```
+3. Utwórz folder `editions/` wewnątrz projektu.
+4. Dodaj pierwsze wydanie (np. `01.md`) - patrz sekcja "Dodanie nowego wydania".
+
+---
+
+## Zmiana jednotomówki w serię
+
+Jeśli jednotomówka (np. "Pisto") dostaje kontynuację i staje się serią:
+
+### Krok 1: Usuń `standalone: true` z pierwszego wydania
+Edytuj `content/projects/pisto/editions/01.md`:
+```yaml
+---
+title: "Pisto #1"
+release_date: 2025-02-01
+# standalone: true  ← USUŃ tę linię
+cover_image: "/img/pisto1.jpg"
+---
+```
+
+### Krok 2: Dodaj kolejne wydanie
+Utwórz `content/projects/pisto/editions/02.md`:
+```yaml
+---
+title: "Pisto #2"
+release_date: 2025-08-01
+cover_image: "/img/pisto2.jpg"
+---
+```
+
+### Krok 3: Zaktualizuj tytuł (opcjonalnie)
+Jeśli pierwszy tom nie miał numeru w tytule, zaktualizuj go:
+- `title: "Pisto"` → `title: "Pisto #1"`
+
+Po rebuildzie strona projektu automatycznie zmieni się z widoku jednotomówki na listę wydań z numeracją.
+
+---
+
+## Zmiana serii w jednotomówkę (rzadki przypadek)
+
+Jeśli seria zostaje wycofana i zostaje tylko jeden tom:
+
+1. Usuń niepotrzebne pliki wydań z `editions/`.
+2. Do pozostałego wydania dodaj `standalone: true`.
+3. Opcjonalnie usuń numer z tytułu.
 
 ---
 

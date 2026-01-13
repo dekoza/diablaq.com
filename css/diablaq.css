@@ -626,6 +626,7 @@ footer.container {
 
 .edition-tile__cover {
     display: block;
+    position: relative;
 }
 
 .edition-tile__cover img {
@@ -634,6 +635,19 @@ footer.container {
     object-fit: cover;
     border-radius: var(--pico-border-radius);
     display: block;
+}
+
+.edition-tile__number {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: var(--diablaq-red);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    z-index: 1;
 }
 
 .edition-tile__title {
@@ -647,6 +661,12 @@ footer.container {
 .edition-tile__meta {
     margin: 0;
     color: var(--pico-muted-color);
+}
+
+/* Numer wydania (issue number) */
+.issue-number {
+    color: var(--diablaq-red);
+    font-weight: 700;
 }
 
 /* Newsletter (dół strony) */
@@ -859,5 +879,196 @@ footer.container {
 
 .blog-tag:hover {
     background: rgba(0, 0, 0, 0.1);
+}
+
+/* --- Strona autora (dwukolumnowy układ: zdjęcie po lewej, biogram po prawej) --- */
+.person-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.person-hero__photo {
+    margin: 0;
+}
+
+.person-hero__photo img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--pico-border-radius);
+    display: block;
+    object-fit: cover;
+}
+
+.person-hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.person-hero__bio {
+    /* Biogram */
+}
+
+.person-hero__bio p:first-child {
+    margin-top: 0;
+}
+
+.person-hero__bio p:last-child {
+    margin-bottom: 0;
+}
+
+.person-hero__publications {
+    margin-top: 0.5rem;
+}
+
+.person-hero__publications-title {
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+    font-family: var(--diablaq-font-heading), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Kompaktowa siatka publikacji (3 kolumny na desktop) */
+.tiles--compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 767px) {
+    .tiles--compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Rozwijana sekcja "więcej publikacji" */
+.person-hero__more {
+    margin-top: 1rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+}
+
+.person-hero__more-btn {
+    cursor: pointer;
+    font-family: var(--diablaq-font-heading), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--diablaq-red-dark);
+    padding: 0.5rem 0;
+    list-style: none;
+}
+
+.person-hero__more-btn::-webkit-details-marker {
+    display: none;
+}
+
+.person-hero__more-btn::marker {
+    content: "";
+}
+
+.person-hero__more-btn:hover {
+    color: var(--diablaq-red);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.person-hero__more-tiles {
+    margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    .person-hero {
+        grid-template-columns: 335px 1fr;
+        gap: 2.5rem;
+        align-items: start;
+    }
+
+    .person-hero__photo img {
+        aspect-ratio: 335 / 474;
+        max-height: 474px;
+    }
+}
+
+.person-publications {
+    margin-top: 2.5rem;
+}
+
+/* --- Lista osób (kafelki z miniaturą zdjęcia) --- */
+.tiles--people {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .tiles--people {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .tiles--people {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.person-card {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.person-card__photo {
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--pico-border-radius);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.person-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.person-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-family: var(--diablaq-font-heading), sans-serif;
+    font-size: 3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--pico-muted-color);
+    text-decoration: none;
+}
+
+.person-card__photo:hover,
+.person-card__photo:focus-visible {
+    opacity: 0.9;
+}
+
+.person-card__name {
+    margin: 0.65rem 0 0;
+    font-family: var(--diablaq-font-heading), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1rem;
+}
+
+.person-card__name a {
+    text-decoration: none;
+}
+
+.person-card__name a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
 }
 

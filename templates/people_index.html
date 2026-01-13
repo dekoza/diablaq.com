@@ -10,12 +10,19 @@
 
 <section>
   {% if people %}
-    <div class="tiles tiles--projects">
+    <div class="tiles tiles--people">
       {% for p in people %}
-        <article class="project-card">
-          <a class="project-card__cover project-card__cover--text" href="/ludzie/{{ p.slug }}/" aria-label="{{ p.name }}">
-            <span class="project-card__cover-text">{{ p.name }}</span>
+        <article class="person-card">
+          <a class="person-card__photo" href="/ludzie/{{ p.slug }}/" aria-label="{{ p.name }}">
+            {% if p.photo_thumb or p.photo %}
+              <img src="{{ p.photo_thumb or p.photo }}" alt="{{ p.name }}" loading="lazy">
+            {% else %}
+              <span class="person-card__placeholder">{{ p.name[0] }}</span>
+            {% endif %}
           </a>
+          <h3 class="person-card__name">
+            <a href="/ludzie/{{ p.slug }}/">{{ p.name }}</a>
+          </h3>
         </article>
       {% endfor %}
     </div>

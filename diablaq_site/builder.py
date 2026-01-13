@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import shutil
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
@@ -10,6 +11,7 @@ from urllib.parse import quote
 import frontmatter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown import markdown
+from PIL import Image
 
 
 @dataclass(frozen=True)
@@ -52,6 +54,10 @@ class Edition:
     specs: dict[str, str]
     buy_links: list[BuyLink]
     html_body: str
+    standalone: bool
+    subseries: str | None
+    issue_number: int | None
+    issue_number_display: str | None
 
 
 @dataclass(frozen=True)
@@ -71,6 +77,8 @@ class Project:
 class Person:
     slug: str
     name: str
+    photo: str | None
+    photo_thumb: str | None
     html_bio: str
     related_editions: list[Edition]
 
@@ -152,6 +160,26 @@ def _copy_tree(src: Path, dst: Path) -> None:
     if not src.exists():
         return
     shutil.copytree(src, dst, dirs_exist_ok=True)
+
+
+def _generate_thumbnail(src: Path, dst: Path, size: tuple[int, int] = (300, 300)) -> None:
+    """Generuje miniaturę zdjęcia o podanym rozmiarze (domyślnie 300x300)."""
+    if not src.exists():
+        return
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    with Image.open(src) as img:
+        # Konwersja do RGB jeśli potrzeba (np. dla RGBA/PNG)
+        if img.mode in ("RGBA", "P"):
+            img = img.convert("RGB")
+        # Thumbnail zachowuje proporcje i mieści się w podanym rozmiarze
+        img.thumbnail(size, Image.Resampling.LANCZOS)
+        img.save(dst, "JPEG", quality=85, optimize=True)
+
+
+def _thumb_path_from_photo(photo_path: str) -> str:
+    """Generuje ścieżkę do miniatury na podstawie ścieżki do zdjęcia."""
+    p = Path(photo_path)
+    return str(p.parent / f"{p.stem}_thumb.jpg")
 
 
 def _write_html(path: Path, html: str) -> None:
@@ -388,7 +416,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             )
         )
 
-        # Editions
+        # Editions - zbieramy tymczasowo dane, potem nadajemy numerację
+        project_editions_data: list[tuple[dict, str, date, str]] = []  # (emeta, ebody_html, sort_date, ed_slug)
+
         for edition_md in sorted((project_dir / "editions").glob("*.md")):
             emeta, ebody_html = _read_markdown_file(edition_md)
 
@@ -398,13 +428,51 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                 source_path=edition_md,
             )
 
+            ed_slug = edition_md.stem
+
+            # Jeśli release_date jest None, do sortowania/listingów przyjmujemy bardzo odległą przyszłość.
+            sort_date = release_date or date(9999, 12, 31)
+
+            project_editions_data.append((emeta, ebody_html, sort_date, ed_slug))
+
+        # Automatyczna numeracja dla nie-standalone wydań, grupowana po subseries
+        # Każda podseria (lub brak = główna) ma własną niezależną numerację
+        subseries_editions: dict[str | None, list[tuple[dict, str, date, str]]] = defaultdict(list)
+        for emeta, ebody_html, sort_date, ed_slug in project_editions_data:
+            if not emeta.get("standalone", False):
+                subseries_key = emeta.get("subseries")  # None = seria główna
+                subseries_editions[subseries_key].append((emeta, ebody_html, sort_date, ed_slug))
+
+        # Mapuj slug -> numer (tylko dla nie-standalone, per subseries)
+        slug_to_number: dict[str, int] = {}
+        slug_to_subseries: dict[str, str | None] = {}
+
+        for subseries_key, items in subseries_editions.items():
+            # Sortuj chronologicznie (od najstarszych) dla przypisania numerów
+            items_sorted = sorted(items, key=lambda x: x[2])  # sort by sort_date
+            for idx, (emeta, _, _, ed_slug) in enumerate(items_sorted, start=1):
+                # Ręczny numer ma priorytet
+                manual_number = emeta.get("issue_number")
+                if manual_number is not None:
+                    slug_to_number[ed_slug] = int(manual_number)
+                else:
+                    slug_to_number[ed_slug] = idx
+                slug_to_subseries[ed_slug] = subseries_key
+
+        # Teraz twórz obiekty Edition z numeracją
+        for emeta, ebody_html, sort_date, ed_slug in project_editions_data:
+            release_date = _parse_optional_date(
+                emeta.get("release_date"),
+                source_path=project_dir / "editions" / f"{ed_slug}.md",
+            )
+
             force_new = bool(emeta.get("force_new", False) or emeta.get("is_new", False))
             force_announcement = bool(
                 emeta.get("force_announcement", False) or emeta.get("is_announcement", False)
             )
             if force_new and force_announcement:
                 raise ValueError(
-                    f"Pozycja nie może mieć jednocześnie force_new i force_announcement: {edition_md}"
+                    f"Pozycja nie może mieć jednocześnie force_new i force_announcement: {project_dir / 'editions' / ed_slug}.md"
                 )
 
             auto_is_new, auto_is_announcement = _derive_flags(release_date=release_date, today=date.today())
@@ -412,25 +480,29 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             is_new = force_new or (auto_is_new and not force_announcement)
             is_announcement = force_announcement or (auto_is_announcement and not force_new)
 
-            ed_slug = edition_md.stem
-
             # Kanoniczne URL-e dla wydań (wg planu):
-            url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
-
-            # Jeśli release_date jest None, do sortowania/listingów przyjmujemy bardzo odległą przyszłość.
-            # Dzięki temu zapowiedzi bez daty nie giną na dole list.
-            sort_date = release_date or date(9999, 12, 31)
+            ed_url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
 
             cover_image, cover_alt = _pick_cover(emeta)
-            covers = _parse_image_list(emeta, "covers", source_path=edition_md)
-            previews = _parse_image_list(emeta, "previews", source_path=edition_md)
-            creators, creator_names = _parse_creators(emeta, source_path=edition_md)
+            covers = _parse_image_list(emeta, "covers", source_path=project_dir / "editions" / f"{ed_slug}.md")
+            previews = _parse_image_list(emeta, "previews", source_path=project_dir / "editions" / f"{ed_slug}.md")
+            creators, creator_names = _parse_creators(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
             specs = _parse_specs(emeta)
-            buy_links = _parse_buy_links(emeta, source_path=edition_md)
+            buy_links = _parse_buy_links(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
+
+            # Standalone, subseries i numeracja
+            is_standalone = bool(emeta.get("standalone", False))
+            subseries = str(emeta.get("subseries") or "").strip() or None
+            if is_standalone:
+                issue_number = None
+                issue_number_display = None
+            else:
+                issue_number = slug_to_number.get(ed_slug)
+                issue_number_display = f"{issue_number:02d}" if issue_number is not None else None
 
             editions.append(
                 Edition(
-                    url=url,
+                    url=ed_url,
                     title=str(emeta.get("title") or ed_slug),
                     project_slug=slug,
                     release=str(emeta.get("release") or "") or None,
@@ -448,6 +520,10 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                     specs=specs,
                     buy_links=buy_links,
                     html_body=ebody_html,
+                    standalone=is_standalone,
+                    subseries=subseries,
+                    issue_number=issue_number,
+                    issue_number_display=issue_number_display,
                 )
             )
 
@@ -457,7 +533,13 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         meta, body_html = _read_markdown_file(person_md)
         slug = person_md.stem
         name = str(meta.get("name") or slug)
-        people.append(Person(slug=slug, name=name, html_bio=body_html, related_editions=[]))
+        photo = str(meta.get("photo") or "").strip() or None
+        # Automatycznie generuj ścieżkę miniatury jeśli jest zdjęcie
+        if photo:
+            photo_thumb = _thumb_path_from_photo(photo)
+        else:
+            photo_thumb = None
+        people.append(Person(slug=slug, name=name, photo=photo, photo_thumb=photo_thumb, html_bio=body_html, related_editions=[]))
 
     # Blog posts (content/blog/*.md)
     blog_root = content_dir / "blog"
@@ -540,6 +622,8 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             Person(
                 slug=person.slug,
                 name=person.name,
+                photo=person.photo,
+                photo_thumb=person.photo_thumb,
                 html_bio=person.html_bio,
                 related_editions=related_sorted,
             )
@@ -773,6 +857,17 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     # --- copy static assets
     _copy_tree(root / "img", out_dir / "img")
     _copy_tree(root / "css", out_dir / "css")
+
+    # --- generate thumbnails for people photos
+    for person in people:
+        if person.photo:
+            # photo jest ścieżką URL np. "/img/people/qrjusz.jpg"
+            # musimy znaleźć plik źródłowy i wygenerować miniaturę
+            src_photo = root / person.photo.lstrip("/")
+            if src_photo.exists():
+                thumb_path = _thumb_path_from_photo(person.photo)
+                dst_thumb = out_dir / thumb_path.lstrip("/")
+                _generate_thumbnail(src_photo, dst_thumb)
 
     for file_name in ["CNAME", ".nojekyll"]:
         src = root / file_name
