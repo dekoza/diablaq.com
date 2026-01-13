@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import shutil
 from collections import defaultdict
 from dataclasses import dataclass
@@ -12,6 +13,43 @@ import frontmatter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown import markdown
 from PIL import Image
+
+
+# Lista polskich spójników i przyimków, które nie powinny zostawać na końcu linii
+_ORPHAN_WORDS = {
+    # Spójniki
+    "a", "i", "o", "u", "w", "z", "k",
+    # Przyimki
+    "do", "na", "od", "po", "za", "ze", "we", "ku",
+    # Inne krótkie słowa
+    "to", "co", "że", "by", "są", "je", "go", "mu", "ją", "mi", "ty", "on", "my", "wy",
+}
+
+# Regex pattern: spacja + słowo z listy + spacja (case insensitive)
+_ORPHAN_PATTERN = re.compile(
+    r'(\s)(' + '|'.join(re.escape(w) for w in _ORPHAN_WORDS) + r')(\s)',
+    re.IGNORECASE
+)
+
+
+def _fix_orphans(text: str) -> str:
+    """Zamienia spację po spójnikach/przyimkach na &nbsp; aby uniknąć zawieszek.
+
+    Przykład: "W tym tygodniu o godzinie" -> "W&nbsp;tym tygodniu o&nbsp;godzinie"
+    """
+    def replace_orphan(match: re.Match) -> str:
+        before_space = match.group(1)
+        word = match.group(2)
+        # Zamieniamy spację PO słowie na &nbsp;
+        return f'{before_space}{word}&nbsp;'
+
+    # Iterujemy wielokrotnie, bo pattern może się nakładać
+    prev_text = None
+    while prev_text != text:
+        prev_text = text
+        text = _ORPHAN_PATTERN.sub(replace_orphan, text)
+
+    return text
 
 
 @dataclass(frozen=True)
@@ -155,6 +193,8 @@ def _read_markdown_file(path: Path) -> tuple[dict, str]:
     meta = dict(post.metadata or {})
     body_md = post.content or ""
     body_html = markdown(body_md, extensions=["extra", "sane_lists"])
+    # Napraw zawieszki typograficzne (spójniki na końcu linii)
+    body_html = _fix_orphans(body_html)
     return meta, body_html
 
 
