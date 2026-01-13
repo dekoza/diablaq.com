@@ -401,7 +401,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     )
 
     # Bazowy URL strony do canonical (opcjonalny, ale zalecany na produkcji).
-    # Jeśli nie ustawisz, canonical będzie ścieżką absolutną (np. /publikacje/spz/01/).
+    # Jeśli nie ustawisz, canonical będzie ścieżką absolutną (np. /publikacje/spolka-zlo/01/).
     site_url = os.environ.get("DIABLAQ_SITE_URL", "").rstrip("/")
 
     # --- load content

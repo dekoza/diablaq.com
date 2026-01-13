@@ -16,7 +16,7 @@ def main() -> None:
     dist = repo / "dist"
 
     # SPZ #2 (kanonicznie pod /publikacje/)
-    spz2 = dist / "publikacje" / "spz" / "02" / "index.html"
+    spz2 = dist / "publikacje" / "spolka-zlo" / "02" / "index.html"
 
     checks = [
         Check(

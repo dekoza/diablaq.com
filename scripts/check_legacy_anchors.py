@@ -26,10 +26,10 @@ def main() -> None:
         ),
         Check(
             name="SPZ landing",
-            path=dist / "spz" / "index.html",
+            path=dist / "spolka-zlo" / "index.html",
             needles=[
                 'id="spz2"',
-                "/spz/02/",
+                "/spolka-zlo/02/",
             ],
         ),
     ]
