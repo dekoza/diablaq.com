@@ -54,4 +54,6 @@ Repozytorium `diablaq.com` jest statyczną stroną wydawnictwa (GitHub Pages). C
 
 ---
 
-Jeśli chcesz, zacznij od wygenerowania minimalnego szkicu generatora i jednego widoku (home) z danymi przykładowymi, a potem iteruj.
+Każdy komiks może mieć nie tylko alternatywną okładkę, ale też wydanie w dwóch wersjach oprawy (twarda i miękka).
+Przykładem jest komiks Belzebubs, który ma właśnie dwie wersje oprawy. Nie chcę mieć osobnych stron na wersje, ale potrzebuję sposób, żeby na stronie danego komiksu móc wprowadzić jego alternatywną wersję z innym numerem ISBN, rodzajem oprawy oraz/lub typem wydania (papierowe / elektroniczne).
+Na dobrą sprawę, żeby ograniczyć liczbę zmiennych można przyjąć wersję elektroniczną jako odrębny rodzaj oprawy i umieścić to pod nazwą "rodzaj wydania" z wartościami "miękka", "twarda", "elektroniczna" oraz opcjonalną liczbą określającą nakład wersji limitowanej oraz zmienną typu bool określającą, czy ów limitowany nakład jest numerowany.

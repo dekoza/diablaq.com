@@ -59,6 +59,35 @@ class BuyLink:
 
 
 @dataclass(frozen=True)
+class EditionVariant:
+    """Pojedynczy wariant wydania bez osobnej podstrony.
+
+    Wariant może opisywać oprawę (miękka/twarda) albo wersję (elektroniczna).
+
+    Dane w frontmatter (docelowo):
+
+    variants:
+      - binding: miekka
+        isbn13: "..."
+        buy_links: [...]
+
+      - version: elektroniczna
+        isbn13: "..."
+        buy_links: [...]
+
+    Dla kompatybilności wspieramy też legacy:
+      - kind: miekka|twarda|elektroniczna
+    """
+
+    binding: str | None  # miekka | twarda
+    version: str | None  # elektroniczna
+    isbn13: str
+    limited_print_run: int | None
+    numbered: bool
+    buy_links: list[BuyLink]
+
+
+@dataclass(frozen=True)
 class Creator:
     role: str | None
     name: str
@@ -92,6 +121,7 @@ class Edition:
     creator_names: list[str]
     specs: dict[str, str]
     buy_links: list[BuyLink]
+    variants: list[EditionVariant]
     html_body: str
     standalone: bool
     subseries: str | None
@@ -242,7 +272,7 @@ def _generate_thumbnail(src: Path, dst: Path, size: tuple[int, int] = (300, 300)
         # Konwersja do RGB jeśli potrzeba (np. dla RGBA/PNG)
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
-        # Thumbnail zachowuje proporcje i mieści się w podanym rozmiarze
+        # Thumbnail zachowuje proporcje i mieści się in podanym rozmiarze
         img.thumbnail(size, Image.Resampling.LANCZOS)
         img.save(dst, "JPEG", quality=85, optimize=True)
 
@@ -339,6 +369,137 @@ def _parse_buy_links(meta: dict, *, source_path: Path) -> list[BuyLink]:
         links.append(BuyLink(label=label, url=url))
 
     return links
+
+
+def _normalize_isbn13(value: str) -> str:
+    # Akceptujemy zapis z myślnikami/spacjami, ale przechodzimy na ciąg cyfr.
+    return "".join(ch for ch in value if ch.isdigit())
+
+
+def _is_valid_isbn13(isbn13: str) -> bool:
+    """Walidacja checksum ISBN-13.
+
+    Zasada: (suma cyfr na pozycjach parzystych*3 + nieparzystych) % 10 == 0.
+    """
+
+    if len(isbn13) != 13 or not isbn13.isdigit():
+        return False
+
+    total = 0
+    for idx, ch in enumerate(isbn13):
+        digit = int(ch)
+        total += digit * 3 if (idx % 2 == 1) else digit
+
+    return total % 10 == 0
+
+
+_ALLOWED_BINDINGS = {"miekka", "twarda"}
+_ALLOWED_VERSIONS = {"elektroniczna"}
+_ALLOWED_VARIANT_KINDS = _ALLOWED_BINDINGS | _ALLOWED_VERSIONS
+
+
+def _parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
+    raw = meta.get("variants")
+    if raw is None:
+        return []
+
+    if not isinstance(raw, list):
+        raise ValueError(f"variants musi być listą w {source_path}")
+
+    out: list[EditionVariant] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ValueError(f"variants[{i}] musi być dict w {source_path}")
+
+        # Nowy format: binding/version; fallback: legacy kind
+        binding = _as_str(item.get("binding") or "") or None
+        version = _as_str(item.get("version") or "") or None
+
+        legacy_kind = _as_str(item.get("kind") or "") or None
+        if legacy_kind and (binding or version):
+            raise ValueError(
+                f"variants[{i}] nie może mieć jednocześnie (binding/version) i kind w {source_path}"
+            )
+
+        if legacy_kind:
+            if legacy_kind not in _ALLOWED_VARIANT_KINDS:
+                raise ValueError(
+                    f"variants[{i}].kind musi być jednym z {_ALLOWED_VARIANT_KINDS} w {source_path}"
+                )
+            if legacy_kind in _ALLOWED_BINDINGS:
+                binding = legacy_kind
+                version = None
+            else:
+                binding = None
+                version = legacy_kind
+
+        # Walidacja osi: dokładnie jedno z (binding, version)
+        if not binding and not version:
+            raise ValueError(
+                f"variants[{i}] musi mieć binding albo version (lub legacy kind) w {source_path}"
+            )
+        if binding and version:
+            raise ValueError(
+                f"variants[{i}] nie może mieć jednocześnie binding i version w {source_path}"
+            )
+        if binding and binding not in _ALLOWED_BINDINGS:
+            raise ValueError(
+                f"variants[{i}].binding musi być jednym z {_ALLOWED_BINDINGS} w {source_path}"
+            )
+        if version and version not in _ALLOWED_VERSIONS:
+            raise ValueError(
+                f"variants[{i}].version musi być jednym z {_ALLOWED_VERSIONS} w {source_path}"
+            )
+
+        isbn13 = _normalize_isbn13(_as_str(item.get("isbn13") or ""))
+        if not isbn13:
+            raise ValueError(f"variants[{i}].isbn13 jest wymagane w {source_path}")
+        if not _is_valid_isbn13(isbn13):
+            raise ValueError(
+                f"variants[{i}].isbn13={item.get('isbn13')!r} nie wygląda jak poprawny ISBN-13 w {source_path}"
+            )
+
+        limited_print_run_raw = item.get("limited_print_run")
+        limited_print_run: int | None
+        if limited_print_run_raw is None or limited_print_run_raw == "":
+            limited_print_run = None
+        else:
+            try:
+                limited_print_run = int(limited_print_run_raw)
+            except Exception as exc:  # noqa: BLE001
+                raise ValueError(
+                    f"variants[{i}].limited_print_run musi być liczbą całkowitą w {source_path}"
+                ) from exc
+            if limited_print_run <= 0:
+                raise ValueError(
+                    f"variants[{i}].limited_print_run musi być > 0 w {source_path}"
+                )
+
+        numbered_raw = item.get("numbered")
+        numbered = bool(numbered_raw) if numbered_raw is not None else False
+        if numbered and limited_print_run is None:
+            raise ValueError(
+                f"variants[{i}].numbered=true wymaga podania limited_print_run w {source_path}"
+            )
+
+        buy_links = _parse_buy_links({"buy_links": item.get("buy_links")}, source_path=source_path)
+        if not buy_links:
+            raise ValueError(
+                f"variants[{i}].buy_links jest wymagane (lista linków zakupowych per wariant) w {source_path}"
+            )
+
+        out.append(
+            EditionVariant(
+                binding=binding,
+                version=version,
+                isbn13=isbn13,
+                limited_print_run=limited_print_run,
+                numbered=numbered,
+                buy_links=buy_links,
+            )
+        )
+
+    return out
 
 
 def _parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], list[str]]:
@@ -567,6 +728,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             creators, creator_names = _parse_creators(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
             specs = _parse_specs(emeta)
             buy_links = _parse_buy_links(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
+            variants = _parse_variants(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
 
             # Standalone, subseries i numeracja
             is_standalone = bool(emeta.get("standalone", False))
@@ -598,6 +760,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
                     creator_names=creator_names,
                     specs=specs,
                     buy_links=buy_links,
+                    variants=variants,
                     html_body=ebody_html,
                     standalone=is_standalone,
                     subseries=subseries,
