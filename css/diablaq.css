@@ -139,8 +139,8 @@ footer a:focus-visible {
 }
 
 .site-logo img {
-    height: 32px;
-    width: auto;
+    /*height: 32px;*/
+    /*width: auto;*/
     display: block;
 }
 
