@@ -3,7 +3,7 @@ cover_image: /img/pisto1.jpg
 legacy_landing: true
 legacy_path: /pisto/
 line: dobre-licho
-summary: Seria z imprintu Dobre Licho.
+#summary: Seria z imprintu Dobre Licho.
 title: Pisto
 ---
 

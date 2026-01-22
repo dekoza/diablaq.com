@@ -1,8 +1,6 @@
 ---
-title: "PAAtrzcie, co oni robią!"
+cover_image: "/img/paa1.jpg"
 line: studio
-summary: "Komiks wydany dla PAA."
-legacy_path: /studio/paatrzcie-co-oni-robia/
+summary: Państwowa Agencja Atomistyki
+title: PAAtrzcie, co oni robią!
 ---
-
-Jednotomowy komiks zrealizowany przez nasze studio dla zewnętrznego klienta (PAA).

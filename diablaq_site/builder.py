@@ -69,10 +69,15 @@ class EditionVariant:
     variants:
       - binding: miekka
         isbn13: "..."
+        specs:
+          "Cena": "69,90 zł"
+          "Wymiary": "165 x 235 mm"
         buy_links: [...]
 
       - version: elektroniczna
         isbn13: "..."
+        specs:
+          "Cena": "..."
         buy_links: [...]
 
     Dla kompatybilności wspieramy też legacy:
@@ -85,6 +90,7 @@ class EditionVariant:
     limited_print_run: int | None
     numbered: bool
     buy_links: list[BuyLink]
+    specs: dict[str, str]
 
 
 @dataclass(frozen=True)
@@ -406,6 +412,10 @@ def _parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
     if not isinstance(raw, list):
         raise ValueError(f"variants musi być listą w {source_path}")
 
+    # Fallback migracyjny: jeśli ktoś jeszcze trzyma specs na poziomie wydania,
+    # a ma już variants, to dopniemy je do wariantów, o ile wariant nie ma własnych specs.
+    edition_specs_fallback = _parse_specs(meta)
+
     out: list[EditionVariant] = []
     for i, item in enumerate(raw):
         if not isinstance(item, dict):
@@ -483,10 +493,14 @@ def _parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
             )
 
         buy_links = _parse_buy_links({"buy_links": item.get("buy_links")}, source_path=source_path)
-        if not buy_links:
-            raise ValueError(
-                f"variants[{i}].buy_links jest wymagane (lista linków zakupowych per wariant) w {source_path}"
-            )
+        # if not buy_links:
+        #     raise ValueError(
+        #         f"variants[{i}].buy_links jest wymagane (lista linków zakupowych per wariant) w {source_path}"
+        #     )
+
+        specs = _parse_specs(item)
+        if not specs and edition_specs_fallback:
+            specs = dict(edition_specs_fallback)
 
         out.append(
             EditionVariant(
@@ -496,6 +510,7 @@ def _parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
                 limited_print_run=limited_print_run,
                 numbered=numbered,
                 buy_links=buy_links,
+                specs=specs,
             )
         )
 
@@ -903,8 +918,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     # /nowe/ – jeśli puste, pokaż 4 najnowsze wydania niezależnie od daty
     nowe_items = new_editions if new_editions else newest_anytime
     nowe_desc = (
-        "Najnowsze wydania Diablaq. \n"
-        "Jeśli w tej chwili nie ma aktywnych 'nowości' (okno 6 tygodni), pokazujemy ostatnie publikacje."
+        "Najnowsze publikacje."
     )
     html = render(
         "listing.html",

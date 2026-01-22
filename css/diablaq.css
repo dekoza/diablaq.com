@@ -616,6 +616,19 @@ footer a:focus-visible {
 
 .edition-details__specs {
     margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
+    align-items: baseline;
+}
+
+.edition-details__specs dt {
+    margin: 0;
+}
+
+.edition-details__specs dd {
+    margin: 0;
 }
 
 .edition-details__buy {

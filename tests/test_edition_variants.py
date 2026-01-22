@@ -26,9 +26,9 @@ def test_build_with_variants(tmp_path: Path) -> None:
 
     build_site(root=repo_root, out_dir=out_dir)
 
-    # Belzebubs ma w repo dwa wydania z wariantami; sprawdzamy, że podstrony powstają.
-    assert (out_dir / "publikacje" / "belzebubs" / "standard" / "index.html").exists()
-    assert (out_dir / "publikacje" / "belzebubs" / "ekskluzywne" / "index.html").exists()
+    # Belzebubs ma w repo wydania z wariantami; sprawdzamy, że podstrony powstają.
+    assert (out_dir / "publikacje" / "belzebubs" / "t01" / "index.html").exists()
+    assert (out_dir / "publikacje" / "belzebubs" / "t02" / "index.html").exists()
 
 
 @pytest.mark.parametrize(
