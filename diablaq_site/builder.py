@@ -207,9 +207,8 @@ def _read_markdown_file(path: Path) -> tuple[dict, str]:
 
 
 
-def _render(env: Environment, template_name: str, **ctx):
-    template = env.get_template(template_name)
-    return template.render(**ctx)
+def render_template(env: Environment, template_name: str, **ctx) -> str:
+    return env.get_template(template_name).render(**ctx)
 
 
 def _coerce_str_list(value) -> list[str]:
@@ -779,24 +778,12 @@ def build_site(*, root: Path, out_dir: Path) -> None:
 
     nav_projects = sorted(projects, key=lambda p: p.title.lower())
 
-    def render(template_name: str, **ctx) -> str:
-        return _render(
-            env,
-            template_name,
-            nav_projects=nav_projects,
-            site_url=site_url,
-            **ctx,
-        )
-
-    def _abs_url(path: str) -> str:
-        path = "/" + path.lstrip("/")
-        return f"{site_url}{path}" if site_url else path
 
     # --- render pages
     # Home
-    html = render(
-        "home.html",
-        canonical_url=_abs_url("/"),
+    html = render_template(env, 
+        "home.html", nav_projects=nav_projects, site_url=site_url,
+        canonical_url=(site_url + "/"),
         projects=projects,
         new_editions=new_editions[:12],
         announcements=announcements[:12],
@@ -809,9 +796,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     nowe_desc = (
         "Najnowsze publikacje."
     )
-    html = render(
-        "listing.html",
-        canonical_url=_abs_url("/nowe/"),
+    html = render_template(env, 
+        "listing.html", nav_projects=nav_projects, site_url=site_url,
+        canonical_url=(site_url + "/nowe/"),
         title="Nowości",
         description=nowe_desc,
         items=nowe_items,
@@ -820,9 +807,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
 
     # /zapowiedzi/ – jeśli puste, pokaż komunikat
     zap_empty = "Już wkrótce ogłosimy kolejne zapowiedzi. Zajrzyj ponownie za jakiś czas."
-    html = render(
-        "listing.html",
-        canonical_url=_abs_url("/zapowiedzi/"),
+    html = render_template(env, 
+        "listing.html", nav_projects=nav_projects, site_url=site_url,
+        canonical_url=(site_url + "/zapowiedzi/"),
         title="Zapowiedzi",
         description="Co nowego nadchodzi w Diablaq.",
         items=announcements,
@@ -832,30 +819,30 @@ def build_site(*, root: Path, out_dir: Path) -> None:
 
     # Pages
     for page in pages:
-        html = render("page.html", canonical_url=_abs_url(f"/{page.slug}/"), page=page)
+        html = render_template(env, "page.html", nav_projects=nav_projects, site_url=site_url, canonical_url=(site_url + f"/{page.slug}/"), page=page)
         _write_html(out_dir / page.slug / "index.html", html)
 
     # People
-    html = render("people_index.html", canonical_url=_abs_url("/ludzie/"), people=people)
+    html = render_template(env, "people_index.html", nav_projects=nav_projects, site_url=site_url, canonical_url=(site_url + "/ludzie/"), people=people)
     _write_html(out_dir / "ludzie" / "index.html", html)
 
     for p in people:
-        html = render(
-            "person.html",
-            canonical_url=_abs_url(f"/ludzie/{p.slug}/"),
+        html = render_template(env, 
+            "person.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + f"/ludzie/{p.slug}/"),
             person=p,
         )
         _write_html(out_dir / "ludzie" / p.slug / "index.html", html)
 
     # Blog
-    html = render("blog_index.html", canonical_url=_abs_url("/blog/"), posts=blog_posts_sorted)
+    html = render_template(env, "blog_index.html", nav_projects=nav_projects, site_url=site_url, canonical_url=(site_url + "/blog/"), posts=blog_posts_sorted)
     _write_html(out_dir / "blog" / "index.html", html)
 
     for post in blog_posts_sorted:
         tags = [{"name": t, "url": f"/blog/tag/{slugify_tag(t)}/"} for t in post.tags]
-        html = render(
-            "blog_post.html",
-            canonical_url=_abs_url(post.url),
+        html = render_template(env, 
+            "blog_post.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + post.url),
             post=post,
             post_tags=tags,
         )
@@ -872,9 +859,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
 
     for tag, items in sorted(tag_map.items(), key=lambda kv: kv[0].lower()):
         tag_slug = slugify_tag(tag)
-        html = render(
-            "blog_index.html",
-            canonical_url=_abs_url(f"/blog/tag/{tag_slug}/"),
+        html = render_template(env, 
+            "blog_index.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + f"/blog/tag/{tag_slug}/"),
             posts=sorted(items, key=lambda p: p.date, reverse=True),
         )
         _write_html(out_dir / "blog" / "tag" / tag_slug / "index.html", html)
@@ -889,9 +876,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         index_edition = next((e for e in pr_editions_sorted if e.url.endswith("/index/")), None)
 
         # Render kanoniczna strona projektu
-        html = render(
-            "project.html",
-            canonical_url=_abs_url(pr.url),
+        html = render_template(env, 
+            "project.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + pr.url),
             project=pr,
             editions=pr_editions_sorted,
         )
@@ -913,9 +900,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             ):
                 pass
             else:
-                legacy_html = render(
-                    "redirect.html",
-                    canonical_url=_abs_url(pr.url),
+                legacy_html = render_template(env, 
+                    "redirect.html", nav_projects=nav_projects, site_url=site_url,
+                    canonical_url=(site_url + pr.url),
                     to_url=pr.url,
                 )
                 _write_html(out_dir / pr.slug / "index.html", legacy_html)
@@ -927,9 +914,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             and not pr.legacy_landing
             and pr.legacy_path.rstrip("/") != legacy_slug_path.rstrip("/")
         ):
-            legacy_html = render(
-                "redirect.html",
-                canonical_url=_abs_url(pr.url),
+            legacy_html = render_template(env, 
+                "redirect.html", nav_projects=nav_projects, site_url=site_url,
+                canonical_url=(site_url + pr.url),
                 to_url=pr.url,
             )
             _write_html(out_dir / pr.legacy_path.strip("/") / "index.html", legacy_html)
@@ -940,9 +927,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             if e.url.endswith("/index/"):
                 continue
 
-            html = render(
-                "edition.html",
-                canonical_url=_abs_url(e.url),
+            html = render_template(env, 
+                "edition.html", nav_projects=nav_projects, site_url=site_url,
+                canonical_url=(site_url + e.url),
                 edition=e,
                 project=pr,
             )
@@ -952,9 +939,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     # Special legacy alias rules (minimal): /zvyrke/ -> /ludzie/zvyrke/
     zv = next((p for p in people if p.slug == "zvyrke"), None)
     if zv is not None:
-        html = render(
-            "redirect.html",
-            canonical_url=_abs_url(f"/ludzie/{zv.slug}/"),
+        html = render_template(env, 
+            "redirect.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + f"/ludzie/{zv.slug}/"),
             to_url=f"/ludzie/{zv.slug}/",
         )
         _write_html(out_dir / "zvyrke" / "index.html", html)
@@ -962,9 +949,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     # --- sections (landing pages)
     def _write_section(path_slug: str, *, title: str, line: str, description: str | None = None) -> None:
         items = [p for p in projects if p.line == line]
-        html = render(
-            "section.html",
-            canonical_url=_abs_url(f"/{path_slug}/"),
+        html = render_template(env, 
+            "section.html", nav_projects=nav_projects, site_url=site_url,
+            canonical_url=(site_url + f"/{path_slug}/"),
             title=title,
             description=description,
             projects=items,

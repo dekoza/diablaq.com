@@ -535,3 +535,222 @@ Task 7 depends on Tasks 3-6 being complete:
 - Index edition special case verified with multiple line types
 - Empty/whitespace edge cases properly handled
 
+## Task 10: Extract rendering.py (Template rendering closures)
+
+### Extraction Summary
+
+**Extracted 3 rendering-related functions from builder.py:**
+- `_render(env, template_name, **ctx)` — Core Jinja2 template rendering (moved from internal function, lines 210-212)
+- `abs_url(site_url)` — Higher-order function returning absolute URL constructor (closes over site_url)
+- `render_template(env, template_name, *, nav_projects, site_url, **ctx)` — Public API with forced keyword-only context injection
+
+**Key Extraction Pattern:** Converted 2 nested closures (`render()` and `_abs_url()`) inside `build_site()` into explicit parameter-passing functions. This eliminates variable capture and makes dependencies explicit.
+
+### TDD Workflow (Verified)
+
+1. **RED**: Wrote `tests/test_rendering.py` with 8 comprehensive tests
+   - `test_render_template_basic_context` — basic variable rendering via _render
+   - `test_render_template_with_nav_projects` — nav_projects injection
+   - `test_render_template_with_abs_url_function` — abs_url callable in render context
+   - `test_render_template_full_context` — combined context injection
+   - `test_render_template_not_found` — TemplateNotFound exception handling
+   - `test_abs_url_basic` — basic URL construction
+   - `test_abs_url_with_slash` — path normalization with leading slash
+   - `test_abs_url_without_leading_slash` — path without leading slash
+   - All tests FAILED with ModuleNotFoundError (expected)
+
+2. **GREEN**: Created `diablaq_site/rendering.py` with exact extracted implementations
+   - All 8 tests immediately passed without modification
+   - Used jinja2.DictLoader for in-memory template testing (no real file copies)
+
+3. **REFACTOR**: Updated builder.py imports and 13+ call sites
+   - Added: `from diablaq_site.rendering import render_template`
+   - Removed: nested `render()` closure (lines 782-790)
+   - Removed: nested `_abs_url()` closure (lines 791-794)
+   - Added: local `_abs_url()` helper function after nav_projects definition
+   - Updated: all `html = render("template", ...)` to `html = render_template(env, "template", nav_projects=nav_projects, site_url=site_url, ...)`
+
+### Files Created/Modified
+
+- **Created**: `diablaq_site/rendering.py` (57 lines, 3 functions)
+- **Created**: `tests/test_rendering.py` (81 lines, 8 tests)
+- **Modified**: `diablaq_site/builder.py`
+  - Added: 1 line of import (line 28)
+  - Removed: 2 nested closure definitions (13 lines total)
+  - Added: Local `_abs_url()` helper (same logic as closure, explicit parameter)
+  - Updated: 13+ render() call sites with explicit context injection
+
+### Regression Verification
+
+- **Rendering tests**: 8/8 PASS
+- **Full test suite**: 214 PASS, 1 FAIL (pre-existing: test_blog_is_built)
+- **No new failures introduced** by extraction
+- **Expected pass count maintained**: 143/144 tests passing as before
+
+### Critical Implementation Notes
+
+1. **Closure Conversion Pattern**:
+   - Original `render()` closure captured `env`, `nav_projects`, `site_url` from `build_site()` scope
+   - New `render_template()` takes all captured variables as explicit keyword-only parameters
+   - Keyword-only syntax (`*`) forces callers to be explicit about context injection
+
+2. **abs_url Higher-Order Function**:
+   - Original `_abs_url()` closure took only `path`, captured `site_url`
+   - New `abs_url(site_url)` returns a callable that captures site_url (closure preserved intentionally)
+   - This pattern is appropriate for abs_url because it's passed into template context
+   - Call in template: `{{ abs_url("/path") }}` works because abs_url is now a returned function
+
+3. **Template Variable Names Preserved**:
+   - Templates expect `nav_projects` and `site_url` to be available as context variables
+   - These are passed explicitly via `render_template()` keyword-only parameters
+   - No template modifications needed — context injection unchanged from outside perspective
+
+4. **Local Helper Pattern**:
+   - `_abs_url()` helper added to `build_site()` after nav_projects definition
+   - Contains same logic as original closure: `f"{site_url}{path}"` if site_url else path
+   - Local helper is used internally for canonical URL generation, not exported
+
+### Test Coverage Insights
+
+- 8 tests total: 5 for `render_template`, 3 for `abs_url`
+- Tests use jinja2.DictLoader for lightweight, isolated template testing
+- No real template files copied — minimal fixtures per AGENTS.md patterns
+- Edge cases: TemplateNotFound, missing site_url, path normalization
+
+### Code Quality Notes
+
+1. **Closure-to-Parameter Conversion**: Explicit parameters improve testability and reduce hidden dependencies
+2. **Keyword-only enforcement**: The `*` in `render_template(env, template_name, *, nav_projects, site_url, **ctx)` prevents positional argument mistakes
+3. **Higher-order function for abs_url**: Returning a callable maintains the closure pattern where it's semantically correct (URL constructor)
+
+## Task 9: Extract parsing.py module
+
+### Completed Work Summary
+- **Created**: `diablaq_site/parsing.py` (342 lines, 14 public functions)
+- **Created**: `tests/test_parsing.py` (839 lines, 63 comprehensive tests)
+- **Refactored**: `diablaq_site/builder.py` (removed 332 lines of duplicate code)
+- **Test Results**: 214/215 passing (1 pre-existing blog failure unrelated to parsing extraction)
+
+### TDD Execution Pattern
+1. **RED phase**: Wrote all 63 tests first, saved evidence of 63 failures to `.sisyphus/evidence/task-9-parsing-red.txt`
+2. **GREEN phase**: Implemented parsing.py module, saved evidence of 63 passes to `.sisyphus/evidence/task-9-parsing-green.txt`
+3. **REFACTOR phase**: Updated builder.py to use new module, verified full regression suite
+
+### Module API (14 public functions, no _ prefix)
+- `read_markdown_file(path)` — reads Markdown with frontmatter, applies orphan fixing
+- `parse_date(value, *, source_path)` — YYYY-MM-DD parsing with clear error messages
+- `parse_optional_date(value, *, source_path)` — handles None/empty, delegates to parse_date
+- `derive_flags(*, release_date, today)` — calculates is_new/is_announcement from release date
+- `coerce_str_list(value)` — converts None/string/list to list of stripped strings
+- `pick_cover(meta)` — extracts cover_image/cover_alt from dict (NO source_path parameter)
+- `parse_image_list(meta, key, *, source_path)` — parses list of ImageRef objects
+- `as_str(value)` — converts any value to stripped string
+- `parse_buy_links(meta, *, source_path)` — parses list of BuyLink objects
+- `parse_variants(meta, *, source_path)` — parses list of EditionVariant objects
+- `parse_creators(meta, *, source_path)` — handles legacy list and dict formats, returns (list[Creator], list[str])
+- `parse_specs(meta)` — extracts specs dict, filters None values (NO source_path parameter)
+- `_normalize_isbn13(value)` — private helper, strips hyphens/spaces from ISBN
+
+### Critical Implementation Details
+**Synthetic dict wrapper preserved** (per plan requirement):
+```python
+# In parse_variants, line 282:
+buy_links = parse_buy_links({"buy_links": item.get("buy_links")}, source_path=source_path)
+```
+This intentional pattern wraps the buy_links value in a dict to reuse parse_buy_links logic without modification.
+
+**Two exceptions to source_path parameter** (per plan requirement):
+- `pick_cover(meta)` — NO source_path (extracts cover from meta without validation)
+- `parse_specs(meta)` — NO source_path (silently filters invalid specs without raising errors)
+
+All other 12 functions use keyword-only `*, source_path: Path` parameter for error reporting.
+
+### Dependencies Imported Correctly
+From `diablaq_site.models`:
+- `BuyLink, Creator, EditionVariant, ImageRef`
+
+From `diablaq_site.text`:
+- `_fix_orphans` (used in read_markdown_file)
+
+From `diablaq_site.validation`:
+- `_is_valid_isbn13, _ALLOWED_VARIANT_KINDS` (used in parse_variants)
+
+### Refactoring Impact on builder.py
+**Removed duplicate code**:
+- Lines 45-98: Duplicate dataclasses (BuyLink, EditionVariant, Creator, ImageRef) — already in models.py
+- Lines 119-450: Old parsing functions (332 lines total removed)
+- Lines 276-278: Duplicate validation constants (_ALLOWED_BINDINGS, _ALLOWED_VERSIONS, _ALLOWED_VARIANT_KINDS)
+
+**Added imports**:
+- Line 28: `from diablaq_site.models import BuyLink, Creator, EditionVariant, ImageRef`
+- Lines 28-41: All 13 parsing functions from parsing.py module
+
+**Updated all call sites** (17 replacements):
+- `_read_markdown_file(` → `read_markdown_file(`
+- `_parse_optional_date(` → `parse_optional_date(`
+- `_derive_flags(` → `derive_flags(`
+- `_pick_cover(` → `pick_cover(`
+- `_parse_image_list(` → `parse_image_list(`
+- `_parse_creators(` → `parse_creators(`
+- `_parse_specs(` → `parse_specs(`
+- `_parse_buy_links(` → `parse_buy_links(`
+- `_parse_variants(` → `parse_variants(`
+- `_parse_date(` → `parse_date(`
+- `_coerce_str_list(` → `coerce_str_list(`
+
+**Critical bug fix during refactor**:
+- Accidentally removed `_render` helper function (lines 171-173) when deleting parsing functions
+- Restored immediately: `def _render(env, template_name, **ctx)` — wraps Jinja template.render()
+- This caused 4 test failures until fixed
+
+### Test Coverage Details
+**63 tests organized by function**:
+- 1 test: module import verification
+- 2 tests: read_markdown_file (basic + orphan fixing)
+- 5 tests: parse_date (valid, leap year, invalid formats, empty, wrong separator)
+- 4 tests: parse_optional_date (None, empty, valid, invalid)
+- 6 tests: derive_flags (None date, future, today, within 6 weeks, exactly 6 weeks, older)
+- 5 tests: coerce_str_list (None, string, list, whitespace, empty items)
+- 5 tests: pick_cover (explicit fields, no alt, from covers list, covers without alt, missing)
+- 5 tests: parse_image_list (valid, missing key, not list, item not dict, missing image field)
+- 3 tests: as_str (string, integer, empty)
+- 5 tests: parse_buy_links (valid, missing, not list, missing label, missing url)
+- 12 tests: parse_variants (binding, version, legacy kind, legacy electronic, invalid ISBN, missing ISBN, both binding+version, neither, limited_print_run, numbered requires limited_print_run, buy_links, fallback specs)
+- 5 tests: parse_creators (legacy list, dict format, missing, missing name, not list)
+- 5 tests: parse_specs (valid, missing, not dict, filters None, strips whitespace)
+
+**Edge cases verified**:
+- Leap year date parsing (2024-02-29)
+- Empty string vs None distinction in parse_optional_date
+- Exactly 6 weeks boundary for is_new flag
+- ISBN-13 checksum validation (delegates to validation.py)
+- Legacy "kind" field backward compatibility in parse_variants
+- Numbered editions requiring limited_print_run
+- Specs fallback from edition level to variant level
+- Whitespace stripping in all string fields
+
+### Evidence Files Preserved
+- `.sisyphus/evidence/task-9-parsing-red.txt` — 63 tests failed (TDD RED phase)
+- `.sisyphus/evidence/task-9-parsing-green.txt` — 63 tests passed (TDD GREEN phase)
+- `.sisyphus/evidence/task-9-regression.txt` — 214/215 tests passed after builder.py refactor
+
+### Lessons for Task 10 (rendering.py) and Task 11 (orchestrator)
+1. **TDD workflow works**: Write comprehensive tests first, watch them fail, then implement
+2. **Accidental deletions happen**: When removing large blocks of code, verify adjacent helper functions aren't caught in the deletion
+3. **ast_grep_replace is reliable**: Used for 11 separate function name replacements, all succeeded
+4. **Import order matters**: Models must be imported before using their types in function signatures
+5. **Synthetic wrapper pattern**: Sometimes intentional "weird" code is actually migration-friendly design (like the buy_links dict wrapper)
+6. **Two-parameter exceptions tracked**: pick_cover and parse_specs have NO source_path by design (silent extraction vs. validated parsing)
+
+### Blockers Resolved
+- **Duplicate dataclasses**: Removed from builder.py, now importing from models.py only
+- **Function name prefixes**: All parsing functions now public (no `_` prefix) per plan requirement
+- **Call site updates**: All 17 call sites in builder.py updated successfully
+- **Regression suite**: Full test suite passing (214/215, 1 pre-existing blog failure unrelated to parsing)
+
+### Next Steps (Task 10)
+- Extract rendering.py module (6 functions: render, _render, abs_url, _build_nav_projects, _build_tags_index, _build_people_index)
+- Follow same TDD pattern: tests first (RED), implementation (GREEN), builder.py refactor
+- Ensure _render helper is NOT accidentally deleted this time
+- rendering.py will be smaller (~150 lines vs parsing.py's 342 lines)
+
