@@ -9,3 +9,4 @@ vendor/
 dist/
 *.egg*
 **/__pycache__/
+.sisyphus/
