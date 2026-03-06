@@ -12,5 +12,5 @@ def test_blog_is_built(tmp_path: Path) -> None:
     build_site(root=repo_root, out_dir=out_dir)
 
     assert (out_dir / "blog" / "index.html").exists()
-    assert (out_dir / "blog" / "testowy-wpis" / "index.html").exists()
+    assert (out_dir / "blog" / "nowa-strona" / "index.html").exists()
 
