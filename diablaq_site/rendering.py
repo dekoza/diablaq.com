@@ -64,6 +64,7 @@ def render_home_page(
     projects,
     new_editions,
     announcements,
+    newest_anytime,
     _render_fn,
     _write_html_fn,
 ) -> None:
@@ -77,7 +78,7 @@ def render_home_page(
             site_url=site_url,
             canonical_url=(site_url + "/"),
             projects=projects,
-            new_editions=new_editions[:12],
+            new_editions=newest_anytime,
             announcements=announcements[:12],
         ),
     )

@@ -63,9 +63,11 @@ def _process_content(
     editions: list[Edition],
     people: list[Person],
     blog_posts: list[BlogPost],
+    today: date | None = None,
 ) -> tuple[
     list[Edition], list[Edition], list[Edition], list[Person], list[Project], list[BlogPost]
 ]:
+    today = today or date.today()
     new_editions = sorted(
         [e for e in editions if e.is_new], key=lambda e: e.release_date, reverse=True
     )
@@ -73,10 +75,10 @@ def _process_content(
         [e for e in editions if e.is_announcement], key=lambda e: e.release_date, reverse=True
     )
     newest_anytime = sorted(
-        [e for e in editions if e.release_date.year < 9999],
+        [e for e in editions if e.release_date.year < 9999 and e.release_date <= today],
         key=lambda e: e.release_date,
         reverse=True,
-    )[:4]
+    )[:5]
     return (
         new_editions,
         announcements,
@@ -110,7 +112,7 @@ def _render_all(
 
 
     render_home_page(
-        env, out_dir, site_url, nav_projects, projects, new_editions, announcements, _render, _write_html
+        env, out_dir, site_url, nav_projects, projects, new_editions, announcements, newest_anytime, _render, _write_html
     )
     render_listing_pages(
         env, out_dir, site_url, nav_projects, new_editions, announcements, newest_anytime, _render, _write_html
