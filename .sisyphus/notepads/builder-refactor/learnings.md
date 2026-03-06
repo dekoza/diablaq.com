@@ -889,3 +889,34 @@ These helpers are orchestration-level (compose module functions) rather than com
 - F2: Code quality review
 - F3: Full build + output verification
 - F4: Scope fidelity check
+
+## Task 12: Build Regression Verification
+
+**Timestamp**: 2026-03-06 18:45 UTC
+
+### Summary
+Verified byte-identical behavior between refactored builder and golden snapshot.
+
+### Findings
+- **Golden build**: 159 files (99 HTML + 60 assets)
+- **Refactored build**: 159 files (99 HTML + 60 assets)
+- **Checksum comparison**: 100% match (all SHA256 hashes identical)
+- **Result**: ✅ Zero regression - builds are functionally equivalent
+
+### Verification Method
+1. Generated manifest from golden build: `.sisyphus/evidence/golden-manifest.txt`
+2. Generated manifest from refactored build: `/tmp/refactored-manifest.txt`
+3. Extracted and compared SHA256 hashes only (ignoring path prefixes)
+4. Result: Perfect match on all 159 files
+
+### Conclusion
+Refactored builder code is production-ready. The slim orchestrator produces
+identical output to the original monolithic builder. No behavioral regression
+detected.
+
+### Acceptance Criteria Met
+- ✅ Files verified (golden + refactored + manifests)
+- ✅ Manifests generated with SHA256 checksums
+- ✅ Comparison completed and documented
+- ✅ Evidence saved to `.sisyphus/evidence/task-12-comparison.txt`
+- ✅ No differences found (byte-identical)

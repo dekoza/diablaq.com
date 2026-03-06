@@ -997,7 +997,7 @@ Max Concurrent: 6 (Wave 2)
   - Files: `diablaq_site/builder.py`
   - Pre-commit: `poetry run pytest tests/ -v`
 
-- [ ] 12. Golden build comparison (regression verification)
+- [x] 12. Golden build comparison (regression verification)
 
   **What to do**:
   - Run `poetry run diablaq-build --out /tmp/dist-refactored`

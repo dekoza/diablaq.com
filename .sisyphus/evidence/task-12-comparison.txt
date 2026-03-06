@@ -1,0 +1,51 @@
+================================================================================
+TASK 12: BUILD REGRESSION VERIFICATION
+================================================================================
+
+OBJECTIVE:
+Compare refactored build output (/tmp/dist-refactored/) with golden build
+snapshot (/tmp/dist-golden/) to verify zero behavioral regression.
+
+================================================================================
+VERIFICATION RESULTS
+================================================================================
+
+MANIFESTS GENERATED:
+  Golden:     .sisyphus/evidence/golden-manifest.txt (159 files)
+  Refactored: /tmp/refactored-manifest.txt (159 files)
+
+FILE COUNTS:
+  Both: 159 files total ✅
+  - HTML: 99 files
+  - Assets (CSS, images, other): 60 files
+
+CHECKSUM COMPARISON:
+  Test: Extracted and compared SHA256 hashes from both manifests
+  Result: 100% match ✅ (all 159 checksums identical)
+
+DIFF ANALYSIS:
+  Path format differs: Golden has './' prefix, refactored has '/tmp/dist-refactored/'
+  Content integrity: IDENTICAL (all hashes match byte-for-byte)
+
+================================================================================
+VERDICT: ✅ BUILD VERIFICATION PASSED
+================================================================================
+
+STATUS:
+  ✅ Byte-identical builds
+  ✅ No content regression detected
+  ✅ Refactored builder produces equivalent output to golden snapshot
+  ✅ All 159 files match checksums exactly
+
+CONCLUSION:
+The refactored builder code produces byte-identical output to the original
+golden snapshot. No behavioral regression detected. The refactoring is
+functionally equivalent and safe for production use.
+
+================================================================================
+EVIDENCE LOCATION:
+  Golden manifest: .sisyphus/evidence/golden-manifest.txt
+  Refactored manifest: /tmp/refactored-manifest.txt
+  Comparison log: /tmp/comparison-diff.txt
+  Task evidence: .sisyphus/evidence/task-12-comparison.txt
+================================================================================
