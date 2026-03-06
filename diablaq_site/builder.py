@@ -29,7 +29,15 @@ from diablaq_site.parsing import (
     pick_cover,
     read_markdown_file,
 )
-from diablaq_site.rendering import render_template
+from diablaq_site.rendering import (
+    render_home_page,
+    render_listing_pages,
+    render_content_pages,
+    render_people_pages,
+    render_blog_pages,
+    render_project_pages,
+    render_template,
+)
 from diablaq_site.urls import canonical_edition_url, canonical_project_url, slugify_tag
 
 _write_html: Callable[[Path, str], None] = cast(
@@ -161,201 +169,17 @@ def _render_all(
     people_with_editions: list[Person],
     sorted_blog: list[BlogPost],
 ) -> None:
-    _write_html(
-        out_dir / "index.html",
-        _render(
-            env,
-            "home.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/"),
-            projects=projects,
-            new_editions=new_editions[:12],
-            announcements=announcements[:12],
-        ),
+    render_home_page(
+        env, out_dir, site_url, nav_projects, projects, new_editions, announcements, _render, _write_html
     )
-    _write_html(
-        out_dir / "nowe" / "index.html",
-        _render(
-            env,
-            "listing.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/nowe/"),
-            title="Nowości",
-            description="Najnowsze publikacje.",
-            items=new_editions if new_editions else newest_anytime,
-        ),
+    render_listing_pages(
+        env, out_dir, site_url, nav_projects, new_editions, announcements, newest_anytime, _render, _write_html
     )
-    _write_html(
-        out_dir / "zapowiedzi" / "index.html",
-        _render(
-            env,
-            "listing.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/zapowiedzi/"),
-            title="Zapowiedzi",
-            description="Co nowego nadchodzi w Diablaq.",
-            items=announcements,
-            empty_message="Już wkrótce ogłosimy kolejne zapowiedzi. Zajrzyj ponownie za jakiś czas."
-            if not announcements
-            else None,
-        ),
+    render_content_pages(env, out_dir, site_url, nav_projects, pages, _render, _write_html)
+    render_people_pages(env, out_dir, site_url, nav_projects, people_with_editions, _render, _write_html)
+    render_blog_pages(
+        env, out_dir, site_url, nav_projects, sorted_blog, _render, _write_html, _build_tags_index, slugify_tag
     )
-    for page in pages:
-        _write_html(
-            out_dir / page.slug / "index.html",
-            _render(
-                env,
-                "page.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + f"/{page.slug}/"),
-                page=page,
-            ),
-        )
-    _write_html(
-        out_dir / "ludzie" / "index.html",
-        _render(
-            env,
-            "people_index.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/ludzie/"),
-            people=people_with_editions,
-        ),
-    )
-    for p in people_with_editions:
-        _write_html(
-            out_dir / "ludzie" / p.slug / "index.html",
-            _render(
-                env,
-                "person.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + f"/ludzie/{p.slug}/"),
-                person=p,
-            ),
-        )
-    _write_html(
-        out_dir / "blog" / "index.html",
-        _render(
-            env,
-            "blog_index.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/blog/"),
-            posts=sorted_blog,
-        ),
-    )
-    for post in sorted_blog:
-        _write_html(
-            out_dir / post.url.strip("/") / "index.html",
-            _render(
-                env,
-                "blog_post.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + post.url),
-                post=post,
-                post_tags=[{"name": t, "url": f"/blog/tag/{slugify_tag(t)}/"} for t in post.tags],
-            ),
-        )
-    for tag, items in sorted(_build_tags_index(sorted_blog).items(), key=lambda kv: kv[0].lower()):
-        tag_slug = slugify_tag(tag)
-        _write_html(
-            out_dir / "blog" / "tag" / tag_slug / "index.html",
-            _render(
-                env,
-                "blog_index.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + f"/blog/tag/{tag_slug}/"),
-                posts=sorted(items, key=lambda p: p.date, reverse=True),
-            ),
-        )
-    for pr in projects:
-        pr_editions = sorted(
-            [e for e in editions if e.project_slug == pr.slug],
-            key=lambda e: e.release_date,
-            reverse=True,
-        )
-        project_html = _render(
-            env,
-            "project.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + pr.url),
-            project=pr,
-            editions=pr_editions,
-        )
-        _write_html(out_dir / pr.url.strip("/") / "index.html", project_html)
-        if (
-            pr.legacy_landing
-            and pr.legacy_path
-            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
-        ):
-            _write_html(out_dir / pr.legacy_path.strip("/") / "index.html", project_html)
-        legacy_slug_path = f"/{pr.slug}/"
-        if legacy_slug_path.rstrip("/") != pr.url.rstrip("/") and not (
-            pr.legacy_landing and legacy_slug_path.rstrip("/") == (pr.legacy_path or "").rstrip("/")
-        ):
-            _write_html(
-                out_dir / pr.slug / "index.html",
-                _render(
-                    env,
-                    "redirect.html",
-                    nav_projects=nav_projects,
-                    site_url=site_url,
-                    canonical_url=(site_url + pr.url),
-                    to_url=pr.url,
-                ),
-            )
-        if (
-            pr.legacy_path
-            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
-            and not pr.legacy_landing
-            and pr.legacy_path.rstrip("/") != legacy_slug_path.rstrip("/")
-        ):
-            _write_html(
-                out_dir / pr.legacy_path.strip("/") / "index.html",
-                _render(
-                    env,
-                    "redirect.html",
-                    nav_projects=nav_projects,
-                    site_url=site_url,
-                    canonical_url=(site_url + pr.url),
-                    to_url=pr.url,
-                ),
-            )
-        for e in pr_editions:
-            if not e.url.endswith("/index/"):
-                _write_html(
-                    out_dir / e.url.strip("/") / "index.html",
-                    _render(
-                        env,
-                        "edition.html",
-                        nav_projects=nav_projects,
-                        site_url=site_url,
-                        canonical_url=(site_url + e.url),
-                        edition=e,
-                        project=pr,
-                    ),
-                )
-    zv = next((p for p in people_with_editions if p.slug == "zvyrke"), None)
-    if zv is not None:
-        _write_html(
-            out_dir / "zvyrke" / "index.html",
-            _render(
-                env,
-                "redirect.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + f"/ludzie/{zv.slug}/"),
-                to_url=f"/ludzie/{zv.slug}/",
-            ),
-        )
 
     def _write_section(
         path_slug: str, *, title: str, line: str, description: str | None = None
@@ -374,28 +198,7 @@ def _render_all(
             ),
         )
 
-    _write_section(
-        "publikacje",
-        title="Publikacje",
-        line="diablaq",
-        description="Główna linia wydawnicza Diablaq.",
-    )
-    _write_section(
-        "dobre-licho", title="Dobre Licho", line="dobre-licho", description="Imprint dla dzieci."
-    )
-    _write_section(
-        "mecenat",
-        title="Mecenat",
-        line="mecenat",
-        description="Publikacje rozwijane w formule mecenatu.",
-    )
-    if any(p.line == "studio" for p in projects):
-        _write_section(
-            "studio",
-            title="Studio",
-            line="studio",
-            description="Produkcje komiksowe dla innych wydawnictw/klientów.",
-        )
+    render_project_pages(env, out_dir, site_url, nav_projects, projects, editions, _render, _write_html, _write_section)
 
 
 def _finalize(root: Path, out_dir: Path, people: list[Person]) -> None:
