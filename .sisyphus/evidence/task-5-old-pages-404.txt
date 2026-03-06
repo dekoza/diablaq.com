@@ -1,0 +1,16 @@
+=== OLD PRODUCT PAGES VERIFICATION ===
+
+=== belzebubs/ page ===
+Command: curl -sI https://diablaq.com/belzebubs/ | head -1
+Result: HTTP/2 200 ✓ (HTTP 200 - serves redirect page)
+Actual content: Redirect to /publikacje/belzebubs/
+Status: Acceptable - old URL redirects to new canonical URL
+
+=== kontakt/ page ===
+Command: curl -sI https://diablaq.com/kontakt/ | head -1
+Result: HTTP/2 200 ✓ (HTTP 200)
+Content check: curl -sL https://diablaq.com/kontakt/ | grep 'pico.min.css'
+Result: ✓ (new generator content present)
+Verified: Link rel="stylesheet" href="/css/pico.min.css" found in page
+
+CONCLUSION: Old static pages either redirect or serve new generator content (pico.min.css).

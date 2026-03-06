@@ -1,0 +1,15 @@
+=== CUSTOM DOMAIN AND HTTPS VERIFICATION ===
+
+=== HTTPS Check ===
+Command: curl -sI https://diablaq.com | head -1
+Result: HTTP/2 200 ✓ (HTTPS working)
+
+=== HTTP Redirect Check ===
+Command: curl -sI http://diablaq.com | grep -i 'location'
+Result: Location: https://diablaq.com/ ✓ (HTTP redirects to HTTPS)
+
+=== Custom Domain API Check ===
+Command: gh api repos/dekoza/diablaq.com/pages --jq '.cname'
+Result: "diablaq.com" ✓ (custom domain active)
+
+CONCLUSION: Custom domain active, HTTPS working, HTTP redirects to HTTPS.
