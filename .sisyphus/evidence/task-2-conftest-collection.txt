@@ -1,0 +1,8 @@
+tests/test_blog_build.py::test_blog_is_built
+tests/test_edition_variants.py::test_build_with_variants
+tests/test_edition_variants.py::test_isbn13_is_validated_by_build[9788397237216-True]
+tests/test_edition_variants.py::test_isbn13_is_validated_by_build[978-83-972372-1-6-True]
+tests/test_edition_variants.py::test_isbn13_is_validated_by_build[9788397237217-False]
+tests/test_edition_variants.py::test_isbn13_is_validated_by_build[123-False]
+
+6 tests collected in 0.57s
