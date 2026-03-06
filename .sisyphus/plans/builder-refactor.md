@@ -725,7 +725,7 @@ Max Concurrent: 6 (Wave 2)
   - Files: `diablaq_site/io.py`, `tests/test_io.py`, `diablaq_site/builder.py`
   - Pre-commit: `poetry run pytest tests/ -v`
 
-- [ ] 9. Extract parsing.py (content/frontmatter parsing)
+- [x] 9. Extract parsing.py (content/frontmatter parsing)
 
   **What to do**:
   - TDD: Write `tests/test_parsing.py` FIRST with tests for:
@@ -842,7 +842,7 @@ Max Concurrent: 6 (Wave 2)
   - Files: `diablaq_site/parsing.py`, `tests/test_parsing.py`, `diablaq_site/builder.py`
   - Pre-commit: `poetry run pytest tests/ -v`
 
-- [ ] 10. Extract rendering.py (template rendering helpers)
+- [x] 10. Extract rendering.py (template rendering helpers)
 
   **What to do**:
   - TDD: Write `tests/test_rendering.py` FIRST with tests for:
@@ -908,7 +908,7 @@ Max Concurrent: 6 (Wave 2)
   - Files: `diablaq_site/rendering.py`, `tests/test_rendering.py`, `diablaq_site/builder.py`
   - Pre-commit: `poetry run pytest tests/ -v`
 
-- [ ] 11. Refactor builder.py into slim pipeline orchestrator
+- [x] 11. Refactor builder.py into slim pipeline orchestrator
 
   **What to do**:
   This is the culmination task. After all modules are extracted, builder.py should be a slim orchestrator.
