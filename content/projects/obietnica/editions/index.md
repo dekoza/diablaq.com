@@ -3,7 +3,6 @@ title: "Obietnica"
 release_date: 2025-06-15
 #release: "premiera - czerwiec/lipiec 2025"
 legacy_anchor: zvyrke1
-is_announcement: true
 #presale_url: "https://strefakomiksu.pl/"
 cover_image: "/img/obietnica.jpg"
 cover_alt: "Obietnica – okładka"

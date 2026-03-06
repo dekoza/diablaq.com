@@ -319,7 +319,7 @@ def parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], lis
         creators.append(Creator(role=role, name=name, person_slug=person_slug))
         names.append(name)
 
-    return creators, names
+    return creators, list(set(names))
 
 
 def parse_specs(meta: dict) -> dict[str, str]:
