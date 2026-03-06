@@ -373,7 +373,7 @@ Max Concurrent: 1
   - Files: `index.html`, `_future.t`, `belzebubs/`, `bzik/`, `ciecio/`, `hadfield/`, `karmiciel/`, `kodiak/`, `kontakt/`, `mama/`, `midguard/`, `pisto/`, `pzg/`, `spz/`, `winon/`, `zvyrke/`
   - Pre-commit: `test -f CNAME && test -f .nojekyll && test -d css && test -d img`
 
-- [ ] 4. Push All Commits to origin/gh-pages
+- [x] 4. Push All Commits to origin/gh-pages
 
   **What to do**:
   - Run `git push origin gh-pages` to push all local commits (14 previously unpushed + 1 cleanup commit)
