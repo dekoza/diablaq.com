@@ -920,3 +920,18 @@ detected.
 - ✅ Comparison completed and documented
 - ✅ Evidence saved to `.sisyphus/evidence/task-12-comparison.txt`
 - ✅ No differences found (byte-identical)
+
+
+## [2026-03-06] F4 Re-verification — scope fidelity after content fix
+
+- Re-verified fix commit `3a26bce`: deleted `content/blog/2026-01-05-testowy-wpis.md` and updated `tests/test_blog_build.py` to assert the real golden post `nowa-strona`.
+- Verified net diff from golden snapshot `ff1474a` to `HEAD` is empty for `content/`, `templates/`, and `css/`.
+- Task 11b (`74e58d6`) and Task 11d (`44d1ad9`) remain source-only for `diablaq_site/` files.
+- Task 11c (`b5249cc`) content violation is resolved in current `HEAD` by `3a26bce`.
+- Task 11a (`74f2e7d`) still fails strict scope fidelity because it also modified `.sisyphus/plans/builder-refactor.md`, `.sisyphus/notepads/builder-refactor/learnings.md`, and `.sisyphus/evidence/task-11-*.txt` in addition to `diablaq_site/builder.py`.
+- Final F4 re-audit verdict: content scope is clean now, but overall Task 11 scope fidelity remains REJECT because `74f2e7d` included out-of-scope non-source changes.
+
+## F1 re-audit (2026-03-06)
+- Re-audit confirmed builder.py is 180 lines, build_site(root, out_dir) signature is unchanged, CLI still works, templates/content/css remain unchanged, and 215/215 tests pass.
+- Remaining plan blockers are structural: extracted functions still exceed the 50-line cap (`parse_variants`, `load_projects_and_editions`, `render_project_pages`), and evidence for Tasks 4-8 is missing from `.sisyphus/evidence/`.
+- Audit-time git status was not fully clean because `.sisyphus/notepads/builder-refactor/learnings.md` was modified and `.sisyphus/evidence/task-F3-real-qa-report.txt` was untracked; source files were clean.

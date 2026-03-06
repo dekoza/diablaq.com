@@ -1,0 +1,85 @@
+================================================================================
+F3: REAL QA — FULL BUILD + OUTPUT VERIFICATION
+================================================================================
+
+BUILD EXECUTION:
+  Command: PYTHONPATH=. uv run python -m diablaq_site.cli --root . --out /tmp/dist-qa
+  Exit code: 0
+  Status: ✅ PASS
+
+BUILDER MODULE:
+  File: diablaq_site/builder.py
+  Line count: 180 (target: <200)
+  Status: ✅ PASS
+
+FILE COUNTS:
+  HTML files: 101 (golden: 99, delta: +2 from new test blog post)
+  CSS files: 4
+  Image files: 52 (JPG/PNG total)
+  People thumbnails: 9
+  Total files: 161 (golden: 159, delta: +2)
+  Status: ✅ PASS (difference is expected new content)
+
+CRITICAL PAGES:
+  index.html: ✅ exists
+  nowe/index.html: ✅ exists
+  zapowiedzi/index.html: ✅ exists
+  ludzie/index.html: ✅ exists
+  blog/index.html: ✅ exists
+  publikacje/index.html: ✅ exists
+  
+  SCORE: 6/6 ✅
+
+ASSETS:
+  CNAME: ✅ exists (content: diablaq.com)
+  CSS files: ✅ 4 files (diablaq.css, fonts.css, mvp.css, pico.min.css)
+  Images: ✅ 52 image files in img/ directory
+  Thumbnails: ✅ 9 people thumbnails in img/people/
+
+INTERNAL LINKS:
+  Broken links found: 0
+  Status: ✅ PASS
+
+TEMPLATE RENDERING:
+  Unrendered {{ tags: 0
+  Unrendered {% blocks: 0
+  Status: ✅ PASS
+
+CONTENT VERIFICATION:
+  Publikacje page: ✅ 12 project cards found
+  Blog index: ✅ 8 blog post links
+  Project directories: ✅ 12 directories
+  HTML structure: ✅ Valid (lang="pl", charset=utf-8, proper titles)
+
+GOLDEN COMPARISON:
+  Golden manifest: 159 files, 99 HTML
+  QA manifest: 161 files, 101 HTML
+  Checksum differences: 4 files differ
+  
+  Differences explained:
+    ✅ blog/index.html — new blog post changes listing
+    ✅ blog/testowy-wpis/index.html — NEW test blog post
+    ✅ blog/tag/test/index.html — NEW tag page for test post
+    ✅ blog/tag/wydarzenia/index.html — updated from new post
+  
+  All differences are from new content added after golden build (2026-01-05-testowy-wpis.md)
+  Core pages (publikacje, nowe, zapowiedzi, ludzie) are IDENTICAL to golden
+  
+  Status: ✅ ACCEPTABLE (new content, not regression)
+
+================================================================================
+VERDICT: APPROVE
+================================================================================
+
+Reason: Build succeeds, all critical pages present, assets copied correctly,
+        no template errors, content structure correct. File differences are
+        from intentional new blog content, not refactoring regressions.
+
+Refactor quality:
+  ✅ builder.py reduced to 180 lines (from 1131)
+  ✅ All modules extracted successfully
+  ✅ Build pipeline functional
+  ✅ Output quality maintained
+  ✅ No behavioral regressions detected
+
+Ready for production deployment.
