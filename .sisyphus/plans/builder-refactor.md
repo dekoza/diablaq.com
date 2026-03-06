@@ -1071,19 +1071,19 @@ Max Concurrent: 6 (Wave 2)
 
 > 4 review agents run in PARALLEL. ALL must APPROVE. Rejection → fix → re-run.
 
-- [ ] F1. **Plan Compliance Audit** — `deep` (run as `oracle` subagent, not category-based)
+- [x] F1. **Plan Compliance Audit** — `deep` (run as `oracle` subagent, not category-based)
   Read the plan end-to-end. For each "Must Have": verify implementation exists (read file, run command). For each "Must NOT Have": search codebase for forbidden patterns — reject with file:line if found. Check evidence files exist in .sisyphus/evidence/. Compare deliverables against plan.
   Output: `Must Have [N/N] | Must NOT Have [N/N] | Tasks [N/N] | VERDICT: APPROVE/REJECT`
 
-- [ ] F2. **Code Quality Review** — `unspecified-high`
+- [x] F2. **Code Quality Review** — `unspecified-high`
   Run `poetry run pytest`. Review all new/changed files for: `as any`/`@ts-ignore` equivalents, empty catches, print() in prod, commented-out code, unused imports. Check AI slop: excessive comments, over-abstraction, generic names (data/result/item/temp). Verify no function exceeds 50 lines. Verify no circular imports.
   Output: `Tests [N pass/N fail] | Files [N clean/N issues] | VERDICT`
 
-- [ ] F3. **Real QA — Full Build + Output Verification** — `unspecified-high`
+- [x] F3. **Real QA — Full Build + Output Verification** — `unspecified-high`
   Run `poetry run diablaq-build --out /tmp/dist-refactored`. Verify: all expected HTML files exist, no broken internal links (grep for href and check targets exist), templates render without Jinja errors, thumbnails generated. Compare against golden snapshot from Task 1.
   Output: `Build [PASS/FAIL] | Files [N expected/N found] | Diff [CLEAN/N differences] | VERDICT`
 
-- [ ] F4. **Scope Fidelity Check** — `deep`
+- [x] F4. **Scope Fidelity Check** — `deep`
   For each task: read "What to do", read actual diff (git log/diff). Verify 1:1 — everything in spec was built (no missing), nothing beyond spec was built (no creep). Check "Must NOT do" compliance. Detect cross-task contamination. Flag unaccounted changes.
   Output: `Tasks [N/N compliant] | Contamination [CLEAN/N issues] | Unaccounted [CLEAN/N files] | VERDICT`
 
