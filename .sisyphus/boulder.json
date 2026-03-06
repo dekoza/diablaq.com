@@ -1,9 +1,9 @@
 {
-  "active_plan": "/home/minder/projekty/diablaq.com/.sisyphus/plans/builder-refactor.md",
-  "started_at": "2026-03-06T13:10:21.536Z",
+  "active_plan": "/home/minder/projekty/diablaq.com/.sisyphus/plans/fix-github-pages-deployment.md",
+  "started_at": "2026-03-06T19:42:40.145Z",
   "session_ids": [
-    "ses_33ce93818ffeUdKPYw50i5PTLM"
+    "ses_33b72a466ffeCBMaRuK9Kx3DnH"
   ],
-  "plan_name": "builder-refactor",
+  "plan_name": "fix-github-pages-deployment",
   "agent": "atlas"
 }

@@ -1,0 +1,23 @@
+commit 5d3983c0982928ec5c66b666fff4bd03492d6d93
+Author: Dominik Kozaczko <dominik@kozaczko.info>
+Date:   Fri Mar 6 20:47:37 2026 +0100
+
+    chore: remove old static HTML files superseded by generator
+
+ _future.t            |  18 -----
+ belzebubs/index.html |  76 ------------------
+ bzik/index.html      | 214 ---------------------------------------------------
+ ciecio/index.html    |  84 --------------------
+ hadfield/index.html  |  66 ----------------
+ index.html           | 177 ------------------------------------------
+ karmiciel/index.html |  68 ----------------
+ kodiak/index.html    |  65 ----------------
+ kontakt/index.html   |  59 --------------
+ mama/index.html      |  70 -----------------
+ midguard/index.html  |  77 ------------------
+ pisto/index.html     |  63 ---------------
+ pzg/index.html       |  66 ----------------
+ spz/index.html       |  96 -----------------------
+ winon/index.html     |  71 -----------------
+ zvyrke/index.html    |  63 ---------------
+ 16 files changed, 1333 deletions(-)

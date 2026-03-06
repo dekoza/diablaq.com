@@ -291,7 +291,7 @@ Max Concurrent: 1
 
   **Commit**: NO
 
-- [ ] 3. Remove Old Static Files and Commit
+- [x] 3. Remove Old Static Files and Commit
 
   **What to do**:
   - Remove root `index.html` (old static homepage using mvp.css)
