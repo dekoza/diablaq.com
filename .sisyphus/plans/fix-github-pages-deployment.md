@@ -231,7 +231,7 @@ Max Concurrent: 1
 
   **Commit**: NO
 
-- [ ] 2. Switch GitHub Pages Source to "GitHub Actions"
+- [x] 2. Switch GitHub Pages Source to "GitHub Actions"
 
   **What to do**:
   - Run `gh api -X PUT repos/dekoza/diablaq.com/pages -F build_type=workflow` to switch from legacy to Actions deployment
