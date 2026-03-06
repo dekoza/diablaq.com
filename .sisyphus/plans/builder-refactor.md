@@ -67,11 +67,11 @@ Transform the monolithic builder.py into a well-structured package of focused mo
 - `tests/conftest.py` — Shared fixtures (sample content, temp dirs)
 
 ### Definition of Done
-- [ ] `poetry run pytest` passes with all existing + new tests
-- [ ] Golden build comparison: `dist/` output from refactored code is byte-identical to pre-refactor output
-- [ ] `build_site(root, out_dir)` signature unchanged — cli.py works without modification
-- [ ] No function in any extracted module exceeds 50 lines
-- [ ] Every extracted module has corresponding test file with ≥1 happy path + ≥1 error path test
+- [x] `poetry run pytest` passes with all existing + new tests
+- [x] Golden build comparison: `dist/` output from refactored code is byte-identical to pre-refactor output
+- [x] `build_site(root, out_dir)` signature unchanged — cli.py works without modification
+- [x] No function in any extracted module exceeds 50 lines
+- [x] Every extracted module has corresponding test file with ≥1 happy path + ≥1 error path test
 
 ### Must Have
 - 100% behavioral compatibility with current builder (same HTML output, same URL structure, same file layout)
@@ -1111,10 +1111,10 @@ wc -l diablaq_site/builder.py                      # Expected: ~150 lines (down 
 ```
 
 ### Final Checklist
-- [ ] All "Must Have" present
-- [ ] All "Must NOT Have" absent
-- [ ] All tests pass (existing + new)
-- [ ] builder.py reduced to ~150 lines
-- [ ] Each module has corresponding test file
-- [ ] Golden build comparison passes
-- [ ] cli.py unchanged and working
+- [x] All "Must Have" present
+- [x] All "Must NOT Have" absent
+- [x] All tests pass (existing + new)
+- [x] builder.py reduced to ~150 lines
+- [x] Each module has corresponding test file
+- [x] Golden build comparison passes
+- [x] cli.py unchanged and working
