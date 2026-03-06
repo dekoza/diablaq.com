@@ -12,44 +12,20 @@ from urllib.parse import quote
 import frontmatter
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markdown import markdown
-from PIL import Image
-
-
-# Lista polskich spójników i przyimków, które nie powinny zostawać na końcu linii
-_ORPHAN_WORDS = {
-    # Spójniki
-    "a", "i", "o", "u", "w", "z", "k",
-    # Przyimki
-    "do", "na", "od", "po", "za", "ze", "we", "ku",
-    # Inne krótkie słowa
-    "to", "co", "że", "by", "są", "je", "go", "mu", "ją", "mi", "ty", "on", "my", "wy",
-}
-
-# Regex pattern: spacja + słowo z listy + spacja (case insensitive)
-_ORPHAN_PATTERN = re.compile(
-    r'(\s)(' + '|'.join(re.escape(w) for w in _ORPHAN_WORDS) + r')(\s)',
-    re.IGNORECASE
+from diablaq_site.images import (
+    get_cover_aspect_class,
+    generate_thumbnail,
+    thumb_path_from_photo,
 )
+from diablaq_site.urls import (
+    canonical_project_url,
+    canonical_edition_url,
+    slugify_tag,
+)
+from diablaq_site.io import _write_html, _copy_tree
+from diablaq_site.validation import _is_valid_isbn13, _ALLOWED_VARIANT_KINDS
+from diablaq_site.text import _fix_orphans
 
-
-def _fix_orphans(text: str) -> str:
-    """Zamienia spację po spójnikach/przyimkach na &nbsp; aby uniknąć zawieszek.
-
-    Przykład: "W tym tygodniu o godzinie" -> "W&nbsp;tym tygodniu o&nbsp;godzinie"
-    """
-    def replace_orphan(match: re.Match) -> str:
-        before_space = match.group(1)
-        word = match.group(2)
-        # Zamieniamy spację PO słowie na &nbsp;
-        return f'{before_space}{word}&nbsp;'
-
-    # Iterujemy wielokrotnie, bo pattern może się nakładać
-    prev_text = None
-    while prev_text != text:
-        prev_text = text
-        text = _ORPHAN_PATTERN.sub(replace_orphan, text)
-
-    return text
 
 
 @dataclass(frozen=True)
@@ -179,11 +155,6 @@ class BlogPost:
     html_body: str
 
 
-def _slugify_tag(tag: str) -> str:
-    # Do URL-i tagów stosujemy quote (w UTF-8) i zachowujemy spacje jako %20.
-    return quote(tag.strip(), safe="")
-
-
 def _parse_date(value: str, *, source_path: Path) -> date:
     try:
         yyyy, mm, dd = value.split("-")
@@ -234,64 +205,6 @@ def _read_markdown_file(path: Path) -> tuple[dict, str]:
     return meta, body_html
 
 
-def _copy_tree(src: Path, dst: Path) -> None:
-    if not src.exists():
-        return
-    shutil.copytree(src, dst, dirs_exist_ok=True)
-
-
-def _get_cover_aspect_class(cover_path: str | None, root: Path) -> str:
-    """Zwraca klasę CSS na podstawie proporcji okładki.
-
-    - cover--tall: ratio < 0.6 (wysoka okładka) -> object-position: top
-    - cover--wide: ratio > 0.75 (szeroka okładka) -> object-fit: contain
-    - cover--standard: pozostałe -> object-position: center
-    """
-    if not cover_path:
-        return "cover--standard"
-
-    # Usuń leading slash i znajdź plik
-    relative_path = cover_path.lstrip("/")
-    full_path = root / relative_path
-
-    if not full_path.exists():
-        return "cover--standard"
-
-    try:
-        with Image.open(full_path) as img:
-            ratio = img.width / img.height
-            if ratio > 0.75:
-                return "cover--wide"
-            elif ratio < 0.6:
-                return "cover--tall"
-            return "cover--standard"
-    except Exception:
-        return "cover--standard"
-
-
-def _generate_thumbnail(src: Path, dst: Path, size: tuple[int, int] = (300, 300)) -> None:
-    """Generuje miniaturę zdjęcia o podanym rozmiarze (domyślnie 300x300)."""
-    if not src.exists():
-        return
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    with Image.open(src) as img:
-        # Konwersja do RGB jeśli potrzeba (np. dla RGBA/PNG)
-        if img.mode in ("RGBA", "P"):
-            img = img.convert("RGB")
-        # Thumbnail zachowuje proporcje i mieści się in podanym rozmiarze
-        img.thumbnail(size, Image.Resampling.LANCZOS)
-        img.save(dst, "JPEG", quality=85, optimize=True)
-
-
-def _thumb_path_from_photo(photo_path: str) -> str:
-    """Generuje ścieżkę do miniatury na podstawie ścieżki do zdjęcia."""
-    p = Path(photo_path)
-    return str(p.parent / f"{p.stem}_thumb.jpg")
-
-
-def _write_html(path: Path, html: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(html, encoding="utf-8")
 
 
 def _render(env: Environment, template_name: str, **ctx):
@@ -575,30 +488,6 @@ def _parse_specs(meta: dict) -> dict[str, str]:
     return out
 
 
-def _canonical_project_url(*, line: str, slug: str) -> str:
-    if line == "diablaq":
-        return f"/publikacje/{slug}/"
-    if line == "dobre-licho":
-        return f"/dobre-licho/{slug}/"
-    if line in {"mecenat", "studio"}:
-        return f"/{line}/{slug}/"
-    # fallback: traktuj jak publikacje
-    return f"/publikacje/{slug}/"
-
-
-def _canonical_edition_url(*, line: str, project_slug: str, edition_slug: str) -> str:
-    # Specjalny przypadek: index.md -> URL projektu (bez /index/)
-    if edition_slug == "index":
-        return _canonical_project_url(line=line, slug=project_slug)
-
-    if line == "diablaq":
-        return f"/publikacje/{project_slug}/{edition_slug}/"
-    if line == "dobre-licho":
-        return f"/dobre-licho/{project_slug}/{edition_slug}/"
-    if line in {"mecenat", "studio"}:
-        return f"/{line}/{project_slug}/{edition_slug}/"
-    return f"/publikacje/{project_slug}/{edition_slug}/"
-
 
 def build_site(*, root: Path, out_dir: Path) -> None:
     templates_dir = root / "templates"
@@ -650,9 +539,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         legacy_path = meta.get("legacy_path")
         legacy_landing = bool(meta.get("legacy_landing", False))
         cover_image = str(meta.get("cover_image") or "").strip() or None
-        cover_aspect_class = _get_cover_aspect_class(cover_image, root)
+        cover_aspect_class = get_cover_aspect_class(cover_image, root)
 
-        url = _canonical_project_url(line=line, slug=slug)
+        url = canonical_project_url(line=line, slug=slug)
 
         projects.append(
             Project(
@@ -734,10 +623,10 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             is_announcement = force_announcement or (auto_is_announcement and not force_new)
 
             # Kanoniczne URL-e dla wydań (wg planu):
-            ed_url = _canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
+            ed_url = canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug)
 
             cover_image, cover_alt = _pick_cover(emeta)
-            cover_aspect_class = _get_cover_aspect_class(cover_image, root)
+            cover_aspect_class = get_cover_aspect_class(cover_image, root)
             covers = _parse_image_list(emeta, "covers", source_path=project_dir / "editions" / f"{ed_slug}.md")
             previews = _parse_image_list(emeta, "previews", source_path=project_dir / "editions" / f"{ed_slug}.md")
             creators, creator_names = _parse_creators(emeta, source_path=project_dir / "editions" / f"{ed_slug}.md")
@@ -793,7 +682,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         photo = str(meta.get("photo") or "").strip() or None
         # Automatycznie generuj ścieżkę miniatury jeśli jest zdjęcie
         if photo:
-            photo_thumb = _thumb_path_from_photo(photo)
+            photo_thumb = thumb_path_from_photo(photo)
         else:
             photo_thumb = None
         people.append(Person(slug=slug, name=name, photo=photo, photo_thumb=photo_thumb, html_bio=body_html, related_editions=[]))
@@ -963,7 +852,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
     _write_html(out_dir / "blog" / "index.html", html)
 
     for post in blog_posts_sorted:
-        tags = [{"name": t, "url": f"/blog/tag/{_slugify_tag(t)}/"} for t in post.tags]
+        tags = [{"name": t, "url": f"/blog/tag/{slugify_tag(t)}/"} for t in post.tags]
         html = render(
             "blog_post.html",
             canonical_url=_abs_url(post.url),
@@ -982,7 +871,7 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             tag_map.setdefault(t, []).append(post)
 
     for tag, items in sorted(tag_map.items(), key=lambda kv: kv[0].lower()):
-        tag_slug = _slugify_tag(tag)
+        tag_slug = slugify_tag(tag)
         html = render(
             "blog_index.html",
             canonical_url=_abs_url(f"/blog/tag/{tag_slug}/"),
@@ -1121,9 +1010,9 @@ def build_site(*, root: Path, out_dir: Path) -> None:
             # musimy znaleźć plik źródłowy i wygenerować miniaturę
             src_photo = root / person.photo.lstrip("/")
             if src_photo.exists():
-                thumb_path = _thumb_path_from_photo(person.photo)
+                thumb_path = thumb_path_from_photo(person.photo)
                 dst_thumb = out_dir / thumb_path.lstrip("/")
-                _generate_thumbnail(src_photo, dst_thumb)
+                generate_thumbnail(src_photo, dst_thumb)
 
     for file_name in ["CNAME", ".nojekyll"]:
         src = root / file_name
