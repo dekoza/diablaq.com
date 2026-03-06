@@ -8,7 +8,7 @@ from pathlib import Path
 import frontmatter
 from markdown import markdown
 
-from diablaq_site.models import BuyLink, Creator, EditionVariant, ImageRef
+from diablaq_site.models import BlogPost, BuyLink, Creator, Edition, EditionVariant, ImageRef, Person, Project
 from diablaq_site.text import _fix_orphans
 from diablaq_site.validation import (
     _ALLOWED_VARIANT_KINDS,
@@ -521,3 +521,44 @@ def load_blog_posts(blog_dir: Path) -> list:
             )
         )
     return blog_posts
+
+def build_people_index(people: list[Person], editions: list[Edition]) -> list[Person]:
+    """Link people to their related editions."""
+    out: list[Person] = []
+    for person in people:
+        related = [
+            e
+            for e in editions
+            if any(
+                (c.person_slug and c.person_slug == person.slug)
+                or (not c.person_slug and c.name.strip().lower() == person.name.strip().lower())
+                for c in e.creators
+            )
+        ]
+        out.append(
+            Person(
+                slug=person.slug,
+                name=person.name,
+                photo=person.photo,
+                photo_thumb=person.photo_thumb,
+                html_bio=person.html_bio,
+                related_editions=sorted(related, key=lambda e: e.release_date, reverse=True),
+            )
+        )
+    return out
+
+
+def build_tags_index(posts: list[BlogPost]) -> dict[str, list[BlogPost]]:
+    """Build index of blog posts by tag."""
+    tag_map: dict[str, list[BlogPost]] = {}
+    for post in posts:
+        for tag in post.tags:
+            clean = tag.strip()
+            if clean:
+                tag_map.setdefault(clean, []).append(post)
+    return tag_map
+
+
+def build_nav_projects(projects: list[Project]) -> list[Project]:
+    """Sort projects by title for navigation menu."""
+    return sorted(projects, key=lambda p: p.title.lower())
