@@ -55,13 +55,13 @@ def derive_flags(*, release_date: date | None, today: date) -> tuple[bool, bool]
     """Wylicza (is_new, is_announcement) bez ręcznych flag.
 
     Zasady:
-    1) brak daty -> zapowiedź
+    1) brak daty -> ani nowość, ani zapowiedź
     2) przyszła data -> zapowiedź
     3) data dziś lub przeszła -> nowość przez 6 tygodni od premiery
     """
 
     if release_date is None:
-        return False, True
+        return False, False
 
     if release_date > today:
         return False, True

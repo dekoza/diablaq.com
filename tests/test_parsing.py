@@ -176,13 +176,13 @@ def test_parse_optional_date_invalid_string():
 
 
 def test_derive_flags_no_release_date():
-    """Test that missing release_date returns (False, True) — announcement."""
+    """Test that missing release_date returns (False, False) — neither new nor announcement."""
     from diablaq_site.parsing import derive_flags
 
     is_new, is_announcement = derive_flags(release_date=None, today=date(2024, 1, 15))
 
     assert is_new is False
-    assert is_announcement is True
+    assert is_announcement is False
 
 
 def test_derive_flags_future_release():
