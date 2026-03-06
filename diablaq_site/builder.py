@@ -34,7 +34,6 @@ from diablaq_site.rendering import (
 from diablaq_site.urls import canonical_edition_url, canonical_project_url, slugify_tag
 
 
-
 def _init_environment(root: Path, out_dir: Path) -> tuple[Environment, Path, Path, str]:
     templates_dir, content_dir = root / "templates", root / "content"
     if not templates_dir.exists():
@@ -78,7 +77,7 @@ def _process_content(
         [e for e in editions if e.release_date.year < 9999 and e.release_date <= today],
         key=lambda e: e.release_date,
         reverse=True,
-    )[:5]
+    )[:8]
     return (
         new_editions,
         announcements,
@@ -104,23 +103,50 @@ def _render_all(
     sorted_blog: list[BlogPost],
 ) -> None:
     _render = lambda env, template, **ctx: render_template(
-        env, template, 
-        nav_projects=ctx.pop('nav_projects', nav_projects), 
-        site_url=ctx.pop('site_url', site_url), 
-        **ctx
+        env,
+        template,
+        nav_projects=ctx.pop("nav_projects", nav_projects),
+        site_url=ctx.pop("site_url", site_url),
+        **ctx,
     )
-
 
     render_home_page(
-        env, out_dir, site_url, nav_projects, projects, new_editions, announcements, newest_anytime, _render, _write_html
+        env,
+        out_dir,
+        site_url,
+        nav_projects,
+        projects,
+        new_editions,
+        announcements,
+        newest_anytime,
+        _render,
+        _write_html,
     )
     render_listing_pages(
-        env, out_dir, site_url, nav_projects, new_editions, announcements, newest_anytime, _render, _write_html
+        env,
+        out_dir,
+        site_url,
+        nav_projects,
+        new_editions,
+        announcements,
+        newest_anytime,
+        _render,
+        _write_html,
     )
     render_content_pages(env, out_dir, site_url, nav_projects, pages, _render, _write_html)
-    render_people_pages(env, out_dir, site_url, nav_projects, people_with_editions, _render, _write_html)
+    render_people_pages(
+        env, out_dir, site_url, nav_projects, people_with_editions, _render, _write_html
+    )
     render_blog_pages(
-        env, out_dir, site_url, nav_projects, sorted_blog, _render, _write_html, build_tags_index, slugify_tag
+        env,
+        out_dir,
+        site_url,
+        nav_projects,
+        sorted_blog,
+        _render,
+        _write_html,
+        build_tags_index,
+        slugify_tag,
     )
 
     def _write_section(
@@ -140,7 +166,17 @@ def _render_all(
             ),
         )
 
-    render_project_pages(env, out_dir, site_url, nav_projects, projects, editions, _render, _write_html, _write_section)
+    render_project_pages(
+        env,
+        out_dir,
+        site_url,
+        nav_projects,
+        projects,
+        editions,
+        _render,
+        _write_html,
+        _write_section,
+    )
 
 
 def _finalize(root: Path, out_dir: Path, people: list[Person]) -> None:
