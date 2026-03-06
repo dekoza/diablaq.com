@@ -524,7 +524,7 @@ Max Concurrent: 1
 
 > Single review agent verifies end-to-end. This is a config task, not code, so a full 4-agent review is overkill.
 
-- [ ] F1. **Deployment Verification** — `quick`
+- [x] F1. **Deployment Verification** — `quick`
   Run all Definition of Done checks:
   - `gh api repos/{owner}/{repo}/pages --jq '.build_type'` → `"workflow"`
   - `gh api repos/{owner}/{repo}/pages --jq '.cname'` → `"diablaq.com"`
