@@ -3,7 +3,6 @@ title: "MidGuard™ - Cudowni"
 release_date: 2024-11-01
 release: "premiera - listopad 2024"
 legacy_anchor: cudowni
-is_new: true
 cover_image: "/img/mg_cudowni_1.jpg"
 cover_alt: "Cudowni – okładka standardowa"
 creators:

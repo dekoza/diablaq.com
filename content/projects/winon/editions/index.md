@@ -1,8 +1,6 @@
 ---
 title: "Boska cząstka korposzczura Winona Tesli"
-release_date: 2024-09-01
-release: "premiera - wrzesień 2024"
-legacy_anchor: mzmp
+release_date: 2024-09-14
 cover_image: "/img/tesla.jpg"
 cover_alt: "Boska cząstka korposzczura Winona Tesli – okładka"
 standalone: true
