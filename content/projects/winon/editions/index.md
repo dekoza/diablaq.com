@@ -7,8 +7,10 @@ standalone: true
 creators:
   - role: "Scenariusz"
     name: "Marcin Bałczewski"
+    person_slug: "marcin-balczewski"
   - role: "Rysunki"
     name: "Emanuel Bułgaj"
+    person_slug: "emanuel-bulgaj"
 specs:
   "Liczba stron": "96"
   "Oprawa": "miękka"
