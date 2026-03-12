@@ -6,4 +6,10 @@ _site/
 .bundle/
 vendor/
 .idea/
-
+dist/
+*.egg*
+**/__pycache__/
+.sisyphus/
+.venv/
+.ruff_cache/
+build/
