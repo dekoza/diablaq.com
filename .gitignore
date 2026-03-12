@@ -12,3 +12,4 @@ dist/
 .sisyphus/
 .venv/
 .ruff_cache/
+build/
