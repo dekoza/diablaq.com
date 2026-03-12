@@ -10,3 +10,5 @@ dist/
 *.egg*
 **/__pycache__/
 .sisyphus/
+.venv/
+.ruff_cache/
