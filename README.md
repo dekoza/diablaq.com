@@ -15,9 +15,45 @@ Strona jest generowana statycznie z treści w Markdown (folder `content/`) i sza
 
 ### Szybki start (lokalnie)
 ```bash
-python -m pip install -U pip
-pip install .
-diablaq-build --out dist
+make install
+make build
+```
+
+`make install` sprawdza wymagania systemowe, tworzy `.venv` i instaluje zależności projektu.
+`make build` uruchamia generator już z przygotowanego środowiska.
+Jeśli chcesz sprawdzić sam system bez instalacji, uruchom `make doctor`.
+To jest tylko wstępny test: potwierdza Pythona i podstawowe narzędzia, ale nie gwarantuje obecności wszystkich bibliotek natywnych potrzebnych przez `Pillow`.
+
+### Wymagania systemowe
+Najwygodniej uruchamiać projekt na systemie z Pythonem 3.11+ oraz obsługą `venv`.
+
+Jeśli `make install` albo `make build` kończy się błędem instalacji zależności, najczęściej brakuje pakietów systemowych potrzebnych do utworzenia środowiska i instalacji `Pillow`.
+
+Debian/Ubuntu:
+```bash
+sudo apt install python3-venv build-essential python3-dev pkg-config libjpeg-dev zlib1g-dev
+```
+
+Fedora/RHEL:
+```bash
+sudo dnf install gcc gcc-c++ make python3-devel pkgconf-pkg-config libjpeg-turbo-devel zlib-devel
+```
+
+Arch:
+```bash
+sudo pacman -S python base-devel pkgconf libjpeg-turbo zlib
+```
+
+macOS (Homebrew):
+```bash
+xcode-select --install
+brew install python pkg-config jpeg-turbo
+```
+
+Potem uruchom ponownie:
+```bash
+make install
+make build
 ```
 
 ## Deployment (GitHub Pages)
