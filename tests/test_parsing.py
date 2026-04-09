@@ -89,6 +89,29 @@ To jest a test i example.
     assert " i&nbsp;example" in body_html or "i&nbsp;example" in body_html
 
 
+def test_read_markdown_file_reports_source_path_for_invalid_frontmatter(tmp_path):
+    """Invalid YAML frontmatter should include file path and parser cause."""
+    from diablaq_site.parsing import read_markdown_file
+
+    test_file = tmp_path / "broken.md"
+    test_file.write_text(
+        """\
+---
+title: Broken example
+summary: Invalid: YAML: value
+---
+
+Body.
+"""
+    )
+
+    with pytest.raises(ValueError, match=r"broken\.md") as exc_info:
+        read_markdown_file(test_file)
+
+    assert "Nie udało się wczytać frontmatter" in str(exc_info.value)
+    assert "did not find expected key" in str(exc_info.value)
+
+
 # --- parse_date tests ---
 
 

@@ -8,7 +8,16 @@ from pathlib import Path
 import frontmatter
 from markdown import markdown
 
-from diablaq_site.models import BlogPost, BuyLink, Creator, Edition, EditionVariant, ImageRef, Person, Project
+from diablaq_site.models import (
+    BlogPost,
+    BuyLink,
+    Creator,
+    Edition,
+    EditionVariant,
+    ImageRef,
+    Person,
+    Project,
+)
 from diablaq_site.text import _fix_orphans
 from diablaq_site.validation import (
     _ALLOWED_VARIANT_KINDS,
@@ -22,7 +31,10 @@ def read_markdown_file(path: Path) -> tuple[dict, str]:
     Returns:
         (metadata_dict, html_body_string) tuple
     """
-    post = frontmatter.load(str(path))
+    try:
+        post = frontmatter.load(str(path))
+    except Exception as exc:  # noqa: BLE001 - preserve parser detail for authors
+        raise ValueError(f"Nie udało się wczytać frontmatter w {path}: {exc}") from exc
     meta = dict(post.metadata or {})
     body_md = post.content or ""
     body_html = markdown(body_md, extensions=["extra", "sane_lists"])
@@ -341,10 +353,10 @@ def parse_specs(meta: dict) -> dict[str, str]:
     return out
 
 
-
 def load_pages(pages_dir: Path) -> list:
     """Load all pages from content/pages/."""
     from diablaq_site.models import Page
+
     pages: list[Page] = []
     for page_md in sorted(pages_dir.glob("*.md")):
         meta, body_html = read_markdown_file(page_md)
@@ -521,6 +533,7 @@ def load_blog_posts(blog_dir: Path) -> list:
             )
         )
     return blog_posts
+
 
 def build_people_index(people: list[Person], editions: list[Edition]) -> list[Person]:
     """Link people to their related editions."""

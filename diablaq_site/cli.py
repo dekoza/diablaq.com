@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
-
-from diablaq_site.builder import build_site
 
 
 def main() -> None:
@@ -25,9 +24,14 @@ def main() -> None:
     root: Path = args.root.resolve()
     out_dir = (args.out or (root / "dist")).resolve()
 
-    build_site(root=root, out_dir=out_dir)
+    from diablaq_site.builder import build_site
+
+    try:
+        build_site(root=root, out_dir=out_dir)
+    except ValueError as exc:
+        print(f"Błąd treści wejściowych: {exc}", file=sys.stderr)
+        raise SystemExit(1) from exc
 
 
 if __name__ == "__main__":
     main()
-
