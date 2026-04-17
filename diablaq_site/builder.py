@@ -30,6 +30,7 @@ from diablaq_site.rendering import (
     render_blog_pages,
     render_project_pages,
     render_template,
+    format_date_pl,
 )
 from diablaq_site.urls import canonical_edition_url, canonical_project_url, slugify_tag
 
@@ -44,6 +45,7 @@ def _init_environment(root: Path, out_dir: Path) -> tuple[Environment, Path, Pat
     env = Environment(
         loader=FileSystemLoader(str(templates_dir)), autoescape=select_autoescape(["html", "xml"])
     )
+    env.filters["format_date_pl"] = format_date_pl
     return env, content_dir, out_dir, os.environ.get("DIABLAQ_SITE_URL", "").rstrip("/")
 
 

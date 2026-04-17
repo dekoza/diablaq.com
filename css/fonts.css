@@ -1,19 +1,28 @@
-/* Fonty dopasowane do makiet Penpot.
+/* Oswald (display / hero headings) + Roboto Condensed (labels / nav / cards)
+   Both fonts are Apache 2.0 / OFL — free for commercial use.
+   Loaded via Google Fonts; swap to self-hosted @font-face if latency matters. */
 
-Uwaga: mapujemy Roboto Condensed -> systemowy stack, aby uniknąć hostowania fontów
-z niewiadomą licencją. Jeśli chcesz dostarczyć pliki fontów (np. w `fonts/`),
-możemy to później podmienić na lokalne @font-face.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;600;700&display=swap');
 
 :root {
-  --diablaq-font-heading: "Roboto Condensed", system-ui, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-  --diablaq-font-body: system-ui, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  /* Display font: Oswald — used for h1, h2 and hero copy (mirrors Dark Horse) */
+  --diablaq-font-display:  "Oswald", Impact, sans-serif;
+  /* Label font: Roboto Condensed — nav, h3–h6, card titles, buttons */
+  --diablaq-font-heading:  "Roboto Condensed", "Arial Narrow", Arial, sans-serif;
+  /* Body: neutral system stack */
+  --diablaq-font-body:     Helvetica, Arial, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6, nav strong {
-  font-family: var(--diablaq-font-heading), sans-serif;
+/* h1 / h2 → Oswald (cinematic, DH-style) */
+h1, h2 {
+  font-family: var(--diablaq-font-display);
+}
+
+/* h3–h6, nav labels → Roboto Condensed */
+h3, h4, h5, h6, nav strong {
+  font-family: var(--diablaq-font-heading);
 }
 
 body {
-  font-family: var(--diablaq-font-body), sans-serif;
+  font-family: var(--diablaq-font-body);
 }

@@ -1,8 +1,9 @@
 """Tests for diablaq_site.rendering module — template rendering helpers."""
 
 import pytest
+from datetime import date
 from jinja2 import Environment, DictLoader, TemplateNotFound
-from diablaq_site.rendering import render_template, abs_url
+from diablaq_site.rendering import render_template, abs_url, format_date_pl
 
 
 @pytest.fixture
@@ -78,3 +79,33 @@ def test_abs_url_without_leading_slash(env):
     result = url_fn("page")
     # Should normalize by ensuring slash is present
     assert result.startswith("http://example.com")
+
+
+# ── format_date_pl ────────────────────────────────────────────────────────────
+
+
+def test_format_date_pl_normal_date():
+    """Polish genitive month name and full date."""
+    assert format_date_pl(date(2024, 11, 15)) == "15 listopada 2024"
+
+
+def test_format_date_pl_all_months():
+    """All 12 months render the correct Polish genitive."""
+    expected = [
+        "1 stycznia", "1 lutego", "1 marca", "1 kwietnia",
+        "1 maja", "1 czerwca", "1 lipca", "1 sierpnia",
+        "1 września", "1 października", "1 listopada", "1 grudnia",
+    ]
+    for month, label in enumerate(expected, start=1):
+        result = format_date_pl(date(2024, month, 1))
+        assert result.startswith(label), f"Month {month}: got {result!r}"
+
+
+def test_format_date_pl_tba():
+    """Year 9999 renders as 'Wkrótce' (TBA placeholder)."""
+    assert format_date_pl(date(9999, 12, 31)) == "Wkrótce"
+
+
+def test_format_date_pl_none():
+    """None input returns empty string."""
+    assert format_date_pl(None) == ""

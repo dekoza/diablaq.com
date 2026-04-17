@@ -71,7 +71,9 @@
       {% endif %}
 
       <h3 class="edition-details__subhead">Data</h3>
-      <p class="edition-details__date"><small>{{ edition.release_date.isoformat() }}</small></p>
+      <p class="edition-details__date">
+        <time datetime="{{ edition.release_date.isoformat() }}">{{ edition.release_date | format_date_pl }}</time>
+      </p>
 
       {% if edition.variants %}
         {% if edition.variants|length == 1 %}

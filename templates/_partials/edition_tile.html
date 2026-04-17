@@ -1,7 +1,13 @@
 <article class="edition-tile">
   <a class="edition-tile__cover {{ e.cover_aspect_class }}" href="{{ e.url }}" aria-label="{{ e.title }}">
     {% if e.issue_number_display %}<span class="edition-tile__number">#{{ e.issue_number_display }}</span>{% endif %}
-    <img src="{{ e.cover_image or '/img/icon.png' }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+    {% if e.cover_image %}
+      <img src="{{ e.cover_image }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+    {% else %}
+      <div class="cover-placeholder" aria-label="{{ e.title }}">
+        <span class="cover-placeholder__initials">{{ e.title[:2] | upper }}</span>
+      </div>
+    {% endif %}
   </a>
 
   <h3 class="edition-tile__title">
@@ -12,6 +18,7 @@
     <p class="edition-tile__meta">{{ e.creator_names | join(", ") }}</p>
   {% endif %}
 
-  <p class="edition-tile__meta"><small>{{ e.release_date.isoformat() }}</small></p>
+  <p class="edition-tile__meta">
+    <time datetime="{{ e.release_date.isoformat() }}">{{ e.release_date | format_date_pl }}</time>
+  </p>
 </article>
-

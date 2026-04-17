@@ -93,6 +93,21 @@
   </div>
 </div>
 
+{# Hero slot — only home.html fills this; all other pages leave it empty #}
+{% block hero %}{% endblock %}
+
+<nav class="cat-nav" aria-label="Kategorie">
+  <div class="container cat-nav__inner">
+    <a href="/publikacje/">Publikacje</a>
+    <a href="/zapowiedzi/">Zapowiedzi</a>
+    <a href="/nowe/">Nowości</a>
+    <a href="/dobre-licho/">Dobre Licho</a>
+    <a href="/mecenat/">Mecenat</a>
+    <a href="/studio/">Studio</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+
 <main class="container">
   {% block content %}{% endblock %}
 </main>
@@ -104,9 +119,8 @@
       <p class="site-newsletter__lead">Dostawaj informacje o nowościach, zapowiedziach i wydarzeniach (targi, live, premiery).</p>
     </div>
     <div class="site-newsletter__cta">
-      {# Bez backendu: na start prowadzimy do zewnętrznego formularza. #}
+      {# Link do formularza — podmienić na docelowy adres MailerLite/Brevo #}
       <a class="site-newsletter__button" href="#" role="button">Zapisz się</a>
-      <p class="site-newsletter__hint"><small>Link podmienimy na docelowy formularz (np. MailerLite) gdy będzie gotowy.</small></p>
     </div>
   </div>
 </section>

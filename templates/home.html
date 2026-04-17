@@ -2,14 +2,47 @@
 
 {% block title %}Wydawnictwo Diablaq{% endblock %}
 
-{% block content %}
-<section class="home-hero">
-  <header class="page-header">
-    <h1>Wydawnictwo Diablaq</h1>
-    <p class="page-header__lead">Piekielnie dobre komiksy!</p>
-  </header>
-</section>
+{% block hero %}
+{# Build hero list: announcements first, then newest releases, filter to those with a cover image #}
+{% set hero_editions = [] %}
+{% for e in (announcements + new_editions) %}
+  {% if e.cover_image and hero_editions | length < 5 %}
+    {% set _ = hero_editions.append(e) %}
+  {% endif %}
+{% endfor %}
 
+<section class="home-hero" aria-label="Wyróżnione wydania">
+  {% if hero_editions %}
+    {% set h = hero_editions[0] %}
+    <a class="home-hero__main" href="{{ h.url }}" aria-label="{{ h.title }}">
+      <img src="{{ h.cover_image }}" alt="{{ h.cover_alt or h.title }}">
+      <div class="home-hero__overlay">
+        <h1 class="home-hero__title">{{ h.title }}</h1>
+        {% if h.creator_names %}
+          <p class="home-hero__authors">{{ h.creator_names | join(", ") }}</p>
+        {% endif %}
+        <span class="home-hero__cta">Zobacz wydanie</span>
+      </div>
+    </a>
+    {% if hero_editions | length > 1 %}
+      <div class="home-hero__strip" aria-label="Więcej wydań">
+        {% for e in hero_editions[1:] %}
+          <a class="home-hero__thumb" href="{{ e.url }}" aria-label="{{ e.title }}">
+            <img src="{{ e.cover_image }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="home-hero__empty">
+      <h1>Wydawnictwo Diablaq</h1>
+      <p class="page-header__lead">Piekielnie dobre komiksy!</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block content %}
 {% if announcements %}
 <section>
   <header class="section-header">

@@ -1,6 +1,28 @@
 """Template rendering helpers — Jinja2 environment and context injection."""
 
-from jinja2 import Environment
+from __future__ import annotations
+
+from datetime import date as _date
+
+from jinja2 import Environment  # noqa: F811 (re-export used by builder)
+
+
+_MONTHS_PL = [
+    "stycznia", "lutego", "marca", "kwietnia", "maja", "czerwca",
+    "lipca", "sierpnia", "września", "października", "listopada", "grudnia",
+]
+
+
+def format_date_pl(d: _date | None) -> str:
+    """Format a Python date as a Polish genitive string: '15 listopada 2024'.
+
+    Returns 'Wkrótce' for year 9999 (TBA placeholder) and '' for None.
+    """
+    if d is None:
+        return ""
+    if d.year == 9999:
+        return "Wkrótce"
+    return f"{d.day} {_MONTHS_PL[d.month - 1]} {d.year}"
 
 
 def _render(env: Environment, template_name: str, **ctx):

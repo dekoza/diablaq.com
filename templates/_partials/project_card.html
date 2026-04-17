@@ -4,7 +4,9 @@
     {% if p.cover_image %}
       <img src="{{ p.cover_image }}" alt="{{ p.title }} - okładka" loading="lazy">
     {% else %}
-      <img src="/img/icon.png" alt="{{ p.title }}" loading="lazy">
+      <div class="cover-placeholder" aria-label="{{ p.title }}">
+        <span class="cover-placeholder__initials">{{ p.title[:2] | upper }}</span>
+      </div>
     {% endif %}
   </a>
 
