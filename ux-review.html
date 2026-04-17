@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hostile UX Review — Diablaq.com</title>
+<style>
+/* ── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  background: #0a0a0a;
+  color: #d4d4d8;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  height: 100%;
+}
+
+/* ── Slide wrapper ────────────────────────────────────────────── */
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2rem;
+  position: relative;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.slide__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Title slide ──────────────────────────────────────────────── */
+.slide--title {
+  background: linear-gradient(145deg, #0a0a0a 0%, #1a0505 100%);
+  text-align: center;
+  align-items: center;
+}
+
+.slide--title .slide__inner { max-width: 800px; }
+
+.title-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ac351f;
+  margin-bottom: 1.5rem;
+}
+
+.title-main {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.title-sub {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: #71717a;
+  margin-bottom: 2.5rem;
+}
+
+.title-meta {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.title-meta__item {
+  text-align: center;
+}
+
+.title-meta__value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1;
+}
+
+.title-meta__value.critical { color: #ef4444; }
+.title-meta__value.major    { color: #f97316; }
+.title-meta__value.minor    { color: #eab308; }
+
+.title-meta__label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #52525b;
+  margin-top: 0.3rem;
+}
+
+.nav-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: #3f3f46;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ── Slide nav pills ──────────────────────────────────────────── */
+.slide-nav {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  z-index: 100;
+}
+
+.slide-nav__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3f3f46;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: none;
+}
+
+.slide-nav__dot.active,
+.slide-nav__dot:hover {
+  background: #ac351f;
+  transform: scale(1.4);
+}
+
+/* ── Section header ───────────────────────────────────────────── */
+.issue-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.issue-number {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #52525b;
+  padding-top: 0.35rem;
+}
+
+.issue-title {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+/* ── Severity badges ──────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.badge--critical { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+.badge--major    { background: #431407; color: #fdba74; border: 1px solid #7c2d12; }
+.badge--minor    { background: #422006; color: #fde68a; border: 1px solid #78350f; }
+
+/* ── Description text ─────────────────────────────────────────── */
+.issue-desc {
+  color: #a1a1aa;
+  max-width: 72ch;
+  margin-bottom: 1.75rem;
+  font-size: 0.97rem;
+}
+
+.issue-desc strong {
+  color: #e4e4e7;
+}
+
+/* ── Before / After compare ───────────────────────────────────── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 780px) {
+  .compare { grid-template-columns: 1fr; }
+}
+
+.compare__panel {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111111;
+  border: 1px solid #1f1f1f;
+}
+
+.compare__label {
+  padding: 0.5rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.compare__label--before {
+  background: #2d0a0a;
+  color: #f87171;
+  border-bottom: 1px solid #3f1515;
+}
+
+.compare__label--after {
+  background: #052010;
+  color: #4ade80;
+  border-bottom: 1px solid #0f3320;
+}
+
+.compare__content {
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+}
+
+pre {
+  font-family: "Fira Code", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  white-space: pre;
+  color: #d4d4d8;
+}
+
+/* Minimal syntax colouring (no library) */
+.t-tag  { color: #f472b6; }
+.t-attr { color: #93c5fd; }
+.t-val  { color: #86efac; }
+.t-cmt  { color: #4b5563; font-style: italic; }
+.t-kw   { color: #c4b5fd; }
+.t-str  { color: #86efac; }
+.t-num  { color: #fcd34d; }
+.t-prop { color: #7dd3fc; }
+.t-bad  { background: #7f1d1d44; border-radius: 2px; padding: 0 2px; }
+.t-good { background: #14532d44; border-radius: 2px; padding: 0 2px; }
+
+/* ── Inline code ──────────────────────────────────────────────── */
+code {
+  font-family: "Fira Code", Consolas, monospace;
+  font-size: 0.85em;
+  background: #1c1c1c;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  padding: 0.1em 0.35em;
+  color: #e4e4e7;
+}
+
+/* ── Evidence callout ─────────────────────────────────────────── */
+.evidence {
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.1rem;
+  background: #111;
+  border-left: 3px solid #ac351f;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  color: #a1a1aa;
+}
+
+.evidence strong {
+  color: #fafafa;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Fix callout ──────────────────────────────────────────────── */
+.fix {
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.1rem;
+  background: #051a0d;
+  border-left: 3px solid #22c55e;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  color: #a1a1aa;
+}
+
+.fix strong {
+  color: #4ade80;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Overview slide ───────────────────────────────────────────── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.overview-card {
+  background: #111;
+  border: 1px solid #1f1f1f;
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+}
+
+.overview-card__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #52525b;
+  margin-bottom: 0.4rem;
+}
+
+.overview-card__value {
+  font-size: 1rem;
+  color: #e4e4e7;
+  font-weight: 500;
+}
+
+/* ── Summary table ────────────────────────────────────────────── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+  margin-top: 1.5rem;
+}
+
+.summary-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52525b;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.summary-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #151515;
+  color: #a1a1aa;
+  vertical-align: top;
+}
+
+.summary-table td:first-child {
+  color: #e4e4e7;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.summary-table tr:hover td {
+  background: #111;
+}
+
+/* ── Section divider slides ───────────────────────────────────── */
+.slide--section {
+  min-height: 30vh;
+  background: #0d0d0d;
+}
+
+.slide--section .section-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ac351f;
+  margin-bottom: 0.75rem;
+}
+
+.slide--section h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1.1;
+}
+
+/* ── Visual mock ─────────────────────────────────────────────── */
+.mock {
+  border-radius: 8px;
+  border: 1px solid #1f1f1f;
+  overflow: hidden;
+  font-size: 0.82rem;
+}
+
+.mock__bar {
+  background: #1a1a1a;
+  padding: 0.4rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.mock__dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.mock__body {
+  padding: 1.25rem;
+}
+
+/* Scroll indicator */
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+.nav-hint svg {
+  animation: bounce 1.6s infinite;
+}
+
+/* ── Slide counter ────────────────────────────────────────────── */
+.slide-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-size: 0.7rem;
+  color: #3f3f46;
+  letter-spacing: 0.06em;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Side nav dots ─────────────────────────────────────────── -->
+<nav class="slide-nav" aria-label="Slide navigation">
+  <button class="slide-nav__dot active" data-target="0" title="Title"></button>
+  <button class="slide-nav__dot" data-target="1" title="Overview"></button>
+  <button class="slide-nav__dot" data-target="2" title="#1 Empty Hero"></button>
+  <button class="slide-nav__dot" data-target="3" title="#2 Dead Newsletter"></button>
+  <button class="slide-nav__dot" data-target="4" title="#3 ISO Dates"></button>
+  <button class="slide-nav__dot" data-target="5" title="#4 Font Not Loaded"></button>
+  <button class="slide-nav__dot" data-target="6" title="#5 Dark-on-dark"></button>
+  <button class="slide-nav__dot" data-target="7" title="#6 No hover states"></button>
+  <button class="slide-nav__dot" data-target="8" title="#7 Brand colour chaos"></button>
+  <button class="slide-nav__dot" data-target="9" title="#8 No active nav"></button>
+  <button class="slide-nav__dot" data-target="10" title="#9 No OG tags"></button>
+  <button class="slide-nav__dot" data-target="11" title="#10 Icon fallback"></button>
+  <button class="slide-nav__dot" data-target="12" title="#11 thumb-grid ghost"></button>
+  <button class="slide-nav__dot" data-target="13" title="#12 !important war"></button>
+  <button class="slide-nav__dot" data-target="14" title="Summary"></button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 0 — TITLE
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide slide--title" id="slide-0">
+  <div class="slide__inner">
+    <p class="title-eyebrow">Hostile UX Review</p>
+    <h1 class="title-main">Diablaq.com<br>has 12 problems.</h1>
+    <p class="title-sub">A no-mercy audit of every UX and visual defect<br>in the current codebase.</p>
+
+    <div class="title-meta">
+      <div class="title-meta__item">
+        <div class="title-meta__value critical">3</div>
+        <div class="title-meta__label">Critical</div>
+      </div>
+      <div class="title-meta__item">
+        <div class="title-meta__value major">7</div>
+        <div class="title-meta__label">Major</div>
+      </div>
+      <div class="title-meta__item">
+        <div class="title-meta__value minor">2</div>
+        <div class="title-meta__label">Minor</div>
+      </div>
+      <div class="title-meta__item">
+        <div class="title-meta__value" style="color:#fafafa">29</div>
+        <div class="title-meta__label">!important declarations</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-hint">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    scroll or use arrow keys
+  </div>
+  <div class="slide-counter">1 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 1 — OVERVIEW
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+  <div class="slide__inner">
+    <p class="issue-number">Overview</p>
+    <h2 class="issue-title">What we're looking at</h2>
+    <p class="issue-desc">
+      Diablaq is a Polish indie comic-book publisher. The site is a custom static generator
+      (Python + Jinja2) using <strong>Pico CSS</strong> as the base framework, overlaid with
+      a hand-written <code>diablaq.css</code>. The visual identity leans on a dark-red brand
+      colour and uppercase headings. On paper, a solid foundation. In practice, multiple
+      layers of neglect have piled up that undermine every page the user visits.
+    </p>
+
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="overview-card__label">Stack</div>
+        <div class="overview-card__value">Python SSG · Jinja2 · Pico CSS</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card__label">CSS framework</div>
+        <div class="overview-card__value">pico.min.css + diablaq.css (1052 lines)</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card__label">Heading font</div>
+        <div class="overview-card__value">Roboto Condensed … not loaded 💀</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card__label">Templates</div>
+        <div class="overview-card__value">10 pages + 6 partials</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card__label">Brand colour</div>
+        <div class="overview-card__value">3 different reds. One brand.</div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card__label">Social meta</div>
+        <div class="overview-card__value">Zero OG tags. Zero Twitter cards.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">2 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 2 — ISSUE 1: EMPTY HERO
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#1</span>
+      <h2 class="issue-title">The hero is just two lines of text<span class="badge badge--critical">Critical</span></h2>
+    </div>
+    <p class="issue-desc">
+      The homepage hero is the single most important screen real-estate on the entire site.
+      For a <em>comic book publisher</em> — an inherently visual medium — the hero contains
+      exactly one heading and one tagline, with <strong>zero imagery, zero CTA, zero visual energy.</strong>
+      There is also no <code>.home-hero</code> CSS rule anywhere in the stylesheet, so the wrapper
+      is a semantically empty shell with no visual treatment at all.
+      A first-time visitor has no idea what kind of books Diablaq makes, who they are for, or what to do next.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — templates/home.html</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;section</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;header</span> <span class="t-attr">class</span>=<span class="t-val">"page-header"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;h1&gt;</span>Wydawnictwo Diablaq<span class="t-tag">&lt;/h1&gt;</span>
+    <span class="t-tag">&lt;p</span> <span class="t-attr">class</span>=<span class="t-val">"page-header__lead"</span><span class="t-tag">&gt;</span>
+      Piekielnie dobre komiksy!
+    <span class="t-tag">&lt;/p&gt;</span>
+  <span class="t-tag">&lt;/header&gt;</span>
+<span class="t-tag">&lt;/section&gt;</span>
+
+<span class="t-cmt">&lt;!-- .home-hero has ZERO CSS rules. --&gt;</span>
+<span class="t-cmt">&lt;!-- No background. No image. No CTA. --&gt;</span>
+<span class="t-cmt">&lt;!-- No scroll indicator. Nothing. --&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — with visual hero</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;section</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero__bg"</span><span class="t-tag">&gt;</span>
+    <span class="t-cmt">&lt;!-- collage of 3 cover images --&gt;</span>
+    <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"{{ featured[0].cover }}"</span>
+         <span class="t-attr">aria-hidden</span>=<span class="t-val">"true"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero__copy"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;h1&gt;</span>Piekielnie dobre komiksy<span class="t-tag">&lt;/h1&gt;</span>
+    <span class="t-tag">&lt;p&gt;</span>Polski niezależny komiks.<span class="t-tag">&lt;/p&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/publikacje/"</span>
+       <span class="t-attr">class</span>=<span class="t-val">"hero-cta"</span><span class="t-tag">&gt;</span>
+      Zobacz katalog
+    <span class="t-tag">&lt;/a&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;/section&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Add a full-bleed hero with a collage of 3–4 cover images, a dark overlay gradient,
+      the tagline in large type, and a primary CTA button ("Zobacz katalog"). The publisher already has
+      beautiful cover art — use it. Even a single cover as a blurred background transform this from "blank page" to "brand statement".
+    </div>
+  </div>
+  <div class="slide-counter">3 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 3 — ISSUE 2: DEAD NEWSLETTER
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#2</span>
+      <h2 class="issue-title">Newsletter button goes nowhere — and tells users why<span class="badge badge--critical">Critical</span></h2>
+    </div>
+    <p class="issue-desc">
+      The newsletter section sits on <strong>every single page</strong> of the site, in the global footer area.
+      Its CTA button has <code>href="#"</code>. Clicking it scrolls to the top and does nothing.
+      Worse: the implementation note left in the Jinja comment is an HTML comment that ships to the browser —
+      users who open DevTools read <em>"Link podmienimy na docelowy formularz (np. MailerLite) gdy będzie gotowy"</em>
+      ("We'll replace the link with the target form when ready"). This is developer scaffolding
+      treated as a production feature. It destroys trust.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — templates/base.html</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;a</span> <span class="t-attr">class</span>=<span class="t-val">"site-newsletter__button"</span>
+   <span class="t-attr">href</span>=<span class="t-val t-bad">"#"</span>
+   <span class="t-attr">role</span>=<span class="t-val">"button"</span><span class="t-tag">&gt;</span>
+  Zapisz się
+<span class="t-tag">&lt;/a&gt;</span>
+<span class="t-tag">&lt;p</span> <span class="t-attr">class</span>=<span class="t-val">"site-newsletter__hint"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;small&gt;</span><span class="t-bad">Link podmienimy na docelowy formularz
+  (np. MailerLite) gdy będzie gotowy.</span><span class="t-tag">&lt;/small&gt;</span>
+<span class="t-tag">&lt;/p&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — minimal inline form</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;form</span> <span class="t-attr">class</span>=<span class="t-val">"newsletter-form"</span>
+      <span class="t-attr">action</span>=<span class="t-val t-good">"https://app.mailerlite.com/…"</span>
+      <span class="t-attr">method</span>=<span class="t-val">"post"</span>
+      <span class="t-attr">target</span>=<span class="t-val">"_blank"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;label</span> <span class="t-attr">for</span>=<span class="t-val">"nl-email"</span> <span class="t-attr">class</span>=<span class="t-val">"sr-only"</span><span class="t-tag">&gt;</span>
+    E-mail<span class="t-tag">&lt;/label&gt;</span>
+  <span class="t-tag">&lt;input</span> <span class="t-attr">id</span>=<span class="t-val">"nl-email"</span> <span class="t-attr">type</span>=<span class="t-val">"email"</span>
+         <span class="t-attr">name</span>=<span class="t-val">"email"</span>
+         <span class="t-attr">placeholder</span>=<span class="t-val">"twój@email.pl"</span>
+         <span class="t-attr">required</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;button</span> <span class="t-attr">type</span>=<span class="t-val">"submit"</span><span class="t-tag">&gt;</span>Zapisz się<span class="t-tag">&lt;/button&gt;</span>
+<span class="t-tag">&lt;/form&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="evidence">
+      <strong>Evidence</strong> — <code>base.html:95</code>: <code>href="#"</code> on the CTA button.
+      <code>base.html:96–97</code>: the hint paragraph visible to all users.
+      Appears on every page render since it lives in the global layout.
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Either wire up a real MailerLite/Brevo embed form, or remove the section entirely
+      until it's ready. A dead CTA button is worse than no CTA at all — it trains users that
+      buttons on this site don't work.
+    </div>
+  </div>
+  <div class="slide-counter">4 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 4 — ISSUE 3: ISO DATES
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#3</span>
+      <h2 class="issue-title">Dates are raw ISO strings — programmer output, not UX<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      Every date visible to users — edition release dates, blog post dates — is rendered via
+      <code>.isoformat()</code>, producing machine-readable strings like <strong>2024-11-15</strong>.
+      This is what you output to a JSON API, not a Polish-language website for comic book readers.
+      The pattern appears in at least three templates. It signals "nobody proofread this."
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — 3 templates, same mistake</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">&lt;!-- edition_tile.html --&gt;</span>
+<span class="t-tag">&lt;p</span> <span class="t-attr">class</span>=<span class="t-val">"edition-tile__meta"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;small&gt;</span>
+    <span class="t-bad">{{ e.release_date.isoformat() }}</span>
+  <span class="t-tag">&lt;/small&gt;</span>
+<span class="t-tag">&lt;/p&gt;</span>
+
+<span class="t-cmt">&lt;!-- blog_post.html --&gt;</span>
+<span class="t-tag">&lt;time</span> <span class="t-attr">datetime</span>=<span class="t-val">"{{ post.date.isoformat() }}"</span><span class="t-tag">&gt;</span>
+  <span class="t-bad">{{ post.date.isoformat() }}</span>
+<span class="t-tag">&lt;/time&gt;</span>
+
+<span class="t-cmt">&lt;!-- edition_details.html --&gt;</span>
+<span class="t-tag">&lt;small&gt;</span><span class="t-bad">{{ edition.release_date.isoformat() }}</span><span class="t-tag">&lt;/small&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — human-readable, still semantic</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# In a Jinja2 global filter (rendering.py): #}</span>
+<span class="t-kw">def</span> <span class="t-good">format_date_pl</span>(d):
+    MONTHS = [<span class="t-str">"stycznia"</span>, <span class="t-str">"lutego"</span>,
+              <span class="t-str">"marca"</span>, <span class="t-str">"kwietnia"</span>, ...]
+    <span class="t-kw">return</span> <span class="t-str">f"{d.day} {MONTHS[d.month-1]} {d.year}"</span>
+
+<span class="t-cmt">&lt;!-- templates --&gt;</span>
+<span class="t-tag">&lt;time</span> <span class="t-attr">datetime</span>=<span class="t-val">"{{ post.date.isoformat() }}"</span><span class="t-tag">&gt;</span>
+  <span class="t-good">{{ post.date | format_date_pl }}</span>
+<span class="t-tag">&lt;/time&gt;</span>
+
+<span class="t-cmt">&lt;!-- renders as: 15 listopada 2024 --&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Register a <code>format_date_pl</code> Jinja2 filter in <code>rendering.py</code>
+      and replace all <code>.isoformat()</code> display calls. Keep <code>.isoformat()</code> only in
+      <code>datetime</code> attributes for machine readability. One filter, three fixes.
+    </div>
+  </div>
+  <div class="slide-counter">5 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 5 — ISSUE 4: FONT NOT LOADED
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#4</span>
+      <h2 class="issue-title">The heading font is declared but never loaded<span class="badge badge--critical">Critical</span></h2>
+    </div>
+    <p class="issue-desc">
+      Every heading, nav item, and card title specifies <code>font-family: var(--diablaq-font-heading)</code>,
+      which resolves to <strong>"Roboto Condensed"</strong>. But <code>fonts.css</code> contains
+      a comment admitting the font isn't actually fetched: <em>"mapujemy Roboto Condensed -> systemowy stack,
+      aby uniknąć hostowania fontów z niewiadomą licencją"</em>. No <code>@font-face</code>, no Google Fonts
+      <code>@import</code>. On most devices "Roboto Condensed" is not installed, so the browser falls through
+      to <code>system-ui</code>. The entire typographic identity the design was built around simply doesn't render.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — css/fonts.css</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Fonty dopasowane do makiet Penpot.
+   Uwaga: mapujemy Roboto Condensed ->
+   systemowy stack, aby uniknąć
+   hostowania fontów z niewiadomą
+   licencją. */</span>
+
+:root {
+  --diablaq-font-heading:
+    <span class="t-bad">"Roboto Condensed"</span>,
+    system-ui, "Segoe UI", Roboto, …;
+}
+
+<span class="t-cmt">/* No @import. No @font-face.
+   Roboto Condensed ≠ Roboto.
+   Falls through to system-ui on
+   99% of devices. */</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — actually load it</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Roboto Condensed is Apache 2.0 —
+   free to use via Google Fonts. */</span>
+<span class="t-tag">@import</span> url(
+  <span class="t-good">'https://fonts.googleapis.com/css2?
+  family=Roboto+Condensed:wght@400;
+  600;700&display=swap'</span>
+);
+
+<span class="t-cmt">/* OR self-host via fontsource: */</span>
+<span class="t-cmt">/* npm i @fontsource/roboto-condensed */</span>
+
+:root {
+  --diablaq-font-heading:
+    <span class="t-good">"Roboto Condensed"</span>, system-ui;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="evidence">
+      <strong>Evidence</strong> — <code>fonts.css:4–7</code>: comment explicitly states the font is not hosted.
+      <code>diablaq.css</code> uses <code>var(--diablaq-font-heading)</code> in ~12 rules.
+      Roboto Condensed is published under Apache 2.0 — there is no licence problem. The comment is wrong.
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Add a single <code>@import</code> from Google Fonts or self-host via
+      <code>@fontsource/roboto-condensed</code>. The Apache 2.0 licence permits free commercial use.
+      This is a one-line fix that unlocks the entire typographic system the designer intended.
+    </div>
+  </div>
+  <div class="slide-counter">6 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 6 — ISSUE 5: DARK-ON-DARK PLACEHOLDERS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#5</span>
+      <h2 class="issue-title">Placeholders are invisible on a dark background<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      Blog card placeholders use <code>background: rgba(0,0,0,0.06)</code>.
+      The site body background is <code>--color-bg: #000</code> — pure black.
+      A 6% opacity black on black is <strong>completely invisible</strong>: contrast ratio ≈ 1.06:1.
+      The person-card initials placeholder puts muted text in the same near-invisible box.
+      When a cover image is missing, users see a blank void, not a graceful fallback.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — diablaq.css</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.blog-card__cover-placeholder</span> {
+  background: <span class="t-bad">rgba(0, 0, 0, 0.06)</span>;
+  <span class="t-cmt">/* on #000 body → invisible void */</span>
+}
+
+<span class="t-prop">.person-card__photo</span> {
+  background: <span class="t-bad">rgba(0, 0, 0, 0.06)</span>;
+}
+
+<span class="t-prop">.person-card__placeholder</span> {
+  color: <span class="t-bad">var(--pico-muted-color)</span>;
+  <span class="t-cmt">/* muted on near-black = unreadable */</span>
+}
+
+<span class="t-cmt">/* --color-bg: #000 (root) */</span>
+<span class="t-cmt">/* rgba(0,0,0,0.06) on #000  */</span>
+<span class="t-cmt">/* = contrast ratio 1.06:1   */</span>
+<span class="t-cmt">/* WCAG minimum: 3:1 for UI  */</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — visible on dark bg</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.blog-card__cover-placeholder</span> {
+  background: <span class="t-good">#1c1c1c</span>;
+  <span class="t-cmt">/* subtle lift, clearly visible */</span>
+  display: grid;
+  place-items: center;
+}
+
+<span class="t-prop">.blog-card__cover-placeholder::after</span> {
+  content: <span class="t-good">""</span>;
+  width: 40px; height: 40px;
+  background: <span class="t-good">url("/img/icon.png")</span>
+              center/contain no-repeat;
+  opacity: 0.25;
+}
+
+<span class="t-prop">.person-card__photo</span> {
+  background: <span class="t-good">#1c1c1c</span>;
+}
+
+<span class="t-prop">.person-card__placeholder</span> {
+  color: <span class="t-good">#52525b</span>; <span class="t-cmt">/* zinc-600 */</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Replace all <code>rgba(0,0,0,0.06)</code> placeholder backgrounds with a
+      flat dark value like <code>#1c1c1c</code>. Optionally add a faint centred logo icon as the
+      placeholder visual. Also audit every use of Pico's <code>--pico-muted-color</code>: on a
+      pure-black background it likely fails contrast requirements.
+    </div>
+  </div>
+  <div class="slide-counter">7 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 7 — ISSUE 6: NO HOVER STATES ON CARDS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#6</span>
+      <h2 class="issue-title">Card covers have no hover feedback — they feel broken<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      Every edition tile, project card, and blog card cover is a clickable <code>&lt;a&gt;</code>.
+      None of them have a hover state. The cursor doesn't change to a pointer either —
+      <code>cursor: pointer</code> is set on three nav elements but not on any card cover link.
+      Users hovering over comic covers get zero visual confirmation the element is interactive.
+      The only card type with hover CSS is <code>.project-card__cover--text</code> — the
+      <em>text-only fallback</em> version, not the image one. Priorities are inverted.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — no hover on cards</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.edition-tile__cover</span> {
+  display: block;
+  position: relative;
+  <span class="t-cmt">/* no cursor, no hover → feels static */</span>
+}
+
+<span class="t-prop">.project-card__cover</span> {
+  display: block;
+  position: relative;
+  <span class="t-cmt">/* same — zero interactive feedback */</span>
+}
+
+<span class="t-prop">.blog-card__cover</span> {
+  display: block;
+  <span class="t-cmt">/* same */</span>
+}
+
+<span class="t-cmt">/* cursor: pointer only appears on
+   .nav-links__group summary (l.183)
+   .nav-mobile__links summary (l.416)
+   .person-hero__more-btn  (l.1046)
+   Not on any content card. */</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — clear interactive affordance</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Single rule catches all card covers */</span>
+<span class="t-prop">.edition-tile__cover</span>,
+<span class="t-prop">.project-card__cover</span>,
+<span class="t-prop">.edition-card__media</span>,
+<span class="t-prop">.blog-card__cover</span> {
+  cursor: <span class="t-good">pointer</span>;
+  transition: opacity <span class="t-good">0.18s ease</span>,
+              transform <span class="t-good">0.18s ease</span>;
+}
+
+<span class="t-prop">.edition-tile__cover:hover</span>,
+<span class="t-prop">.project-card__cover:hover</span>,
+<span class="t-prop">.edition-card__media:hover</span>,
+<span class="t-prop">.blog-card__cover:hover</span> {
+  opacity: <span class="t-good">0.88</span>;
+  transform: <span class="t-good">translateY(-2px)</span>;
+}
+
+<span class="t-cmt">/* Respect reduced-motion */</span>
+<span class="t-prop">@media (prefers-reduced-motion: reduce)</span> {
+  .edition-tile__cover,
+  .project-card__cover { transition: none; }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Add the hover ruleset above. The <code>translateY(-2px)</code> lift is subtle
+      enough not to shift layout but gives clear physical feedback. Add <code>@media (prefers-reduced-motion)</code>
+      to respect accessibility settings. One block of CSS, covers every content card on the site.
+    </div>
+  </div>
+  <div class="slide-counter">8 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 8 — ISSUE 7: THREE DIFFERENT REDS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#7</span>
+      <h2 class="issue-title">The brand uses three different reds simultaneously<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      The CSS root block defines three distinct red values that are all used as the <em>primary brand colour</em>:
+      the CSS keyword <code>darkred</code> (<strong>#8b0000</strong>), the hex <code>#8b0000</code> again as
+      <code>--diablaq-red-dark</code>, and <code>rgb(172, 53, 31)</code> (<strong>#ac351f</strong>) as
+      <code>--diablaq-red</code>. Then <code>--pico-primary-hover</code> adds a fourth: <code>#b00000</code>.
+      The topbar header background and the footer links are different reds.
+      Brand identity requires <strong>one primary colour, used consistently</strong>.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — 4 reds in one file</div>
+        <div class="compare__content">
+<pre>:root {
+  <span class="t-cmt">/* Pico overrides */</span>
+  --pico-primary: <span class="t-bad">darkred</span>;           <span class="t-cmt">/* #8b0000 */</span>
+  --pico-primary-hover: <span class="t-bad">#b00000</span>;    <span class="t-cmt">/* #b00000 */</span>
+
+  <span class="t-cmt">/* Brand tokens */</span>
+  --diablaq-red: <span class="t-bad">rgb(172, 53, 31)</span>;  <span class="t-cmt">/* #ac351f */</span>
+  --diablaq-red-dark: <span class="t-bad">#8b0000</span>;      <span class="t-cmt">/* #8b0000 */</span>
+
+  <span class="t-cmt">/* All used as "the brand red":
+     topbar bg   → --diablaq-red
+     nav links   → --diablaq-red-dark
+     link hover  → --diablaq-red
+     Pico buttons→ darkred
+     Four values. One brand. */</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — one source of truth</div>
+        <div class="compare__content">
+<pre>:root {
+  <span class="t-cmt">/* Single brand decision */</span>
+  --brand:       <span class="t-good">#ac351f</span>;  <span class="t-cmt">/* primary */</span>
+  --brand-dark:  <span class="t-good">#8b1a0a</span>;  <span class="t-cmt">/* hover/dark */</span>
+  --brand-light: <span class="t-good">#c8502e</span>;  <span class="t-cmt">/* active/focus */</span>
+
+  <span class="t-cmt">/* Pico overrides reference brand */</span>
+  --pico-primary:            var(--brand);
+  --pico-primary-hover-background:
+                             var(--brand-dark);
+
+  <span class="t-cmt">/* Legacy aliases (remove gradually) */</span>
+  --diablaq-red:      var(--brand);
+  --diablaq-red-dark: var(--brand-dark);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="evidence">
+      <strong>Evidence</strong> — <code>diablaq.css:3</code> <code>darkred</code> ·
+      <code>:7</code> <code>#b00000</code> ·
+      <code>:38</code> <code>rgb(172,53,31)</code> ·
+      <code>:39</code> <code>#8b0000</code>.
+      Four values across 12 usage sites. A user hovering a nav link sees a different red than the topbar background.
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Decide on one canonical hex (the logo colour is the source of truth — sample it).
+      Replace all four values with two CSS variables: <code>--brand</code> and <code>--brand-dark</code>.
+      Point Pico's override variables at them. Delete the redundant aliases once transitioned.
+    </div>
+  </div>
+  <div class="slide-counter">9 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 9 — ISSUE 8: NO ACTIVE NAV STATE
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-9">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#8</span>
+      <h2 class="issue-title">Navigation never shows where you are<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      There is no active/current state on any navigation link — desktop or mobile.
+      A user on the <strong>/blog/</strong> page sees the same nav as a user on <strong>/ludzie/</strong>.
+      No underline, no highlight, no weight change. This is a basic wayfinding primitive that every
+      multi-page site needs. The CSS has no <code>.active</code>, <code>[aria-current]</code>, or
+      <code>.is-current</code> rule. The templates pass no current-page context to the base layout.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — base.html (nav)</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;ul</span> <span class="t-attr">class</span>=<span class="t-val">"nav-links"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;li&gt;&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/blog/"</span><span class="t-tag">&gt;</span>Blog<span class="t-tag">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="t-tag">&lt;li&gt;&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/zapowiedzi/"</span><span class="t-tag">&gt;</span>Zapowiedzi<span class="t-tag">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="t-tag">&lt;li&gt;&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/nowe/"</span><span class="t-tag">&gt;</span>Nowości<span class="t-tag">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="t-cmt">&lt;!-- all links look identical --&gt;</span>
+  <span class="t-cmt">&lt;!-- no aria-current, no .active --&gt;</span>
+  <span class="t-cmt">&lt;!-- no current_url in context   --&gt;</span>
+<span class="t-tag">&lt;/ul&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — aria-current + CSS</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# builder.py / rendering.py:
+   pass current_path to every template #}</span>
+
+<span class="t-tag">&lt;li&gt;&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/blog/"</span>
+   <span class="t-good">{% if current_path.startswith('/blog/') %}
+   aria-current="page"
+   {% endif %}</span><span class="t-tag">&gt;</span>Blog<span class="t-tag">&lt;/a&gt;&lt;/li&gt;</span>
+
+<span class="t-cmt">/* CSS — no extra class needed */</span>
+<span class="t-prop">.nav-links a[aria-current="page"]</span> {
+  text-decoration: <span class="t-good">underline</span>;
+  text-underline-offset: <span class="t-good">0.3em</span>;
+  text-decoration-thickness: <span class="t-good">2px</span>;
+  opacity: <span class="t-good">1</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Pass <code>current_path</code> (the output URL) from the SSG render context
+      into <code>base.html</code>. Use <code>aria-current="page"</code> on the matching link — this is the
+      semantically correct attribute and also gives you the CSS hook for free. Works for both desktop nav
+      and mobile nav without duplicating logic.
+    </div>
+  </div>
+  <div class="slide-counter">10 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 10 — ISSUE 9: NO OG / SOCIAL TAGS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-10">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#9</span>
+      <h2 class="issue-title">Social sharing produces a blank unfurl on every page<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      The <code>&lt;head&gt;</code> in <code>base.html</code> has exactly one meta tag: charset.
+      No <code>og:title</code>, no <code>og:image</code>, no <code>og:description</code>, no Twitter Card.
+      When someone shares a comic edition link on Facebook, Twitter/X, or WhatsApp, they get
+      the raw URL with no preview. For a publisher whose catalogue covers are the product,
+      this is a catastrophic missed opportunity — every share that could have shown a
+      gorgeous cover image instead shows nothing.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — base.html &lt;head&gt;</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;head&gt;</span>
+  <span class="t-tag">&lt;meta</span> <span class="t-attr">charset</span>=<span class="t-val">"utf-8"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;meta</span> <span class="t-attr">name</span>=<span class="t-val">"viewport"</span> …<span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;title&gt;</span>…<span class="t-tag">&lt;/title&gt;</span>
+  <span class="t-cmt">&lt;!-- canonical link (good) --&gt;</span>
+  <span class="t-tag">&lt;link</span> <span class="t-attr">rel</span>=<span class="t-val">"stylesheet"</span> …<span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;link</span> <span class="t-attr">rel</span>=<span class="t-val">"icon"</span> …<span class="t-tag">&gt;</span>
+  <span class="t-cmt">&lt;!-- NO og:title          --&gt;</span>
+  <span class="t-cmt">&lt;!-- NO og:description    --&gt;</span>
+  <span class="t-cmt">&lt;!-- NO og:image          --&gt;</span>
+  <span class="t-cmt">&lt;!-- NO twitter:card      --&gt;</span>
+  <span class="t-cmt">&lt;!-- NO description meta  --&gt;</span>
+<span class="t-tag">&lt;/head&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — full social head</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# Pass og_image, og_desc from context #}</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">name</span>=<span class="t-val">"description"</span>
+      <span class="t-attr">content</span>=<span class="t-val">"{{ og_desc or site_desc }}"</span><span class="t-tag">&gt;</span>
+
+<span class="t-tag">&lt;meta</span> <span class="t-attr">property</span>=<span class="t-val">"og:type"</span>      <span class="t-attr">content</span>=<span class="t-val">"website"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">property</span>=<span class="t-val">"og:title"</span>     <span class="t-attr">content</span>=<span class="t-val">"{{ page_title }}"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">property</span>=<span class="t-val">"og:description"</span> <span class="t-attr">content</span>=<span class="t-val">"{{ og_desc }}"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">property</span>=<span class="t-val">"og:image"</span>
+      <span class="t-attr">content</span>=<span class="t-val">"{{ og_image or '/img/logo.png' }}"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">property</span>=<span class="t-val">"og:url"</span>       <span class="t-attr">content</span>=<span class="t-val">"{{ canonical_url }}"</span><span class="t-tag">&gt;</span>
+
+<span class="t-tag">&lt;meta</span> <span class="t-attr">name</span>=<span class="t-val">"twitter:card"</span>  <span class="t-attr">content</span>=<span class="t-val">"summary_large_image"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">&lt;meta</span> <span class="t-attr">name</span>=<span class="t-val">"twitter:image"</span> <span class="t-attr">content</span>=<span class="t-val">"{{ og_image }}"</span><span class="t-tag">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Add the meta block to <code>base.html</code> with Jinja2 variables.
+      Each template (edition, blog post, project) passes its cover image as <code>og_image</code>
+      and summary as <code>og_desc</code>. The SSG already has all this data — it just doesn't
+      surface it in the head. OG image recommended size: 1200×630px.
+    </div>
+  </div>
+  <div class="slide-counter">11 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 11 — ISSUE 10: ICON.PNG COVER FALLBACK
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-11">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#10</span>
+      <h2 class="issue-title">Missing covers fall back to the 32px favicon, stretched<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      Both <code>edition_tile.html</code> and <code>project_card.html</code> use
+      <code>/img/icon.png</code> as the fallback when no cover image is set.
+      <code>icon.png</code> is the site favicon — a small square icon designed for 16–32px display.
+      The card covers are rendered at an <code>aspect-ratio: 180/255</code> with <code>object-fit: cover</code>.
+      The result is a tiny icon stretched and pixelated across a full card cell.
+      It doesn't say "cover coming soon" — it says "this site is broken."
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — edition_tile.html &amp; project_card.html</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# edition_tile.html #}</span>
+<span class="t-tag">&lt;img</span>
+  <span class="t-attr">src</span>=<span class="t-val">"{{ e.cover_image <span class="t-bad">or '/img/icon.png'</span> }}"</span>
+  <span class="t-attr">alt</span>=<span class="t-val">"{{ e.title }}"</span>
+  <span class="t-attr">loading</span>=<span class="t-val">"lazy"</span><span class="t-tag">&gt;</span>
+
+<span class="t-cmt">{# project_card.html #}</span>
+<span class="t-tag">{% else %}</span>
+  <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val t-bad">"/img/icon.png"</span>
+       <span class="t-attr">alt</span>=<span class="t-val">"{{ p.title }}"</span>
+       <span class="t-attr">loading</span>=<span class="t-val">"lazy"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">{% endif %}</span>
+
+<span class="t-cmt">&lt;!-- icon.png: favicon, ~32px square
+     Card slot: 180×255px portrait
+     Result: blurry stretched mess --&gt;</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — CSS placeholder, no bad image</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# edition_tile.html — conditional render #}</span>
+<span class="t-tag">{% if e.cover_image %}</span>
+  <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"{{ e.cover_image }}"</span>
+       <span class="t-attr">alt</span>=<span class="t-val">"{{ e.cover_alt or e.title }}"</span>
+       <span class="t-attr">loading</span>=<span class="t-val">"lazy"</span><span class="t-tag">&gt;</span>
+<span class="t-tag">{% else %}</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val t-good">"cover-placeholder"</span>
+       <span class="t-attr">aria-label</span>=<span class="t-val">"{{ e.title }}"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;span</span> <span class="t-attr">class</span>=<span class="t-val">"cover-placeholder__text"</span><span class="t-tag">&gt;</span>
+      {{ e.title[:2] | upper }}
+    <span class="t-tag">&lt;/span&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">{% endif %}</span>
+
+<span class="t-cmt">/* CSS */</span>
+<span class="t-prop">.cover-placeholder</span> {
+  aspect-ratio: <span class="t-good">180 / 255</span>;
+  background: <span class="t-good">linear-gradient(135deg,#1c1010,#2d1515)</span>;
+  display: grid; place-items: center;
+  border-radius: var(--pico-border-radius);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Remove <code>or '/img/icon.png'</code> from both templates. Replace with an
+      explicit <code>{% if %}/{% else %}</code> block that renders a CSS-only placeholder with the
+      first two letters of the title. Dark gradient background, muted text — visually intentional,
+      not accidentally broken.
+    </div>
+  </div>
+  <div class="slide-counter">12 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 12 — ISSUE 11: THUMB-GRID GHOST CLASS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-12">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#11</span>
+      <h2 class="issue-title">thumb-grid and .thumb are used but never defined<span class="badge badge--major">Major</span></h2>
+    </div>
+    <p class="issue-desc">
+      <code>edition_details.html</code> renders preview images and alternative covers inside
+      <code>&lt;div class="thumb-grid"&gt;</code> and <code>&lt;a class="thumb"&gt;</code> wrappers.
+      Neither <code>.thumb-grid</code> nor <code>.thumb</code> appear anywhere in
+      <code>diablaq.css</code>, <code>pico.min.css</code>, or <code>fonts.css</code>.
+      The gallery grid has zero layout CSS — thumbnails stack as raw inline images with no
+      sizing, no gap, no consistent proportions. This page looks unfinished every time an
+      edition has preview images.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — edition_details.html</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val t-bad">"thumb-grid"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">{% for img in edition.covers %}</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">class</span>=<span class="t-val t-bad">"thumb"</span>
+       <span class="t-attr">href</span>=<span class="t-val">"{{ img.image }}"</span>
+       <span class="t-attr">target</span>=<span class="t-val">"_blank"</span><span class="t-tag">&gt;</span>
+      <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"{{ img.image }}"</span>
+           <span class="t-attr">loading</span>=<span class="t-val">"lazy"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;/a&gt;</span>
+  <span class="t-tag">{% endfor %}</span>
+<span class="t-tag">&lt;/div&gt;</span>
+
+<span class="t-cmt">/* .thumb-grid → NOT IN diablaq.css
+   .thumb       → NOT IN diablaq.css
+   Result: browser default block layout */</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — add the missing CSS</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* diablaq.css — add these rules */</span>
+<span class="t-prop">.thumb-grid</span> {
+  display: grid;
+  grid-template-columns:
+    <span class="t-good">repeat(auto-fill, minmax(120px, 1fr))</span>;
+  gap: <span class="t-good">0.5rem</span>;
+  margin-top: <span class="t-good">0.75rem</span>;
+}
+
+<span class="t-prop">.thumb</span> {
+  display: block;
+  border-radius: <span class="t-good">var(--pico-border-radius)</span>;
+  overflow: hidden;
+  cursor: <span class="t-good">pointer</span>;
+  transition: opacity <span class="t-good">0.15s</span>;
+}
+
+<span class="t-prop">.thumb img</span> {
+  width: 100%; height: auto;
+  aspect-ratio: <span class="t-good">1 / 1.4</span>;
+  object-fit: cover;
+  display: block;
+}
+
+<span class="t-prop">.thumb:hover</span> { opacity: <span class="t-good">0.8</span>; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Add twelve lines of CSS to <code>diablaq.css</code>.
+      This is a pure omission — the HTML structure is correct, the CSS was simply never written.
+      Check for other "ghost classes" by running <code>grep -h 'class="' templates/**/*.html | grep -oP '(?&lt;=")[a-z][a-z0-9_-]+'</code>
+      and diffing against defined rules.
+    </div>
+  </div>
+  <div class="slide-counter">13 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 13 — ISSUE 12: !IMPORTANT WAR
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-13">
+  <div class="slide__inner">
+    <div class="issue-header">
+      <span class="issue-number">#12</span>
+      <h2 class="issue-title">29 <code>!important</code> declarations signal a CSS architecture collapse<span class="badge badge--minor">Minor</span></h2>
+    </div>
+    <p class="issue-desc">
+      <code>diablaq.css</code> contains 29 <code>!important</code> declarations across 1052 lines
+      — roughly one every 36 lines. The majority fight Pico CSS's default spacing on
+      <code>.container</code>, <code>&lt;details&gt;</code>, and nav elements. This is the hallmark of
+      CSS written reactively: something looked wrong, so <code>!important</code> was added to force it.
+      Each <code>!important</code> makes the next bug harder to fix and signals that the cascade
+      is not understood or controlled. This isn't catastrophic today, but it compounds.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Before — recurring pattern</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.site-header .container</span> {
+  padding-top: 0 <span class="t-bad">!important</span>;
+  padding-bottom: 0 <span class="t-bad">!important</span>;
+}
+
+<span class="t-prop">.nav-links</span> {
+  margin: 0 <span class="t-bad">!important</span>;
+}
+
+<span class="t-prop">.nav-links > li</span> {
+  margin: 0 <span class="t-bad">!important</span>;
+}
+
+<span class="t-prop">.nav-links__group details</span> {
+  display: inline-flex <span class="t-bad">!important</span>;
+  margin: 0 <span class="t-bad">!important</span>;
+  padding: 0 <span class="t-bad">!important</span>;
+  background: transparent <span class="t-bad">!important</span>;
+  border: 0 <span class="t-bad">!important</span>;
+  color: #fff <span class="t-bad">!important</span>;
+}
+<span class="t-cmt">/* … 20 more like this */</span></pre>
+        </div>
+      </div>
+
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ After — override at the root</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Pico v2 supports CSS variable overrides.
+   Suppress Pico defaults at :root level
+   instead of fighting them inline. */</span>
+
+:root {
+  <span class="t-cmt">/* Kill Pico's nav/details padding
+     before it reaches components */</span>
+  --pico-nav-element-spacing-vertical: 0;
+  --pico-nav-element-spacing-horizontal: 0;
+  --pico-form-element-spacing-vertical: 0;
+}
+
+<span class="t-prop">.site-header .container</span> {
+  padding-block: 0;
+  <span class="t-cmt">/* no !important needed */</span>
+}
+
+<span class="t-cmt">/* For details/summary: use
+   appearance: none + custom styles
+   rather than overriding Pico's
+   opinionated component defaults */</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="fix">
+      <strong>Fix</strong> — Read Pico v2's CSS variable reference and override defaults at <code>:root</code>
+      rather than at every usage site. For the <code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>
+      nav elements, Pico's opinionated styles are too aggressive — consider using plain elements with
+      custom CSS instead of fighting the framework. Reduce <code>!important</code> count to zero as
+      a quality metric.
+    </div>
+  </div>
+  <div class="slide-counter">14 / 15</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 14 — SUMMARY
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-14">
+  <div class="slide__inner">
+    <p class="issue-number">Summary</p>
+    <h2 class="issue-title">Prioritised fix list</h2>
+    <p class="issue-desc">Ordered by user impact. The first four alone would double the perceived quality of the site.</p>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Issue</th>
+          <th>Severity</th>
+          <th>Effort</th>
+          <th>Files</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Empty hero — no imagery, no CTA, no brand</td>
+          <td><span class="badge badge--critical">Critical</span></td>
+          <td>Medium</td>
+          <td><code>home.html</code>, <code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Dead newsletter button + exposed dev note</td>
+          <td><span class="badge badge--critical">Critical</span></td>
+          <td>Low</td>
+          <td><code>base.html</code></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Heading font not loaded (Roboto Condensed)</td>
+          <td><span class="badge badge--critical">Critical</span></td>
+          <td>Trivial</td>
+          <td><code>fonts.css</code></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>No hover states on any card cover</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Trivial</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Placeholders invisible on dark background</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Trivial</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Icon.png as cover fallback (stretched favicon)</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Low</td>
+          <td><code>edition_tile.html</code>, <code>project_card.html</code></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>No OG / social meta tags on any page</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Low</td>
+          <td><code>base.html</code>, rendering context</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>ISO dates shown to users verbatim</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Low</td>
+          <td><code>rendering.py</code> + 3 templates</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>thumb-grid / .thumb CSS never defined</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Trivial</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Three different brand reds in one file</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Low</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>No active nav state / aria-current</td>
+          <td><span class="badge badge--major">Major</span></td>
+          <td>Low</td>
+          <td><code>base.html</code>, <code>diablaq.css</code>, builder</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>29 !important declarations fighting Pico</td>
+          <td><span class="badge badge--minor">Minor</span></td>
+          <td>Medium</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 2rem; padding: 1rem 1.25rem; background: #111; border: 1px solid #1f1f1f; border-radius: 8px; font-size: 0.85rem; color: #71717a;">
+      <strong style="color: #e4e4e7; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em;">Bottom line</strong><br><br>
+      Issues 1–3 are existential: no visual hook, a broken CTA on every page, and a missing font.
+      These land before a user ever reaches the catalogue. Fix them in one sprint.
+      Issues 4–9 are each a single-file, low-effort change that collectively transform the
+      perceived finish quality. Issues 10–12 are hygiene: they won't hurt users today, but
+      they make every future change harder. The codebase is structurally sound — it just needs
+      someone to treat it like a finished product, not a prototype left in production.
+    </div>
+  </div>
+  <div class="slide-counter">15 / 15</div>
+</section>
+
+<!-- ── JS: keyboard nav + dot state ─────────────────────────── -->
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide[id]'));
+  const dots = Array.from(document.querySelectorAll('.slide-nav__dot'));
+
+  function getActiveIndex() {
+    const mid = window.scrollY + window.innerHeight / 2;
+    let closest = 0, minDist = Infinity;
+    slides.forEach((s, i) => {
+      const dist = Math.abs(s.getBoundingClientRect().top + window.scrollY + s.offsetHeight / 2 - mid);
+      if (dist < minDist) { minDist = dist; closest = i; }
+    });
+    return closest;
+  }
+
+  function updateDots() {
+    const active = getActiveIndex();
+    dots.forEach((d, i) => d.classList.toggle('active', i === active));
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  window.addEventListener('scroll', updateDots, { passive: true });
+  updateDots();
+
+  document.addEventListener('keydown', (e) => {
+    const cur = getActiveIndex();
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      const next = Math.min(cur + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      const prev = Math.max(cur - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>
