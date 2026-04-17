@@ -2,14 +2,13 @@
 <article class="project-card">
   <a class="project-card__cover {{ p.cover_aspect_class }}" href="{{ p.url }}" aria-label="{{ p.title }}">
     {% if p.cover_image %}
-      <img src="{{ p.cover_image }}" alt="{{ p.title }} - okładka" loading="lazy">
+      <img class="cover-img" src="{{ p.cover_image }}" alt="{{ p.title }} – okładka" loading="lazy">
     {% else %}
       <div class="cover-placeholder" aria-label="{{ p.title }}">
         <span class="cover-placeholder__initials">{{ p.title[:2] | upper }}</span>
       </div>
     {% endif %}
   </a>
-
   <h3 class="project-card__title"><a href="{{ p.url }}">{{ p.title }}</a></h3>
   {% if p.summary %}
     <p class="project-card__summary">{{ p.summary }}</p>

@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dark Horse Alignment — Diablaq Design Recommendations</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  background: #111;
+  color: #d4d4d8;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  height: 100%;
+}
+
+/* ── Slides ───────────────────────────────────────────────────── */
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2rem;
+  position: relative;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.slide__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Title ────────────────────────────────────────────────────── */
+.slide--title {
+  background: #0a0a0a;
+}
+
+.title-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ba2d00;
+  margin-bottom: 1.25rem;
+}
+
+.title-main {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.title-sub {
+  font-size: 1.05rem;
+  color: #71717a;
+  max-width: 60ch;
+  margin-bottom: 2.5rem;
+}
+
+/* ── DNA slide ────────────────────────────────────────────────── */
+.dna-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.dna-card {
+  background: #161616;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+}
+
+.dna-card__label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #52525b;
+  margin-bottom: 0.4rem;
+}
+
+.dna-card__value {
+  font-size: 0.92rem;
+  color: #e4e4e7;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.dna-card__value code {
+  font-family: "Fira Code", Consolas, monospace;
+  font-size: 0.82em;
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+  color: #e4e4e7;
+}
+
+/* Colour swatch inline */
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* ── Rec slides ───────────────────────────────────────────────── */
+.rec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.rec-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #52525b;
+  padding-top: 0.4rem;
+  white-space: nowrap;
+}
+
+.rec-title {
+  font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+  font-weight: 800;
+  color: #fafafa;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+  margin-left: 0.45rem;
+}
+.badge--impact   { background: #1d3a1d; color: #86efac; border: 1px solid #166534; }
+.badge--quick    { background: #1e2a0f; color: #bef264; border: 1px solid #365314; }
+.badge--medium   { background: #1e1a08; color: #fde68a; border: 1px solid #713f12; }
+.badge--breaking { background: #2d1a00; color: #fb923c; border: 1px solid #92400e; }
+
+.rec-desc {
+  color: #a1a1aa;
+  max-width: 76ch;
+  margin-bottom: 1.5rem;
+  font-size: 0.96rem;
+}
+
+.rec-desc strong { color: #e4e4e7; }
+.rec-desc em     { color: #d4d4d8; }
+
+/* ── Before / After ───────────────────────────────────────────── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .compare { grid-template-columns: 1fr; }
+}
+
+.compare__panel {
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0e0e0e;
+  border: 1px solid #1f1f1f;
+}
+
+.compare__label {
+  padding: 0.45rem 1rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.compare__label--dh     { background: #0b1a2a; color: #93c5fd; border-bottom: 1px solid #1e3a5f; }
+.compare__label--before { background: #2d0a0a; color: #f87171; border-bottom: 1px solid #3f1515; }
+.compare__label--after  { background: #052010; color: #4ade80; border-bottom: 1px solid #0f3320; }
+
+.compare__content {
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+}
+
+pre {
+  font-family: "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  white-space: pre;
+  color: #d4d4d8;
+}
+
+code {
+  font-family: "Fira Code", Consolas, monospace;
+  font-size: 0.85em;
+  background: #1c1c1c;
+  border: 1px solid #2a2a2a;
+  border-radius: 3px;
+  padding: 0.1em 0.35em;
+  color: #e4e4e7;
+}
+
+/* Token colours */
+.t-tag  { color: #f472b6; }
+.t-attr { color: #93c5fd; }
+.t-val  { color: #86efac; }
+.t-cmt  { color: #4b5563; font-style: italic; }
+.t-kw   { color: #c4b5fd; }
+.t-str  { color: #86efac; }
+.t-num  { color: #fcd34d; }
+.t-prop { color: #7dd3fc; }
+.t-bad  { background: #7f1d1d44; border-radius: 2px; padding: 0 2px; }
+.t-good { background: #14532d44; border-radius: 2px; padding: 0 2px; }
+.t-dh   { background: #1e3a5f44; border-radius: 2px; padding: 0 2px; }
+
+/* ── Visual mockups ───────────────────────────────────────────── */
+.mock-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 0;
+}
+
+@media (max-width: 820px) {
+  .mock-pair { grid-template-columns: 1fr; }
+}
+
+.mock {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #1f1f1f;
+  font-size: 0.8rem;
+}
+
+.mock__bar {
+  background: #1a1a1a;
+  padding: 0.35rem 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid #222;
+  font-size: 0.65rem;
+  color: #52525b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mock__bar--dh   { background: #0b1a2a; color: #60a5fa; }
+.mock__bar--diab { background: #1a0505; color: #f87171; }
+.mock__bar--rec  { background: #052010; color: #4ade80; }
+
+.mock__body { padding: 0; overflow: hidden; }
+
+/* Simulated UI elements */
+.sim-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.75rem;
+  height: 36px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sim-nav--black { background: #000; color: #fff; }
+.sim-nav--red   { background: #ac351f; color: #fff; }
+
+.sim-hero {
+  height: 90px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.5rem 0.75rem;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.sim-hero--dh   { background: linear-gradient(to right, #1a0a00 0%, #3a1500 40%, #5a2000 70%, #2a0a00 100%); }
+.sim-hero--diab { background: #0a0a0a; border: 1px dashed #2a2a2a; display: flex; align-items: center; justify-content: center; color: #3f3f46; font-size: 0.65rem; }
+.sim-hero--rec  { background: linear-gradient(135deg, #1a0000 0%, #2d0a00 50%, #1a0505 100%); }
+
+.sim-hero__text {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  z-index: 1;
+}
+
+.sim-subnav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  height: 28px;
+  align-items: center;
+  background: #000;
+  border-top: 1px solid #222;
+}
+
+.sim-subnav__item {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #d4d4d8;
+  letter-spacing: 0.06em;
+}
+
+.sim-subnav__item.active { color: #ba2d00; border-bottom: 2px solid #ba2d00; }
+
+.sim-content {
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+}
+
+.sim-content--dark { background: #0a0a0a; }
+
+.sim-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.sim-card {
+  aspect-ratio: 2/3;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #1a1a2a, #2a1a1a);
+  border: 1px solid #333;
+}
+
+.sim-card--white { background: linear-gradient(135deg, #e8e4dd, #d0c8c0); border: 1px solid #000; border-radius: 0; }
+.sim-card--dark  { background: linear-gradient(135deg, #1a1a2a, #2a1a1a); border: 1px solid #333; border-radius: 3px; }
+
+/* ── Source callout ───────────────────────────────────────────── */
+.source-box {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: #0b1a2a;
+  border-left: 3px solid #3b82f6;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  color: #93c5fd;
+}
+
+.source-box strong {
+  color: #bfdbfe;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Rec callout ──────────────────────────────────────────────── */
+.rec-box {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background: #052010;
+  border-left: 3px solid #22c55e;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  color: #a1a1aa;
+}
+
+.rec-box strong {
+  color: #4ade80;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* ── Summary table ────────────────────────────────────────────── */
+.sum-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  margin-top: 1.5rem;
+}
+
+.sum-table th {
+  text-align: left;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52525b;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.sum-table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #141414;
+  color: #a1a1aa;
+  vertical-align: top;
+}
+
+.sum-table td:first-child { color: #e4e4e7; font-weight: 500; white-space: nowrap; }
+.sum-table tr:hover td    { background: #111; }
+
+/* ── Nav dots ─────────────────────────────────────────────────── */
+.slide-nav {
+  position: fixed;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  z-index: 100;
+}
+
+.slide-nav__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #3f3f46;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: none;
+}
+
+.slide-nav__dot.active, .slide-nav__dot:hover {
+  background: #ba2d00;
+  transform: scale(1.4);
+}
+
+/* ── Misc ─────────────────────────────────────────────────────── */
+.slide-counter {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-size: 0.68rem;
+  color: #3f3f46;
+  letter-spacing: 0.06em;
+}
+
+.nav-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  color: #3f3f46;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+.nav-hint { animation: none; }
+.nav-hint svg { animation: bounce 1.6s infinite; }
+
+/* Three-column compare for DNA/summary */
+.compare--three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .compare--three { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="slide-nav" aria-label="Slide navigation">
+  <button class="slide-nav__dot active" data-target="0" title="Title"></button>
+  <button class="slide-nav__dot" data-target="1" title="DH DNA"></button>
+  <button class="slide-nav__dot" data-target="2" title="R1 Background"></button>
+  <button class="slide-nav__dot" data-target="3" title="R2 Oswald"></button>
+  <button class="slide-nav__dot" data-target="4" title="R3 Hero"></button>
+  <button class="slide-nav__dot" data-target="5" title="R4 Category nav"></button>
+  <button class="slide-nav__dot" data-target="6" title="R5 Cover borders"></button>
+  <button class="slide-nav__dot" data-target="7" title="R6 Card typography"></button>
+  <button class="slide-nav__dot" data-target="8" title="R7 Nav colour"></button>
+  <button class="slide-nav__dot" data-target="9" title="R8 Brand red"></button>
+  <button class="slide-nav__dot" data-target="10" title="R9 Container width"></button>
+  <button class="slide-nav__dot" data-target="11" title="Summary"></button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 0 — TITLE
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide slide--title" id="slide-0">
+  <div class="slide__inner">
+    <p class="title-eyebrow">Design Alignment Study</p>
+    <h1 class="title-main">Closing the gap<br>between Diablaq and<br><span style="color:#ba2d00">Dark Horse Comics</span></h1>
+    <p class="title-sub">
+      9 concrete, evidence-based recommendations derived from live inspection
+      of darkhorse.com — its CSS variables, font stack, layout rules, and
+      interaction patterns — mapped to specific changes in Diablaq's templates.
+    </p>
+    <div style="display:flex; gap:2rem; flex-wrap:wrap; margin-top:1rem;">
+      <div>
+        <div style="font-size:1.8rem; font-weight:800; color:#ba2d00; line-height:1">2</div>
+        <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#52525b; margin-top:0.25rem">Fonts to add</div>
+      </div>
+      <div>
+        <div style="font-size:1.8rem; font-weight:800; color:#4ade80; line-height:1">9</div>
+        <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#52525b; margin-top:0.25rem">CSS/template changes</div>
+      </div>
+      <div>
+        <div style="font-size:1.8rem; font-weight:800; color:#fde68a; line-height:1">1</div>
+        <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#52525b; margin-top:0.25rem">Structural addition</div>
+      </div>
+      <div>
+        <div style="font-size:1.8rem; font-weight:800; color:#fb923c; line-height:1">1</div>
+        <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#52525b; margin-top:0.25rem">Breaking change</div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-hint">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    scroll or use arrow keys
+  </div>
+  <div class="slide-counter">1 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 1 — DH DNA
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-1">
+  <div class="slide__inner">
+    <p class="rec-num">Baseline</p>
+    <h2 class="rec-title" style="margin-bottom:0.5rem">The Dark Horse design system — extracted from source</h2>
+    <p class="rec-desc" style="margin-bottom:1.25rem">
+      Everything below was read directly from <code>darkhorse.com</code>'s live CSS
+      (<code>custom.d749d9820704.css</code>, 269 KB), computed styles via Playwright, and the HTML structure.
+      This is the ground truth to align against.
+    </p>
+
+    <div class="dna-grid">
+      <div class="dna-card">
+        <div class="dna-card__label">Brand primary colour</div>
+        <div class="dna-card__value">
+          <span class="swatch" style="background:#ba2d00"></span>
+          <code>#ba2d00</code> — "Tomato"<br>
+          CSS var: <code>--tomato</code>, <code>--bs-primary</code>
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Display / Hero font</div>
+        <div class="dna-card__value">
+          <strong>Oswald</strong> — variable 100–900<br>
+          Self-hosted TTF, <code>font-display: swap</code><br>
+          Used for: h1, h2, hero copy
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Label / Nav font</div>
+        <div class="dna-card__value">
+          <strong>Roboto Condensed</strong> — variable 100–900<br>
+          Self-hosted TTF, <code>font-display: swap</code><br>
+          Used for: nav, h3, cards, buttons
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Body font</div>
+        <div class="dna-card__value">
+          Helvetica, Arial, sans-serif<br>
+          16px / 1.5 line-height<br>
+          Color: <code>#212529</code>
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Navbar</div>
+        <div class="dna-card__value">
+          Background: <code>#000000</code> pure black<br>
+          Height: <code>44px</code><br>
+          Links: Roboto Condensed 700, uppercase, white
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Content background</div>
+        <div class="dna-card__value">
+          <span class="swatch" style="background:#fff; border:1px solid #555"></span>
+          <code>#ffffff</code> — white!<br>
+          Outer body: <code>rgb(76,76,76)</code> grey<br>
+          <em>Not a dark-mode site</em>
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Hero pattern</div>
+        <div class="dna-card__value">
+          Full-bleed Bootstrap carousel<br>
+          Viewport-width images<br>
+          Below: sticky category sub-nav
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Cover image style</div>
+        <div class="dna-card__value">
+          <code>border: 1px solid #000</code><br>
+          <code>border-radius: 0px</code> — hard edges<br>
+          Aspect ratio: 1 / 1.5 (portrait)
+        </div>
+      </div>
+      <div class="dna-card">
+        <div class="dna-card__label">Container / layout</div>
+        <div class="dna-card__value">
+          Max-width: <code>960px</code><br>
+          Homepage: <code>--bs-gutter-x: 0</code><br>
+          Product grid: <code>116px</code> card width
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">2 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 2 — REC 1: CONTENT BG — LIGHT NOT DARK
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-2">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #1</span>
+      <h2 class="rec-title">Flip the content background to white — DH is not a dark-mode site<span class="badge badge--breaking">Breaking</span></h2>
+    </div>
+    <p class="rec-desc">
+      This is the single most fundamental difference. Dark Horse's content area is <strong>white</strong>.
+      The dark feeling comes from its <em>pure-black navbar</em> and <em>full-bleed hero images</em> —
+      not from a dark page background. Diablaq currently runs <code>--color-bg: #000</code> on the body.
+      Comic covers are designed in print — strong black outlines, high contrast —
+      and they <strong>pop against white</strong>, not against black.
+      Switching to light content with a black nav is the core aesthetic shift that connects you to DH.
+    </p>
+
+    <div class="mock-pair" style="margin-bottom: 1.25rem;">
+      <div class="mock">
+        <div class="mock__bar mock__bar--dh">Dark Horse (actual)</div>
+        <div class="mock__body">
+          <div class="sim-nav sim-nav--black">
+            <span>☰</span><span>Comics</span><span>Manga</span><span>Products</span>
+          </div>
+          <div class="sim-hero sim-hero--dh">
+            <div class="sim-hero__text">MAGIC: THE GATHERING</div>
+          </div>
+          <div class="sim-subnav">
+            <span class="sim-subnav__item active">New Releases</span>
+            <span class="sim-subnav__item">On Sale</span>
+            <span class="sim-subnav__item">Series</span>
+          </div>
+          <div class="sim-cards" style="background:#fff">
+            <div class="sim-card sim-card--white"></div>
+            <div class="sim-card sim-card--white"></div>
+            <div class="sim-card sim-card--white"></div>
+            <div class="sim-card sim-card--white"></div>
+          </div>
+          <div style="background:#fff; padding: 0.35rem 0.75rem; font-size:0.62rem; color:#888; border-top:1px solid #ddd">White content area — covers have strong contrast</div>
+        </div>
+      </div>
+      <div class="mock">
+        <div class="mock__bar mock__bar--diab">Diablaq (current)</div>
+        <div class="mock__body">
+          <div class="sim-nav sim-nav--red">
+            <span>Diablaq</span><span>Blog</span><span>Zapowiedzi</span><span>Sklep</span>
+          </div>
+          <div class="sim-hero sim-hero--diab">No hero — plain h1 text only</div>
+          <div class="sim-cards" style="background:#0a0a0a; padding:0.5rem 0.75rem;">
+            <div class="sim-card sim-card--dark"></div>
+            <div class="sim-card sim-card--dark"></div>
+            <div class="sim-card sim-card--dark"></div>
+            <div class="sim-card sim-card--dark"></div>
+          </div>
+          <div style="background:#0a0a0a; padding: 0.35rem 0.75rem; font-size:0.62rem; color:#555; border-top:1px solid #1a1a1a">Dark body — covers lose definition against dark bg</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Current — diablaq.css :root</div>
+        <div class="compare__content">
+<pre>:root {
+  <span class="t-prop">--color-bg</span>: <span class="t-bad">#000</span>;
+  <span class="t-cmt">/* body background = pure black */</span>
+}
+<span class="t-cmt">/* Pico will use this as bg.
+   Comic covers are designed for
+   print / white — they lose edge
+   definition on black. */</span></pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — light content, black nav</div>
+        <div class="compare__content">
+<pre>:root {
+  <span class="t-prop">--color-bg</span>: <span class="t-good">#f8f5f0</span>;  <span class="t-cmt">/* warm white */</span>
+  <span class="t-prop">--color-text</span>: <span class="t-good">#212529</span>; <span class="t-cmt">/* #212529 = DH body */</span>
+  <span class="t-prop">--pico-background-color</span>: <span class="t-good">#f8f5f0</span>;
+  <span class="t-prop">--pico-color</span>: <span class="t-good">#212529</span>;
+}
+
+<span class="t-cmt">/* Keep nav black — that's what
+   creates the DH "dark energy" */</span>
+<span class="t-prop">.site-header</span> {
+  background: <span class="t-good">#000000</span>; <span class="t-cmt">/* not brand red */</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-box">
+      <strong>DH Source</strong> — Computed: <code>body background-color: rgb(255,255,255)</code> on content div.
+      <code>#content .container { background-color: white }</code> — verified in live CSS.
+      The body itself is <code>rgb(76,76,76)</code> grey which only shows as a thin outer margin.
+    </div>
+  </div>
+  <div class="slide-counter">3 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 3 — REC 2: ADD OSWALD FOR DISPLAY HEADINGS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-3">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #2</span>
+      <h2 class="rec-title">Add Oswald for hero and section display headings<span class="badge badge--quick">Quick win</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse uses <strong>two typefaces</strong>, not one: <em>Oswald</em> for big display moments
+      (hero h1, section h2, feature titles) and <em>Roboto Condensed</em> for labels, nav, and card text.
+      Diablaq currently uses Roboto Condensed for everything — and doesn't even load it yet.
+      Oswald is wider, bolder, and more cinematic than Roboto Condensed at large sizes.
+      It's what makes DH's section headers read as authoritative. Both are free Apache 2.0 / OFL fonts.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — fonts.css</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Both fonts self-hosted as TTF */</span>
+<span class="t-tag">@font-face</span> {
+  font-family: <span class="t-dh">"Oswald"</span>;
+  font-style: normal;
+  font-weight: <span class="t-num">100 900</span>;
+  font-display: swap;
+  src: url(<span class="t-str">"/static/…/Oswald-Variable.ttf"</span>)
+       format(<span class="t-str">"truetype"</span>);
+}
+<span class="t-tag">@font-face</span> {
+  font-family: <span class="t-dh">"Roboto Condensed"</span>;
+  font-weight: <span class="t-num">100 900</span>;
+  font-display: swap;
+  src: url(<span class="t-str">"/static/…/RobotoCondensed.ttf"</span>)
+       format(<span class="t-str">"truetype"</span>);
+}
+<span class="t-cmt">/* h1/h2 → Oswald
+   nav/h3/labels → Roboto Condensed */</span></pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — diablaq fonts.css</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Via Google Fonts — Apache 2.0 / OFL */</span>
+<span class="t-tag">@import</span> url(<span class="t-str">'https://fonts.googleapis.com/css2?
+  family=Oswald:wght@400;500;600;700
+  &family=Roboto+Condensed:wght@400;
+  600;700&display=swap'</span>);
+
+:root {
+  <span class="t-prop">--diablaq-font-display</span>: <span class="t-good">"Oswald"</span>, sans-serif;
+  <span class="t-prop">--diablaq-font-heading</span>: <span class="t-good">"Roboto Condensed"</span>, sans-serif;
+}
+
+<span class="t-cmt">/* h1, h2 → display font (Oswald) */</span>
+h1, h2 { font-family: <span class="t-good">var(--diablaq-font-display)</span>; }
+<span class="t-cmt">/* h3–h6, nav, cards → Roboto Cond. */</span>
+h3, h4, nav { font-family: <span class="t-good">var(--diablaq-font-heading)</span>; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.25rem; padding: 1rem 1.15rem; background: #161616; border: 1px solid #222; border-radius: 8px;">
+      <div style="font-size: 0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#52525b; margin-bottom:0.75rem;">Visual comparison at 48px</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+        <div>
+          <div style="font-size:0.65rem; color:#52525b; margin-bottom:0.25rem;">Roboto Condensed (current for h1)</div>
+          <div style="font-family:'Roboto Condensed',system-ui; font-size:2.2rem; font-weight:700; text-transform:uppercase; color:#fafafa; line-height:1; letter-spacing:0.02em;">Piekielnie dobre komiksy</div>
+        </div>
+        <div>
+          <div style="font-size:0.65rem; color:#52526b; margin-bottom:0.25rem;">Oswald (recommended for h1)</div>
+          <div style="font-family:'Oswald',system-ui; font-size:2.2rem; font-weight:600; text-transform:uppercase; color:#ba2d00; line-height:1; letter-spacing:0.01em;">Piekielnie dobre komiksy</div>
+        </div>
+      </div>
+      <div style="font-size:0.7rem; color:#52525b; margin-top:0.6rem;">
+        ↑ Both fallback to system-ui above until fonts load — the visual gap is most obvious in production with actual Oswald loaded.
+      </div>
+    </div>
+
+    <div class="source-box" style="margin-top:1rem">
+      <strong>DH Source</strong> — <code>@font-face { font-family: "Oswald"; … }</code> in <code>custom.css</code>.
+      Computed on <code>h1.carousel-title</code>: <code>font-family: Oswald, Impact, "sans-serif"</code>,
+      <code>font-weight: 500</code>, <code>font-size: 48px</code>, <code>text-transform: uppercase</code>.
+    </div>
+  </div>
+  <div class="slide-counter">4 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 4 — REC 3: FULL-BLEED HERO CAROUSEL
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-4">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #3</span>
+      <h2 class="rec-title">Replace the empty hero with a full-bleed featured-releases carousel<span class="badge badge--impact">High impact</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse's homepage opens with a <strong>viewport-width Bootstrap carousel</strong> showing
+      featured releases — large artwork, the book title in Oswald uppercase over a dark overlay,
+      and a subtitle describing the story. This is the pattern Diablaq's designer was inspired by.
+      Currently Diablaq shows two lines of text. The cover images already exist in the SSG pipeline.
+      The builder just needs to select 3–5 featured editions and pass them to the template.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — carousel structure</div>
+        <div class="compare__content">
+<pre><span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"carousel slide"</span>
+     <span class="t-attr">data-bs-ride</span>=<span class="t-val">"carousel"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"carousel-inner"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"carousel-item active"</span><span class="t-tag">&gt;</span>
+      <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"carousel-item-container"</span><span class="t-tag">&gt;</span>
+        <span class="t-cmt">&lt;!-- Full-width artwork image --&gt;</span>
+        <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"…"</span> <span class="t-attr">style</span>=<span class="t-val">"width:100%"</span><span class="t-tag">&gt;</span>
+        <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"subtitle"</span><span class="t-tag">&gt;</span>
+          <span class="t-tag">&lt;h1&gt;</span>Magic the Gathering<span class="t-tag">&lt;/h1&gt;</span>
+          <span class="t-tag">&lt;p&gt;</span>Delve into an untold story of
+          Jace Beleren…<span class="t-tag">&lt;/p&gt;</span>
+        <span class="t-tag">&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</span>
+  <span class="t-tag">&lt;/div&gt;  &lt;!-- more .carousel-item --&gt;</span>
+<span class="t-tag">&lt;/div&gt;</span></pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — home.html hero</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# builder passes featured_editions:
+   3–5 editions with featured_image #}</span>
+<span class="t-tag">&lt;section</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">{% for e in featured_editions %}</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero__slide
+    {% if loop.first %}is-active{% endif %}"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;img</span> <span class="t-attr">src</span>=<span class="t-val">"{{ e.cover_image }}"</span>
+         <span class="t-attr">alt</span>=<span class="t-val">""</span> <span class="t-attr">aria-hidden</span>=<span class="t-val">"true"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"home-hero__caption"</span><span class="t-tag">&gt;</span>
+      <span class="t-tag">&lt;h1&gt;</span>{{ e.title }}<span class="t-tag">&lt;/h1&gt;</span>
+      <span class="t-tag">&lt;p&gt;</span>{{ e.summary }}<span class="t-tag">&lt;/p&gt;</span>
+      <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"{{ e.url }}"</span><span class="t-tag">&gt;</span>Czytaj więcej<span class="t-tag">&lt;/a&gt;</span>
+    <span class="t-tag">&lt;/div&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+  <span class="t-tag">{% endfor %}</span>
+<span class="t-tag">&lt;/section&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-box">
+      <strong>Implementation notes</strong> — No JS framework needed: pure CSS carousel with
+      <code>scroll-snap</code> works without Bootstrap. Mark editions as <code>featured: true</code>
+      in their YAML front-matter. The builder filters them and passes the list to the home template.
+      Minimum viable version: a single full-bleed image with a dark gradient overlay and the title in Oswald.
+      No auto-rotation needed — a static hero beats two lines of text every time.
+    </div>
+  </div>
+  <div class="slide-counter">5 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 5 — REC 4: STICKY CATEGORY SUB-NAV
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-5">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #4</span>
+      <h2 class="rec-title">Add a sticky category sub-nav below the hero<span class="badge badge--medium">Medium effort</span></h2>
+    </div>
+    <p class="rec-desc">
+      Immediately below the hero, Dark Horse renders a second sticky navbar with section links:
+      <em>Comics, Manga, Products, Dark Horse Direct…</em> It uses
+      <code>position: sticky; top: 0</code> and pure black background.
+      This gives users persistent quick access to the catalogue categories and doubles as
+      a visual break between the hero and the content grid.
+      Diablaq's equivalent would be: <em>Publikacje, Zapowiedzi, Nowości, Dobre Licho, Mecenat, Studio.</em>
+      This matches Diablaq's existing nav content — it's a <em>second level</em> of it.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — sticky subnav CSS</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.middle-nav-sticky</span> {
+  position: <span class="t-dh">sticky</span>;
+  top: <span class="t-dh">0</span>;
+  z-index: <span class="t-num">99</span>;
+  <span class="t-prop">--sticky-navbar-height</span>: 44px;
+}
+
+<span class="t-prop">#main-nav</span> {
+  height: var(--sticky-navbar-height);
+  background-color: <span class="t-dh">black</span>;
+}
+
+<span class="t-prop">#main-nav .nav-link</span> {
+  font-family: <span class="t-dh">var(--dh-label-font-family)</span>;
+  font-size: <span class="t-num">15px</span>;
+  color: <span class="t-dh">#fff</span>;
+  text-transform: uppercase;
+  font-weight: <span class="t-num">700</span>;
+}</pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — base.html addition</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">{# After .site-header, before main #}</span>
+<span class="t-tag">&lt;nav</span> <span class="t-attr">class</span>=<span class="t-val">"cat-nav"</span>
+     <span class="t-attr">aria-label</span>=<span class="t-val">"Kategorie"</span><span class="t-tag">&gt;</span>
+  <span class="t-tag">&lt;div</span> <span class="t-attr">class</span>=<span class="t-val">"container cat-nav__inner"</span><span class="t-tag">&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/publikacje/"</span><span class="t-tag">&gt;</span>Publikacje<span class="t-tag">&lt;/a&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/zapowiedzi/"</span><span class="t-tag">&gt;</span>Zapowiedzi<span class="t-tag">&lt;/a&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/nowe/"</span><span class="t-tag">&gt;</span>Nowości<span class="t-tag">&lt;/a&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/dobre-licho/"</span><span class="t-tag">&gt;</span>Dobre Licho<span class="t-tag">&lt;/a&gt;</span>
+    <span class="t-tag">&lt;a</span> <span class="t-attr">href</span>=<span class="t-val">"/mecenat/"</span><span class="t-tag">&gt;</span>Mecenat<span class="t-tag">&lt;/a&gt;</span>
+  <span class="t-tag">&lt;/div&gt;</span>
+<span class="t-tag">&lt;/nav&gt;</span>
+
+<span class="t-cmt">/* CSS */</span>
+<span class="t-prop">.cat-nav</span> {
+  position: <span class="t-good">sticky</span>; top: <span class="t-good">0</span>;
+  background: <span class="t-good">#000</span>; z-index: <span class="t-num">90</span>;
+  height: <span class="t-good">40px</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-box">
+      <strong>Note</strong> — On the homepage this nav appears below the hero and sticks as you scroll
+      into the catalogue sections. On interior pages (listing, section pages) it can appear directly
+      below the topbar header, acting as breadcrumb-level context. Hide it on blog/people pages where
+      it doesn't add value by adding a <code>{% if show_cat_nav %}</code> flag to the template context.
+    </div>
+  </div>
+  <div class="slide-counter">6 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 6 — REC 5: HARD COVER BORDERS
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-6">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #5</span>
+      <h2 class="rec-title">Remove border-radius from covers — use hard 1px black edges<span class="badge badge--quick">Quick win</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse puts <code>border: 1px solid black</code> and <code>border-radius: 0</code>
+      on every product cover image. This is intentional: it mirrors how physical comics look —
+      a printed rectangle with a precise edge. Rounded corners feel like a mobile app widget.
+      Diablaq currently uses Pico's default <code>--pico-border-radius</code> on all cover images.
+      Switching to hard corners is a single CSS change that immediately shifts the aesthetic
+      from "generic website" to "editorial publisher."
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — product cover CSS</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.product-grid .product-result
+  .product-img img</span> {
+  width: <span class="t-num">100%</span>;
+  height: <span class="t-num">100%</span>;
+  object-fit: cover;
+  border: <span class="t-dh">1px solid black</span>;
+  <span class="t-cmt">/* no border-radius — hard edge */</span>
+}
+
+<span class="t-prop">.product-thumb</span> {
+  height: <span class="t-num">150px</span>;
+  width: <span class="t-num">100px</span>;
+  object-fit: cover;
+  <span class="t-cmt">/* no border-radius */</span>
+}</pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — diablaq.css</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Replace across all cover image rules */</span>
+<span class="t-prop">.edition-tile__cover img</span>,
+<span class="t-prop">.edition-card__media img</span>,
+<span class="t-prop">.project-card__cover img</span>,
+<span class="t-prop">.blog-post__cover img</span>,
+<span class="t-prop">.edition-details__cover img</span> {
+  border-radius: <span class="t-good">0</span>; <span class="t-cmt">/* was: var(--pico-border-radius) */</span>
+  border: <span class="t-good">1px solid rgba(0, 0, 0, 0.15)</span>;
+  <span class="t-cmt">/* on light bg: barely visible separator
+     on dark bg: increase to solid #000 */</span>
+}
+
+<span class="t-cmt">/* Keep rounded corners on UI elements
+   (blog tags, buttons) — just not covers */</span>
+<span class="t-prop">.blog-tag</span> { border-radius: <span class="t-good">999px</span>; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="background:#f0ece5; border-radius:6px; overflow:hidden; border:1px solid #d0ccc5">
+        <div style="padding:0.4rem 0.75rem; background:#e0dcd5; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666">Current — rounded corners</div>
+        <div style="padding:0.75rem; display:flex; gap:0.5rem">
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#3a1a2a,#5a2a3a); border-radius:5px; border:1px solid #ccc; flex-shrink:0"></div>
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#1a2a3a,#2a3a5a); border-radius:5px; border:1px solid #ccc; flex-shrink:0"></div>
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#2a3a1a,#3a5a2a); border-radius:5px; border:1px solid #ccc; flex-shrink:0"></div>
+        </div>
+      </div>
+      <div style="background:#f0ece5; border-radius:6px; overflow:hidden; border:1px solid #d0ccc5">
+        <div style="padding:0.4rem 0.75rem; background:#e0dcd5; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#666">Recommended — hard edges</div>
+        <div style="padding:0.75rem; display:flex; gap:0.5rem">
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#3a1a2a,#5a2a3a); border-radius:0; border:1px solid #000; flex-shrink:0"></div>
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#1a2a3a,#2a3a5a); border-radius:0; border:1px solid #000; flex-shrink:0"></div>
+          <div style="width:55px; aspect-ratio:2/3; background:linear-gradient(135deg,#2a3a1a,#3a5a2a); border-radius:0; border:1px solid #000; flex-shrink:0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-box">
+      <strong>DH Source</strong> — <code>.product-grid .product-result .product-img img { border: 1px solid black }</code>
+      and <code>.product-detail-body .product-cover-col .product-img { border: 1px solid #000000 }</code>
+      — consistent across all product views. Zero border-radius on any comic cover.
+    </div>
+  </div>
+  <div class="slide-counter">7 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 7 — REC 6: CARD TITLE TYPOGRAPHY
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-7">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #6</span>
+      <h2 class="rec-title">Tighten card typography — smaller, denser, Roboto Condensed bold<span class="badge badge--quick">Quick win</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse product card titles use <strong>Roboto Condensed, bold, 12px, uppercase, black</strong>.
+      This high-density style is deliberate — it keeps focus on the cover art, not the label.
+      Diablaq's <code>.edition-tile__title</code> is 1rem (~16px) in the default body font.
+      The DH approach fits more comics per row without feeling crowded because the typography
+      itself is compressed. On a light background, black text at 12px bold is crisp and legible.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — product card CSS</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.product-grid a</span> {
+  text-decoration: none;
+  color: <span class="t-dh">black</span>;
+  font-weight: <span class="t-dh">bold</span>;
+}
+
+<span class="t-prop">.product-grid .product-result</span> {
+  width: <span class="t-dh">116px</span>;
+  font-size: <span class="t-dh">12px</span>;
+  font-weight: <span class="t-dh">bold</span>;
+  padding-bottom: <span class="t-num">0.5rem</span>;
+}
+
+<span class="t-cmt">/* On hover: underline only.
+   No scale, no shadow, no transform. */</span>
+<span class="t-prop">.product-grid a:hover</span> {
+  text-decoration: <span class="t-dh">underline</span>;
+}</pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — edition tile</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.edition-tile__title</span>,
+<span class="t-prop">.project-card__title</span> {
+  font-family: <span class="t-good">var(--diablaq-font-heading)</span>;
+  font-size: <span class="t-good">0.8rem</span>;   <span class="t-cmt">/* was: 1rem */</span>
+  font-weight: <span class="t-good">700</span>;
+  text-transform: uppercase;
+  letter-spacing: <span class="t-good">0.02em</span>;
+  margin: <span class="t-good">0.4rem 0 0.2rem</span>;  <span class="t-cmt">/* tighter */</span>
+  color: <span class="t-good">var(--color-text)</span>;
+}
+
+<span class="t-prop">.edition-tile__title a:hover</span>,
+<span class="t-prop">.project-card__title a:hover</span> {
+  text-decoration: <span class="t-good">underline</span>;
+  text-underline-offset: <span class="t-good">0.15em</span>;
+}
+
+<span class="t-prop">.edition-tile__meta</span> {
+  font-size: <span class="t-good">0.7rem</span>;
+  color: <span class="t-good">#6c757d</span>;  <span class="t-cmt">/* DH: #A9A9A9 */</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-box">
+      <strong>Context</strong> — This recommendation assumes Rec #1 (light background) is adopted.
+      On a dark background, 12px black bold text would have terrible contrast.
+      If keeping a dark background, size should stay at 0.85–0.9rem with lighter text.
+      DH's card density pattern is tightly coupled to its white content area.
+    </div>
+  </div>
+  <div class="slide-counter">8 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 8 — REC 7: NAV COLOUR — BLACK NOT RED
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-8">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #7</span>
+      <h2 class="rec-title">Switch the topbar from brand red to pure black<span class="badge badge--impact">High impact</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse's primary navbar is <strong>pure black</strong> (<code>#000000</code>), not brand red.
+      The brand red (<code>#ba2d00</code>) appears only on CTA buttons, hover states, and accents.
+      Diablaq's current topbar is brand red — which is loud. Black navbar creates
+      a neutral, authoritative frame that lets the cover art do the visual work.
+      The brand red then becomes a meaningful signal ("click here") rather than ambient noise.
+      This is the DH hierarchy: <em>black = structure, red = action</em>.
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — main nav</div>
+        <div class="compare__content">
+<pre><span class="t-prop">#main-nav</span> {
+  background-color: <span class="t-dh">black</span>;
+  height: <span class="t-dh">44px</span>;
+}
+
+<span class="t-prop">#main-nav .nav-link</span> {
+  color: <span class="t-dh">white</span>;
+  font-weight: <span class="t-num">700</span>;
+  text-transform: uppercase;
+  font-size: <span class="t-num">15px</span>;
+}
+
+<span class="t-cmt">/* Brand red only on:
+   - btn-primary buttons
+   - hover accents
+   - logo background strip
+   NOT on the nav itself */</span></pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — diablaq.css</div>
+        <div class="compare__content">
+<pre><span class="t-prop">.site-header</span> {
+  background: <span class="t-good">#000000</span>;  <span class="t-cmt">/* was: var(--diablaq-red) */</span>
+  <span class="t-cmt">/* height stays 48px — or reduce to 44px
+     to match DH exactly */</span>
+}
+
+<span class="t-prop">.site-header a</span>,
+<span class="t-prop">.site-header a:visited</span> {
+  color: <span class="t-good">#ffffff !important</span>;
+}
+
+<span class="t-cmt">/* Brand red → CTA context only */</span>
+<span class="t-prop">.site-newsletter__button</span>,
+<span class="t-prop">.edition-details__buy a[role=button]</span> {
+  background: <span class="t-good">var(--brand)</span>;   <span class="t-cmt">/* #ba2d00 */</span>
+  color: <span class="t-good">#fff</span>;
+  border: 0;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="background:#161616; border-radius:8px; overflow:hidden; border:1px solid #222">
+        <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f87171; padding:0.4rem 0.75rem; background:#2d0a0a">Current — red header</div>
+        <div style="background:#ac351f; height:40px; display:flex; align-items:center; gap:1rem; padding:0 0.75rem; font-size:0.7rem; font-weight:700; text-transform:uppercase; color:#fff">
+          <span>Diablaq</span><span>Blog</span><span>Zapowiedzi</span><span>Sklep</span>
+        </div>
+        <div style="background:#f0ece5; height:50px; display:flex; align-items:center; padding:0 0.75rem; font-size:0.65rem; color:#888">Page content — red nav competes with covers</div>
+      </div>
+      <div style="background:#161616; border-radius:8px; overflow:hidden; border:1px solid #222">
+        <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#4ade80; padding:0.4rem 0.75rem; background:#052010">Recommended — black header</div>
+        <div style="background:#000; height:40px; display:flex; align-items:center; gap:1rem; padding:0 0.75rem; font-size:0.7rem; font-weight:700; text-transform:uppercase; color:#fff">
+          <span>Diablaq</span><span>Blog</span><span>Zapowiedzi</span><span>Sklep</span>
+        </div>
+        <div style="background:#f0ece5; height:50px; display:flex; align-items:center; padding:0 0.75rem; font-size:0.65rem; color:#888">Red reserved for CTAs — clean hierarchy</div>
+      </div>
+    </div>
+
+    <div class="source-box" style="margin-top:1rem">
+      <strong>DH Source</strong> — <code>#main-nav { background-color: black }</code>.
+      The brand red (<code>#ba2d00</code>) appears as <code>--bs-btn-bg</code> on <code>.btn-primary</code>
+      and as <code>body.homepage #sticky-nav-toggler img { background-color: #ba2d00 }</code> for
+      the logo strip — never as a nav background.
+    </div>
+  </div>
+  <div class="slide-counter">9 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 9 — REC 8: UNIFY BRAND RED TO #ba2d00
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-9">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #8</span>
+      <h2 class="rec-title">Align the brand red exactly to Dark Horse's <code style="font-size:0.75em">#ba2d00</code><span class="badge badge--quick">Quick win</span></h2>
+    </div>
+    <p class="rec-desc">
+      DH's brand red is <strong>#ba2d00</strong> — a warm tomato brick.
+      Diablaq's primary brand colour across different parts of the CSS ranges from
+      <code>darkred</code> (#8b0000) to <code>rgb(172,53,31)</code> (#ac351f) — both darker and cooler.
+      Since Diablaq explicitly drew inspiration from DH, converging to the same red unifies
+      the visual reference while also fixing the inconsistency documented in the first audit deck.
+      The difference is subtle but perceptible side-by-side.
+    </p>
+
+    <div class="compare compare--three">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">Current darkred</div>
+        <div class="compare__content" style="display:flex; flex-direction:column; align-items:center; gap:0.5rem; padding:1rem">
+          <div style="width:64px; height:64px; background:#8b0000; border-radius:4px; border:1px solid #333"></div>
+          <code style="font-size:0.75rem">#8b0000</code>
+          <div style="font-size:0.7rem; color:#52525b; text-align:center">Too dark, too cool.<br>Used in Pico overrides.</div>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">Current diablaq-red</div>
+        <div class="compare__content" style="display:flex; flex-direction:column; align-items:center; gap:0.5rem; padding:1rem">
+          <div style="width:64px; height:64px; background:#ac351f; border-radius:4px; border:1px solid #333"></div>
+          <code style="font-size:0.75rem">#ac351f</code>
+          <div style="font-size:0.7rem; color:#52525b; text-align:center">Close! But slightly<br>darker and redder.</div>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">Recommended — DH match</div>
+        <div class="compare__content" style="display:flex; flex-direction:column; align-items:center; gap:0.5rem; padding:1rem">
+          <div style="width:64px; height:64px; background:#ba2d00; border-radius:4px; border:1px solid #333"></div>
+          <code style="font-size:0.75rem">#ba2d00</code>
+          <div style="font-size:0.7rem; color:#4ade80; text-align:center">Brighter, warmer.<br>Matches DH exactly.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare" style="margin-top: 1.25rem;">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--before">✗ Current — scattered definitions</div>
+        <div class="compare__content">
+<pre>:root {
+  --pico-primary: <span class="t-bad">darkred</span>;      <span class="t-cmt">/* #8b0000 */</span>
+  --pico-primary-hover: <span class="t-bad">#b00000</span>; <span class="t-cmt">/* 4th value */</span>
+  --diablaq-red: <span class="t-bad">rgb(172,53,31)</span>; <span class="t-cmt">/* #ac351f */</span>
+  --diablaq-red-dark: <span class="t-bad">#8b0000</span>;  <span class="t-cmt">/* repeated */</span>
+}</pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — one canonical value</div>
+        <div class="compare__content">
+<pre>:root {
+  --brand:       <span class="t-good">#ba2d00</span>;  <span class="t-cmt">/* = DH tomato */</span>
+  --brand-dark:  <span class="t-good">#9e2600</span>;  <span class="t-cmt">/* = DH hover */</span>
+
+  <span class="t-cmt">/* Pico aliases */</span>
+  --pico-primary:            var(--brand);
+  --pico-primary-hover-background: var(--brand-dark);
+
+  <span class="t-cmt">/* Legacy aliases */</span>
+  --diablaq-red:      var(--brand);
+  --diablaq-red-dark: var(--brand-dark);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-counter">10 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 10 — REC 9: CONTAINER WIDTH
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-10">
+  <div class="slide__inner">
+    <div class="rec-header">
+      <span class="rec-num">Rec #9</span>
+      <h2 class="rec-title">Narrow the content container from 1080px to 960px<span class="badge badge--quick">Quick win</span></h2>
+    </div>
+    <p class="rec-desc">
+      Dark Horse explicitly overrides Bootstrap's container to <strong>960px</strong> maximum width.
+      Diablaq is currently set to <code>--diablaq-content-max: 1080px</code>.
+      At 1080px, text lines are too long and the cover grid feels sparse on wide screens.
+      960px is narrower, which forces tighter grid density, shorter line lengths in body text
+      (~75ch at typical font sizes), and a more focused layout. It's also the natural width
+      of comic art (which tends to be formatted at ~6.75 inches = ~972px at 144dpi).
+    </p>
+
+    <div class="compare">
+      <div class="compare__panel">
+        <div class="compare__label compare__label--dh">↗ Dark Horse — container override</div>
+        <div class="compare__content">
+<pre><span class="t-cmt">/* Bootstrap max-width override */</span>
+<span class="t-prop">.container</span> {
+  max-width: <span class="t-dh">960px</span>;
+}
+
+<span class="t-cmt">/* Homepage: zero gutter for
+   flush full-width sections */</span>
+<span class="t-prop">body.homepage .row</span> {
+  --bs-gutter-x: <span class="t-dh">0</span>;
+}
+
+<span class="t-prop">body.homepage #content .container</span> {
+  padding: <span class="t-dh">0</span>;
+}</pre>
+        </div>
+      </div>
+      <div class="compare__panel">
+        <div class="compare__label compare__label--after">✓ Recommended — diablaq.css</div>
+        <div class="compare__content">
+<pre>:root {
+  <span class="t-prop">--diablaq-content-max</span>: <span class="t-good">960px</span>;
+  <span class="t-cmt">/* was: 1080px */</span>
+}
+
+<span class="t-cmt">/* Homepage sections go edge-to-edge
+   (hero, category nav, featured strips) */</span>
+<span class="t-prop">.home-hero</span>,
+<span class="t-prop">.cat-nav</span> {
+  max-width: <span class="t-good">100vw</span>;
+  margin-inline: <span class="t-good">calc(-1 * var(--pico-spacing))</span>;
+}
+
+<span class="t-cmt">/* Content grids: use the 960px container */</span>
+<span class="t-prop">main.container</span> {
+  max-width: <span class="t-good">var(--diablaq-content-max)</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.25rem; padding:1rem 1.15rem; background:#161616; border:1px solid #222; border-radius:8px; font-size:0.82rem; color:#a1a1aa">
+      <strong style="color:#e4e4e7; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em;">Why this matters for the cover grid</strong><br><br>
+      At 960px with <code>gap: 1rem</code>, a 4-column edition grid gives each cover
+      <strong>~228px width</strong> — well proportioned for comic covers.
+      At 1080px the same grid gives 265px which starts to feel oversized for dense listings.
+      DH's product cards are only 116px wide, allowing 6–8 per row — very information-dense.
+      Diablaq doesn't need to go that small, but 4 columns at 960px matches the DH aesthetic density.
+    </div>
+  </div>
+  <div class="slide-counter">11 / 12</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SLIDE 11 — SUMMARY
+═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide-11">
+  <div class="slide__inner">
+    <p class="rec-num">Summary</p>
+    <h2 class="rec-title" style="margin-bottom:0.75rem">Implementation roadmap</h2>
+    <p class="rec-desc" style="margin-bottom:1.25rem">
+      Ordered by effort and dependency. Recs 2, 5, 7, 8, 9 are isolated CSS changes —
+      do them in one PR. Rec 1 (background flip) is the only breaking change and
+      should be done as a dedicated branch. Rec 3 (hero) requires SSG work to pass
+      featured editions to the template.
+    </p>
+
+    <table class="sum-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Change</th>
+          <th>Impact</th>
+          <th>Effort</th>
+          <th>Breaking</th>
+          <th>Files</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Load Oswald + wire heading hierarchy</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Trivial</td>
+          <td>No</td>
+          <td><code>fonts.css</code>, <code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Switch topbar to pure black</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Trivial</td>
+          <td>No</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Unify brand red → <code>#ba2d00</code></td>
+          <td><span class="badge badge--quick">Medium</span></td>
+          <td>Trivial</td>
+          <td>No</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Cover images: remove border-radius, add 1px black border</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Trivial</td>
+          <td>No</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Narrow container to 960px</td>
+          <td><span class="badge badge--quick">Medium</span></td>
+          <td>Trivial</td>
+          <td>No</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Card title typography — smaller, bolder, denser</td>
+          <td><span class="badge badge--quick">Medium</span></td>
+          <td>Trivial</td>
+          <td>No (but depends on #7)</td>
+          <td><code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Add sticky category sub-nav below hero</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Low</td>
+          <td>No</td>
+          <td><code>base.html</code>, <code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Build full-bleed hero carousel</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Medium</td>
+          <td>No</td>
+          <td><code>home.html</code>, <code>builder.py</code>, <code>diablaq.css</code></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Flip content background to light (#f8f5f0)</td>
+          <td><span class="badge badge--impact">High</span></td>
+          <td>Medium</td>
+          <td><span style="color:#fb923c; font-weight:700">Yes</span></td>
+          <td><code>diablaq.css</code> — audit all text/placeholder colours</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:1.5rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div style="padding:1rem 1.15rem; background:#161616; border:1px solid #222; border-radius:8px; font-size:0.84rem; color:#a1a1aa">
+        <strong style="color:#4ade80; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.07em;">Sprint 1 — "CSS only" (1 day)</strong><br><br>
+        Do recs 1–6 above as a single CSS commit.
+        No template changes, no Python changes.
+        Visual transformation is immediate — black nav, hard cover borders, Oswald headings,
+        unified red, tighter container. This is the minimum viable alignment.
+      </div>
+      <div style="padding:1rem 1.15rem; background:#161616; border:1px solid #222; border-radius:8px; font-size:0.84rem; color:#a1a1aa">
+        <strong style="color:#fde68a; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.07em;">Sprint 2 — "Structural" (1–2 days)</strong><br><br>
+        Add the sticky category sub-nav (template + CSS).
+        Build the hero — mark 3–5 editions as <code>featured: true</code>,
+        pass them from the builder, render the carousel.
+        Finally, evaluate the background flip — the most impactful but
+        also requires re-checking all placeholders, muted text, and dark sections.
+      </div>
+    </div>
+
+    <div style="margin-top:1rem; padding:0.85rem 1.1rem; background:#0a0a0a; border:1px solid #1f1f1f; border-radius:8px; font-size:0.82rem; color:#71717a">
+      <strong style="color:#d4d4d8">One honest caveat:</strong>
+      Dark Horse operates on white. If Diablaq's brand identity is fundamentally dark/nocturnal
+      (the name means "devil/imp", the tagline is "hellishly good comics"), a full background flip
+      may feel like a betrayal of the brand voice. The alternative is a <em>selective</em> light-mode:
+      keep the body dark but give each content section a white or near-white panel background,
+      exactly as DH does for its <code>#content .container</code>. The covers still pop, but the
+      overall page retains its dark energy. This is worth a deliberate design decision, not a default.
+    </div>
+  </div>
+  <div class="slide-counter">12 / 12</div>
+</section>
+
+<!-- ── JS ──────────────────────────────────────────────────────── -->
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide[id]'));
+  const dots   = Array.from(document.querySelectorAll('.slide-nav__dot'));
+
+  function getActive() {
+    const mid = window.scrollY + window.innerHeight / 2;
+    let best = 0, min = Infinity;
+    slides.forEach((s, i) => {
+      const d = Math.abs(s.getBoundingClientRect().top + window.scrollY + s.offsetHeight / 2 - mid);
+      if (d < min) { min = d; best = i; }
+    });
+    return best;
+  }
+
+  function sync() {
+    const a = getActive();
+    dots.forEach((d, i) => d.classList.toggle('active', i === a));
+  }
+
+  dots.forEach((d, i) => d.addEventListener('click', () =>
+    slides[i].scrollIntoView({ behavior: 'smooth' })));
+
+  window.addEventListener('scroll', sync, { passive: true });
+  sync();
+
+  document.addEventListener('keydown', e => {
+    const cur = getActive();
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      slides[Math.min(cur + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      slides[Math.max(cur - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

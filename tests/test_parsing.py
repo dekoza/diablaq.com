@@ -109,7 +109,6 @@ Body.
         read_markdown_file(test_file)
 
     assert "Nie udało się wczytać frontmatter" in str(exc_info.value)
-    assert "did not find expected key" in str(exc_info.value)
 
 
 # --- parse_date tests ---

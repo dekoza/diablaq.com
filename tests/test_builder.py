@@ -101,7 +101,7 @@ def test_process_content_newest_anytime_limits_to_5():
     """newest_anytime returns exactly 5 items even when more exist."""
     editions = [
         Edition(
-            url=f"/pl/wydania/edition-{i}",
+            url=f"/komiksy/edition-{i}",
             title=f"Edition {i}",
             project_slug="test-project",
             release=f"Release {i}",
@@ -144,7 +144,7 @@ def test_process_content_newest_anytime_sorted_descending():
     """newest_anytime items are sorted by release_date descending."""
     editions = [
         Edition(
-            url=f"/pl/wydania/edition-{i}",
+            url=f"/komiksy/edition-{i}",
             title=f"Edition {i}",
             project_slug="test-project",
             release=f"Release {i}",

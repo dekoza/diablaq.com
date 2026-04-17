@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://diablaq.com/sitemap.xml

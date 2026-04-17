@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diablaq.com – Total Overhaul Proposal</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--fg:#e8e8e8;--muted:#888;--accent:#ba2d00;--accent2:#ff4d1a;
+  --slide-bg:#111;--code-bg:#1a1a1a;--good:#22c55e;--bad:#ef4444;--warn:#f59e0b;
+  --font-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --font-mono:"SF Mono","Fira Code",monospace;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--font-mono);font-size:.85em;background:var(--code-bg);padding:.1em .35em;border-radius:3px}
+pre{background:var(--code-bg);padding:1rem;border-radius:6px;overflow-x:auto;font-size:.8rem;line-height:1.5}
+pre code{background:none;padding:0}
+.toc{max-width:860px;margin:0 auto;padding:2rem 1.5rem}
+.toc h1{font-size:2.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.5rem}
+.toc .subtitle{color:var(--muted);font-size:1.1rem;margin-bottom:2rem}
+.toc-grid{display:grid;gap:.5rem}
+.toc-grid a{display:flex;align-items:baseline;gap:.75rem;padding:.6rem .75rem;background:var(--slide-bg);border-radius:6px;transition:background .15s}
+.toc-grid a:hover{background:#1a1a1a;text-decoration:none}
+.toc-grid .num{color:var(--accent);font-weight:700;min-width:2.2rem}
+.toc-grid .label{color:var(--fg)}
+
+/* Slides */
+.slide{min-height:100vh;max-width:960px;margin:0 auto;padding:3rem 1.5rem;border-bottom:1px solid #222}
+.slide h2{font-size:1.8rem;font-weight:800;letter-spacing:-.01em;margin-bottom:.25rem;display:flex;align-items:baseline;gap:.75rem}
+.slide h2 .n{color:var(--accent);font-size:1rem;font-weight:700}
+.slide h3{font-size:1.15rem;font-weight:700;margin:1.5rem 0 .5rem;color:var(--accent2)}
+.slide p,.slide li{max-width:72ch}
+.slide ul,.slide ol{padding-left:1.4rem;margin:.5rem 0}
+.slide li{margin:.35rem 0}
+
+/* Comparison panels */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0}
+@media(max-width:700px){.compare{grid-template-columns:1fr}}
+.compare-panel{background:var(--code-bg);border-radius:8px;overflow:hidden}
+.compare-panel__head{padding:.5rem .75rem;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+.compare-panel__head.bad{background:rgba(239,68,68,.15);color:var(--bad)}
+.compare-panel__head.good{background:rgba(34,197,94,.12);color:var(--good)}
+.compare-panel__body{padding:.75rem;font-size:.82rem;line-height:1.55}
+
+/* Wireframes */
+.wire{background:#151515;border:1px solid #333;border-radius:6px;padding:1rem;margin:1rem 0;font-family:var(--font-mono);font-size:.75rem;color:#999;line-height:1.7;overflow-x:auto;white-space:pre}
+.wire .hl{color:var(--accent2)}
+.wire .dim{color:#555}
+.wire .brand{color:var(--accent)}
+.wire .g{color:var(--good)}
+.wire .w{color:var(--warn)}
+
+/* Tags */
+.tag{display:inline-block;padding:.15rem .45rem;border-radius:3px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.tag-bad{background:rgba(239,68,68,.15);color:var(--bad)}
+.tag-good{background:rgba(34,197,94,.12);color:var(--good)}
+.tag-warn{background:rgba(245,158,11,.15);color:var(--warn)}
+
+/* Table */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid #222}
+th{color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.n-col{text-align:center;width:3rem}
+.file{color:var(--accent2);font-family:var(--font-mono);font-size:.78rem}
+.severity{font-weight:700}
+.severity.crit{color:var(--bad)}
+.severity.major{color:var(--warn)}
+.severity.minor{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- TABLE OF CONTENTS                                              -->
+<!-- ============================================================ -->
+<section class="toc" id="top">
+  <h1>🔥 Diablaq.com — Total Overhaul</h1>
+  <p class="subtitle">Hostile review + redesign proposal · Inspired by <a href="https://www.darkhorse.com">darkhorse.com</a> · April 2026</p>
+
+  <nav class="toc-grid">
+    <a href="#s1"><span class="num">01</span><span class="label">Executive summary — why the site needs a total rebuild</span></a>
+    <a href="#s2"><span class="num">02</span><span class="label">Navigation: Current vs Proposed</span></a>
+    <a href="#s3"><span class="num">03</span><span class="label">Navigation changes explained</span></a>
+    <a href="#s4"><span class="num">04</span><span class="label">Homepage: Current vs Proposed</span></a>
+    <a href="#s5"><span class="num">05</span><span class="label">Homepage changes explained</span></a>
+    <a href="#s6"><span class="num">06</span><span class="label">Catalog / Section pages: Current vs Proposed</span></a>
+    <a href="#s7"><span class="num">07</span><span class="label">Catalog changes explained</span></a>
+    <a href="#s8"><span class="num">08</span><span class="label">Project page: Current vs Proposed</span></a>
+    <a href="#s9"><span class="num">09</span><span class="label">Project page changes explained</span></a>
+    <a href="#s10"><span class="num">10</span><span class="label">Edition page: Current vs Proposed</span></a>
+    <a href="#s11"><span class="num">11</span><span class="label">Edition page changes explained</span></a>
+    <a href="#s12"><span class="num">12</span><span class="label">Content .md files: audit & cleanup</span></a>
+    <a href="#s13"><span class="num">13</span><span class="label">Content cleanup explained</span></a>
+    <a href="#s14"><span class="num">14</span><span class="label">URL structure: Current vs Proposed</span></a>
+    <a href="#s15"><span class="num">15</span><span class="label">URL changes explained</span></a>
+    <a href="#s16"><span class="num">16</span><span class="label">Builder/CSS debt: audit</span></a>
+    <a href="#s17"><span class="num">17</span><span class="label">Builder changes explained</span></a>
+    <a href="#s18"><span class="num">18</span><span class="label">Missing infrastructure (404, OG, sitemap)</span></a>
+    <a href="#s19"><span class="num">19</span><span class="label">Infrastructure changes explained</span></a>
+    <a href="#s20"><span class="num">20</span><span class="label">Execution plan — phased roadmap</span></a>
+  </nav>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: Executive Summary                                     -->
+<!-- ============================================================ -->
+<section class="slide" id="s1">
+  <h2><span class="n">01</span> Executive Summary</h2>
+  <p>The current diablaq.com has <strong>106 generated pages</strong>, of which <strong>16 are redirect shims</strong> for legacy URLs. The remaining 90 are split across 6 overlapping navigational entry points, 3 listing pages that often show the same editions, and a content corpus riddled with inconsistencies. The user who arrives on this site has no clear path from "what is this publisher?" to "let me buy something."</p>
+
+  <h3>By the numbers</h3>
+  <table>
+    <tr><th>Metric</th><th>Current</th><th>Target</th></tr>
+    <tr><td>Total pages</td><td>106</td><td>~65</td></tr>
+    <tr><td>Redirect shim pages</td><td>16 (separate HTML files)</td><td>0 (301s via _redirects or Cloudflare)</td></tr>
+    <tr><td>Navigation entry points to same content</td><td>3 (header + cat-nav + footer)</td><td>2 (header + footer, both consistent)</td></tr>
+    <tr><td><code>!important</code> in diablaq.css</td><td>28</td><td>0</td></tr>
+    <tr><td>Projects with missing/broken data</td><td>6 (missing summary, line, cover, or broken frontmatter)</td><td>0</td></tr>
+    <tr><td>Duplicate content (summary = body text)</td><td>4 projects</td><td>0</td></tr>
+    <tr><td>OG/social meta tags</td><td>None</td><td>Full coverage</td></tr>
+    <tr><td>404 page</td><td>None (GitHub Pages default)</td><td>Branded 404</td></tr>
+    <tr><td>sitemap.xml</td><td>None</td><td>Auto-generated</td></tr>
+  </table>
+
+  <h3>Core problems</h3>
+  <ol>
+    <li><strong>Duplicate navigation.</strong> The cat-nav bar repeats the header. Both "Nowości" and "Zapowiedzi" are separate listing pages that are often empty or show the same editions. This is not Dark Horse — DH has one flat nav: Comics | Books | Berger Books | Products | News.</li>
+    <li><strong>Content duplication inside .md files.</strong> Four projects repeat their <code>summary</code> verbatim as the first line of the body. One project (<code>obietnica</code>) uses HTML comment hacks instead of a <code>draft:</code> flag. Quoting is inconsistent (some titles quoted, some bare).</li>
+    <li><strong>Legacy URL baggage embedded in the builder.</strong> <code>legacy_path</code> + <code>legacy_landing</code> generate 16 extra pages. This should be a <code>_redirects</code> file, not rendered HTML.</li>
+    <li><strong>CSS specificity war.</strong> 28 <code>!important</code> declarations because Pico CSS fights with custom styles. Solution: drop Pico, own the entire stylesheet.</li>
+    <li><strong>No discoverability infrastructure.</strong> No OG tags, no sitemap, no 404 page, no structured data.</li>
+  </ol>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: Navigation — Current vs Proposed (wireframes)          -->
+<!-- ============================================================ -->
+<section class="slide" id="s2">
+  <h2><span class="n">02</span> Navigation: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current — 3 redundant nav layers</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="hl">┌─ HEADER BAR ──────────────────────────────────────────┐</span>
+│ [Logo]  Blog  Zapowiedzi  Nowości  ▾Publikacje       │
+│                                     Główna linia      │
+│                                     Dobre Licho       │
+│                                     Mecenat           │
+│                                     Studio            │
+│         Ludzie  Sklep  Kontakt                        │
+<span class="hl">└───────────────────────────────────────────────────────┘</span>
+
+<span class="w">┌─ CAT-NAV BAR (sticky, repeats header) ────────────────┐</span>
+│ Publikacje  Zapowiedzi  Nowości  Dobre Licho          │
+│ Mecenat  Studio  Blog                                 │
+<span class="w">└───────────────────────────────────────────────────────┘</span>
+
+<span class="dim">┌─ FOOTER (3rd copy) ───────────────────────────────────┐</span>
+│ Publikacje  Zapowiedzi  Nowości  Ludzie               │
+│ Mecenat  Studio  Blog  Sklep  Kontakt  FB  IG        │
+<span class="dim">└───────────────────────────────────────────────────────┘</span>
+
+<span class="brand">Problems:</span>
+• User sees same links 3 times on every page load
+• "Zapowiedzi" and "Nowości" are separate pages
+  that often show same content or are empty
+• ▾Publikacje dropdown hides 4 sub-sections
+  behind a click — DH shows them flat
+• No active state — user can't tell where they are
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed — DH-style flat nav</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">┌─ HEADER BAR ──────────────────────────────────────────┐</span>
+│ [Logo]  Komiksy  Dobre Licho  Mecenat  Blog  Ludzie  │
+│                                         Sklep  Kontakt│
+<span class="g">└───────────────────────────────────────────────────────┘</span>
+
+<span class="dim">                  (no cat-nav bar)</span>
+
+<span class="dim">┌─ FOOTER ──────────────────────────────────────────────┐</span>
+│  Komiksy    Imprint         Kontakt                   │
+│  Komiksy    Dobre Licho     Kontakt                   │
+│  Nowości    Mecenat         Facebook                  │
+│  Ludzie     Studio          Instagram                 │
+│  Blog       Sklep                                     │
+<span class="dim">└───────────────────────────────────────────────────────┘</span>
+
+<span class="g">Changes:</span>
+• Cat-nav eliminated entirely
+• "Komiksy" replaces "Publikacje" (friendlier)
+• "Nowości" + "Zapowiedzi" merged into homepage sections
+  — no separate listing pages
+• Active state via <span class="hl">aria-current="page"</span>
+• Footer remains as secondary discovery nav
+• 8 header links → 7 (no dropdown)
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: Navigation changes explained                          -->
+<!-- ============================================================ -->
+<section class="slide" id="s3">
+  <h2><span class="n">03</span> Navigation Changes Explained</h2>
+
+  <h3>1. Kill the cat-nav bar</h3>
+  <p>The <code>.cat-nav</code> sticky bar duplicates links already in the header. On mobile it's a horizontal scroll strip that looks broken because it can't fit all items. Dark Horse doesn't have this. Remove it entirely — it adds zero navigation value.</p>
+  <p class="file">Affected: <code>templates/base.html</code> lines 80–91, <code>css/diablaq.css</code> ~150 lines of <code>.cat-nav</code> rules</p>
+
+  <h3>2. Flatten "Publikacje" dropdown into "Komiksy"</h3>
+  <p>The current <code>&lt;details&gt;</code> dropdown under "Publikacje" hides 4 sub-lines behind a click. DH shows "Comics | Books" as top-level flat links. Diablaq's main line should surface directly as <strong>"Komiksy"</strong> (the thing people actually come for), with Dobre Licho and Mecenat as their own flat links. "Studio" appears in footer only (low traffic).</p>
+
+  <h3>3. Merge "Nowości" + "Zapowiedzi" into homepage-only sections</h3>
+  <p>Currently these are separate listing pages (<code>/nowe/</code>, <code>/zapowiedzi/</code>) with their own URLs. Problems:</p>
+  <ul>
+    <li>"Nowości" is often empty if no editions released in last 6 weeks — falls back to showing <code>newest_anytime[:8]</code>, which is the same as homepage content</li>
+    <li>"Zapowiedzi" is often empty with a "come back later" message</li>
+    <li>Two pages that could be zero-content is poor UX</li>
+  </ul>
+  <p>Solution: Both become homepage sections (above the fold). No standalone URLs needed. The homepage becomes the discovery hub, like DH's "New Releases" section.</p>
+
+  <h3>4. Active navigation state</h3>
+  <p>Every page already passes <code>canonical_url</code> to templates. Compare it against nav link <code>href</code> in Jinja to emit <code>aria-current="page"</code>. CSS already has <code>.cat-nav__inner a[aria-current="page"]</code> but header links don't use it.</p>
+
+  <h3>5. Mobile nav cleanup</h3>
+  <p>The mobile slide-out menu currently mirrors the bloated desktop nav. With the simplified structure, it becomes 6 large links — no nested <code>&lt;details&gt;</code> needed. Closer to the Penpot mockup's original intent.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: Homepage — Current vs Proposed                        -->
+<!-- ============================================================ -->
+<section class="slide" id="s4">
+  <h2><span class="n">04</span> Homepage: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current homepage structure</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="dim">┌─ HEADER ──────────────────────────────┐</span>
+<span class="dim">└───────────────────────────────────────┘</span>
+
+<span class="hl">┌─ HERO (covers from announcements+new) ┐</span>
+│ Large cover image + overlay text       │
+│ ┌──┐ ┌──┐ ┌──┐ ┌──┐  thumbnail strip  │
+<span class="hl">└───────────────────────────────────────┘</span>
+
+<span class="w">┌─ CAT-NAV (redundant) ─────────────────┐</span>
+<span class="w">└───────────────────────────────────────┘</span>
+
+<span class="dim">┌─ Zapowiedzi ──────────────────────────┐</span>
+│ (often empty)                          │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+<span class="dim">└───────────────────────────────────────┘</span>
+
+<span class="dim">┌─ Nowości ─────────────────────────────┐</span>
+│ (duplicates hero content)              │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+<span class="dim">└───────────────────────────────────────┘</span>
+
+<span class="dim">┌─ Katalog (first 4 projects) ──────────┐</span>
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+<span class="dim">└───────────────────────────────────────┘</span>
+
+<span class="dim">┌─ Newsletter CTA (href="#") ────────────┐</span>
+<span class="dim">└───────────────────────────────────────┘</span>
+<span class="dim">┌─ FOOTER ──────────────────────────────┘</span>
+
+<span class="brand">Problems:</span>
+• Hero + "Nowości" section show same editions
+• "Zapowiedzi" often renders empty section
+• "Katalog" shows only first 4 projects
+  (arbitrary, not sorted by relevance)
+• Newsletter button links to <span class="hl">#</span>
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed homepage structure</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">┌─ HEADER (flat nav) ───────────────────┐</span>
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">┌─ HERO (featured edition) ─────────────┐</span>
+│ Full-width cover + title + CTA         │
+│ <span class="dim">(manual: featured: true in YAML)</span>       │
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">┌─ Nowości (latest 8 by release_date) ──┐</span>
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">┌─ Zapowiedzi (if any exist) ───────────┐</span>
+│ ┌────┐ ┌────┐ ┌────┐                  │
+│ <span class="dim">(section hidden entirely when empty)</span>  │
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">┌─ Komiksy — full catalog ──────────────┐</span>
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐           │
+│ ... ALL projects, grouped by line      │
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">┌─ FOOTER ──────────────────────────────┐</span>
+<span class="g">└───────────────────────────────────────┘</span>
+
+<span class="g">Changes:</span>
+• Cat-nav gone
+• Newsletter CTA moves to footer
+  (or removed until real URL exists)
+• Hero is manually curated via YAML flag
+• All projects shown, grouped by line
+• Empty sections auto-hidden
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: Homepage changes explained                            -->
+<!-- ============================================================ -->
+<section class="slide" id="s5">
+  <h2><span class="n">05</span> Homepage Changes Explained</h2>
+
+  <h3>1. Hero: manual curation, not auto-generated</h3>
+  <p>Current hero logic: <code>announcements + new_editions</code>, filtered to those with covers. This is fragile — when there are no announcements and no editions within 6 weeks, the hero is empty. When it's populated, its content duplicates the "Nowości" section below it.</p>
+  <p>Proposed: Add a <code>featured: true</code> YAML flag to edition frontmatter. Builder picks the first featured edition for the hero. This gives editorial control — the publisher decides what to promote, not an algorithm.</p>
+
+  <h3>2. Kill separate listing pages</h3>
+  <p>Remove <code>/nowe/</code> and <code>/zapowiedzi/</code> as standalone pages. Their content is always a subset of what's on the homepage. Fewer pages = fewer dead ends, cleaner sitemap, no confusion about which page to bookmark.</p>
+
+  <h3>3. Full catalog on homepage</h3>
+  <p>Currently only 4 projects appear in "Katalog". With 18 projects, this means 14 are invisible from the homepage. DH shows all their series upfront. The proposed homepage groups projects by line (Komiksy, Dobre Licho, Mecenat, Studio) with section headers — one scrollable page that answers "what does this publisher make?"</p>
+
+  <h3>4. Newsletter: fix or remove</h3>
+  <p>The newsletter CTA currently links to <code>#</code>. A dead button is worse than no button. Either wire it to a real MailerLite/Brevo form URL, or remove it entirely until one exists. Proposed: move it to footer (less prominent, doesn't waste prime real estate), and only show when a real URL is configured in builder config.</p>
+
+  <h3>5. No redundant sections</h3>
+  <p>Currently: hero shows editions A → "Zapowiedzi" shows editions B (subset of A) → "Nowości" shows editions A again → "Katalog" shows 4 projects. The user scrolls past 3 renderings of the same data. Proposed: each section has unique content. Hero = 1 featured item. Nowości = latest 8 by date. Zapowiedzi = future-dated only, hidden when empty. Catalog = all projects.</p>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: Catalog / Section pages — Current vs Proposed         -->
+<!-- ============================================================ -->
+<section class="slide" id="s6">
+  <h2><span class="n">06</span> Catalog / Section Pages: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current — 4 separate section pages</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="hl">4 separate section pages generated:</span>
+
+<span class="w">/publikacje/</span>  → "Publikacje" (line=diablaq)
+<span class="w">/dobre-licho/</span> → "Dobre Licho" (line=dobre-licho)
+<span class="w">/mecenat/</span>     → "Mecenat" (line=mecenat)
+<span class="w">/studio/</span>      → "Studio" (line=studio)
+
+Each page shows:
+┌──────────────────────────────────────┐
+│ <span class="hl">h1: Section Title</span>                     │
+│ <span class="dim">p: Section description</span>                │
+│                                      │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐         │
+│ │proj│ │proj│ │proj│ │proj│         │
+│ └────┘ └────┘ └────┘ └────┘         │
+│                                      │
+│ ┌────┐ ┌────┐                        │
+│ │proj│ │proj│                        │
+│ └────┘ └────┘                        │
+└──────────────────────────────────────┘
+
+<span class="brand">Problems:</span>
+• 4 pages with identical layout
+• /publikacje/ has 12 projects crammed in
+  with no grouping or visual hierarchy
+• User must visit 4 URLs to see full catalog
+• Some sections (studio) have only 1 project
+• Description text is generic placeholder
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed — single catalog page</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">1 catalog page:</span>
+
+<span class="g">/komiksy/</span> → Everything in one place
+
+┌──────────────────────────────────────┐
+│ <span class="g">h1: Komiksy</span>                            │
+│ <span class="dim">p: Katalog wszystkich serii Diablaq</span>   │
+│                                      │
+│ <span class="g">── Główna linia ────────────────────</span>  │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐         │
+│ ┌────┐ ┌────┐ ┌────┐ ┌────┐         │
+│ ┌────┐ ┌────┐ ┌────┐                │
+│                                      │
+│ <span class="g">── Dobre Licho ─────────────────────</span> │
+│ ┌────┐ ┌────┐ ┌────┐                │
+│                                      │
+│ <span class="g">── Mecenat ─────────────────────────</span> │
+│ ┌────┐                               │
+│                                      │
+│ <span class="g">── Studio ──────────────────────────</span> │
+│ ┌────┐                               │
+└──────────────────────────────────────┘
+
+<span class="g">Changes:</span>
+• Single page, grouped by line
+• No 4-way URL split
+• All projects visible at once
+• Visual hierarchy via section headers
+• Each line header links to anchor
+  (<span class="hl">/komiksy/#dobre-licho</span>)
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: Catalog changes explained                             -->
+<!-- ============================================================ -->
+<section class="slide" id="s7">
+  <h2><span class="n">07</span> Catalog Changes Explained</h2>
+
+  <h3>1. Consolidate 4 section pages into 1</h3>
+  <p>Currently the builder generates 4 separate pages via <code>_write_section()</code>. Each has identical markup with different filtered project lists. This splits a tiny catalog (18 projects total) across 4 URLs. Nobody bookmarks <code>/mecenat/</code> — it has 1 project (BZIK).</p>
+  <p>Proposed: Single <code>/komiksy/</code> page with <code>&lt;section&gt;</code> elements for each line, each with an <code>id</code> anchor. Header link "Dobre Licho" can link to <code>/komiksy/#dobre-licho</code> if we want direct access, though the flat nav proposal puts it as a top-level link to its own section anchor.</p>
+
+  <h3>2. Group by line with visual hierarchy</h3>
+  <p>DH's catalog page groups content into clear categories (Comics, Books, etc.) with headers. The proposed page mirrors this: <strong>Główna linia → Dobre Licho → Mecenat → Studio</strong>, each with a section header. This lets the user scroll through the entire catalog in one view — much faster than clicking through 4 pages.</p>
+
+  <h3>3. Keep sub-line URLs as redirects only</h3>
+  <p>For backward compatibility (and if someone types <code>/dobre-licho/</code>), emit a <code>_redirects</code> entry pointing to <code>/komiksy/#dobre-licho</code>. No HTML shim pages needed.</p>
+
+  <h3>4. Project cards: show all, not first 4</h3>
+  <p>The current homepage <code>projects[:4]</code> slice is arbitrary. The catalog page shows all. With the unified layout, users discover the full catalog without separate section-hunting.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: Project page — Current vs Proposed                    -->
+<!-- ============================================================ -->
+<section class="slide" id="s8">
+  <h2><span class="n">08</span> Project Page: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current project page</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="hl">Example: /publikacje/kodiak/</span>
+
+┌──────────────────────────────────────┐
+│ <span class="hl">h1: Kodiak</span>                             │
+│ <span class="w">p: Komedia-horror z lekką dozą...</span>     │
+│                                      │
+│ <span class="w">── O komiksie ─────────────────────</span>  │
+│ <span class="w">Komedia-horror z lekką dozą...</span>        │
+│ <span class="dim">(SAME TEXT as summary above ⬆️)</span>       │
+│                                      │
+│ <span class="hl">── Wydania ────────────────────────</span>  │
+│ ┌────────┐  ┌────────┐               │
+│ │ Kodiak │  │ Kodiak │               │
+│ │  #01   │  │  #02   │               │
+│ └────────┘  └────────┘               │
+└──────────────────────────────────────┘
+
+Also generates:
+• <span class="w">/kodiak/</span> → full copy (legacy_landing=true)
+• redirect from slug if different from URL
+
+<span class="brand">Problems:</span>
+• Summary and body are the same text
+• "O komiksie" section has no useful content
+  beyond what summary already shows
+• legacy_landing generates FULL duplicate page
+  (not a redirect)
+• Editions grid has no visual context
+  (no breadcrumb to parent line)
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed project page</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">Example: /komiksy/kodiak/</span>
+
+┌──────────────────────────────────────┐
+│ <span class="dim">Komiksy › Kodiak</span>                      │
+│                                      │
+│ ┌──────────────┐  <span class="g">Kodiak</span>             │
+│ │              │  Komedia-horror z   │
+│ │  [cover]     │  lekką dozą super-  │
+│ │              │  bohaterstwa, dużą  │
+│ │              │  porcją niedźwie-   │
+│ │              │  dziego sadła...    │
+│ └──────────────┘                     │
+│                                      │
+│ <span class="g">── Wydania ────────────────────────</span>  │
+│ ┌────────┐  ┌────────┐               │
+│ │ Kodiak │  │ Kodiak │               │
+│ │  #01   │  │  #02   │               │
+│ └────────┘  └────────┘               │
+└──────────────────────────────────────┘
+
+<span class="g">Changes:</span>
+• Breadcrumb: <span class="hl">Komiksy › Kodiak</span>
+• Cover image + text side-by-side (DH style)
+• No "O komiksie" section (body IS the page)
+• Body text deduplicated from summary
+• Legacy URLs → _redirects, not HTML pages
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: Project page changes explained                        -->
+<!-- ============================================================ -->
+<section class="slide" id="s9">
+  <h2><span class="n">09</span> Project Page Changes Explained</h2>
+
+  <h3>1. Deduplicate summary → body</h3>
+  <p>Four projects (ciekawscy, czlowiek-ciec, kodiak, spolka-zlo) have <code>summary</code> that repeats verbatim in the body. Fix: keep the summary for cards/listings, make the body either empty or contain actually different long-form text. The template should render <code>html_body</code> only when it's non-empty AND differs from summary.</p>
+
+  <h3>2. Add breadcrumb navigation</h3>
+  <p>DH shows "Comics › Series Name" at the top of every series page. This gives context and a one-click path back to the catalog. Current site has a standalone <code>h1</code> with no breadcrumb. Simple change: render <code>line → project.title</code> as a breadcrumb.</p>
+
+  <h3>3. Cover + text side-by-side layout</h3>
+  <p>Current project page shows <code>h1 + summary</code> stacked, then "O komiksie" as a separate section. DH-style: cover image on the left, text on the right. Same data, better presentation. This is a template-only change — the model already has <code>cover_image</code> and <code>html_body</code>.</p>
+
+  <h3>4. Eliminate legacy_landing full-page duplicates</h3>
+  <p>When <code>legacy_landing: true</code>, the builder renders the FULL project page at both <code>/publikacje/kodiak/</code> and <code>/kodiak/</code>. This means Google indexes the same content at two URLs, cannibalizing SEO. Fix: replace with a <code>_redirects</code> entry. The canonical URL is the only rendered page.</p>
+
+  <h3>5. Remove "O komiksie" section header</h3>
+  <p>This section header appears even when the body is one sentence. It adds a false sense of depth. On DH, the description is just part of the page layout — no separate section. Remove the header; let the text flow naturally.</p>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: Edition page — Current vs Proposed                   -->
+<!-- ============================================================ -->
+<section class="slide" id="s10">
+  <h2><span class="n">10</span> Edition Page: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current edition page</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="hl">Example: /publikacje/kodiak/01/</span>
+
+┌──────────────────────────────────────┐
+│ <span class="hl">h1: Kodiak #01</span>                         │
+│ <span class="dim">← Kodiak</span>  (back link, not breadcrumb)  │
+│                                      │
+│ ┌─────────────┐                      │
+│ │             │  <span class="hl">Kodiak #01</span>          │
+│ │   [cover]   │  <span class="dim">Data</span>               │
+│ │             │  15 listopada 2024    │
+│ │             │                      │
+│ └─────────────┘  <span class="dim">Parametry</span>           │
+│                  Cena: 39.99 zł      │
+│                  Strony: 56          │
+│                                      │
+│                  <span class="dim">Gdzie kupić</span>         │
+│                  [Strefa Komiksu]     │
+│                                      │
+│ <span class="dim">── O komiksie ──────────────────────</span> │
+│ (edition body text)                   │
+└──────────────────────────────────────┘
+
+<span class="brand">Problems:</span>
+• "← Kodiak" is a back-link, not a breadcrumb
+• <code>buy_links</code> bug: template checks
+  <span class="w">{% if buy_links %}</span> but variable name is
+  <span class="w">v.buy_links</span> — condition never true
+• Jednotomówki (standalone editions) render
+  edition details INSIDE project page,
+  creating a hybrid page that's hard to link to
+• "O komiksie" section again redundant
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed edition page</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">Example: /komiksy/kodiak/01/</span>
+
+┌──────────────────────────────────────┐
+│ <span class="dim">Komiksy › Kodiak ›</span> <span class="g">#01</span>                │
+│                                      │
+│ ┌─────────────┐  <span class="g">Kodiak #01</span>          │
+│ │             │                      │
+│ │   [cover]   │  <span class="g">Twórcy</span>             │
+│ │             │  Scenariusz: X       │
+│ │             │  Rysunki: Y          │
+│ └─────────────┘                      │
+│                  <span class="g">Premiera</span>            │
+│ [alt covers]     15 listopada 2024    │
+│ [previews ]                          │
+│                  <span class="g">Specyfikacja</span>        │
+│                  Strony: 56          │
+│                  Oprawa: Miękka      │
+│                  ISBN: 978-...       │
+│                                      │
+│                  <span class="g">[Kup teraz →]</span>       │
+│                                      │
+│ (edition body text, no section header)│
+└──────────────────────────────────────┘
+
+<span class="g">Changes:</span>
+• Full breadcrumb: Komiksy › Kodiak › #01
+• Buy button prominent, always visible
+• <code>buy_links</code> bug fixed
+• Creators shown with roles
+• No "O komiksie" section header
+• Jednotomówki: separate page, not hybrid
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: Edition page changes explained                       -->
+<!-- ============================================================ -->
+<section class="slide" id="s11">
+  <h2><span class="n">11</span> Edition Page Changes Explained</h2>
+
+  <h3>1. Fix the buy_links bug</h3>
+  <p>In <code>_partials/edition_details.html</code>, the template checks <code>{% if buy_links %}</code> but the variable is actually <code>v.buy_links</code> (on the variant object). The condition is always false. This means <strong>buy links never render</strong> for single-variant editions. This is a showstopper bug for a publisher website.</p>
+  <p class="file">File: <code>templates/_partials/edition_details.html</code> — two occurrences of <code>{% if buy_links %}</code></p>
+
+  <h3>2. Breadcrumb instead of back-link</h3>
+  <p>The current back-link (<code>← Kodiak</code>) is ambiguous — it could mean "go to project" or "go back in history." A proper breadcrumb (<code>Komiksy › Kodiak › #01</code>) gives structural context and is crawlable for SEO (schema.org BreadcrumbList).</p>
+
+  <h3>3. Jednotomówki: don't embed edition inside project page</h3>
+  <p>Currently, when a project has exactly 1 edition, the edition details render inline on the project page. This creates a hybrid page that's harder to link to, harder to share, and harder to crawl. Proposed: every edition gets its own page. The project page shows a project card + a link to the edition. Consistent, predictable.</p>
+
+  <h3>4. Prominent buy CTA</h3>
+  <p>DH makes the "Add to Cart" button the most visible element on the page. Currently, buy links are buried under specs in a <code>&lt;dl&gt;</code> definition list. Proposed: primary CTA button above the fold, next to the cover image. Even with external shop links (strefakomiksu.pl), the action should be obvious.</p>
+
+  <h3>5. Specs consolidation</h3>
+  <p>For editions with a single variant, specs are currently shown under "Parametry" without ISBN. For multi-variant editions, each variant gets its own <code>&lt;dl&gt;</code>. Proposed: always show ISBN (it's data that exists), always show variant binding/version label. No hidden data.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: Content .md audit                                    -->
+<!-- ============================================================ -->
+<section class="slide" id="s12">
+  <h2><span class="n">12</span> Content .md Files: Audit & Cleanup</h2>
+
+  <table>
+    <tr><th class="n-col">#</th><th>Issue</th><th>Severity</th><th>Affected files</th></tr>
+    <tr>
+      <td class="n-col">1</td>
+      <td><strong>obietnica/project.md</strong> — entire file is HTML comments instead of YAML frontmatter. Uses <code>[//]: # (---)</code> hack to disable the project without a <code>draft</code> flag.</td>
+      <td><span class="severity crit">CRITICAL</span></td>
+      <td class="file">content/projects/obietnica/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">2</td>
+      <td><strong>4 projects duplicate summary in body.</strong> ciekawscy, czlowiek-ciec, kodiak, spolka-zlo have <code>summary: "X"</code> and the body text starts with the exact same sentence.</td>
+      <td><span class="severity major">MAJOR</span></td>
+      <td class="file">content/projects/{ciekawscy,czlowiek-ciec,kodiak,spolka-zlo}/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">3</td>
+      <td><strong>mksp missing <code>line</code> field.</strong> Defaults to "diablaq" but it's a Dobre Licho title. Renders in wrong section.</td>
+      <td><span class="severity major">MAJOR</span></td>
+      <td class="file">content/projects/mksp/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">4</td>
+      <td><strong>ciemny-odcien-czerni cover_image points to non-existent file.</strong> <code>/img/ciemny-odc-czerni1.jpg</code> does not exist.</td>
+      <td><span class="severity major">MAJOR</span></td>
+      <td class="file">content/projects/ciemny-odcien-czerni/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">5</td>
+      <td><strong>herosi-vs-horrory has no cover_image.</strong> Renders as placeholder initials.</td>
+      <td><span class="severity minor">MINOR</span></td>
+      <td class="file">content/projects/herosi-vs-horrory/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">6</td>
+      <td><strong>Inconsistent YAML quoting.</strong> 4 titles use <code>"quoted"</code>, 14 use bare strings. Should be consistent.</td>
+      <td><span class="severity minor">MINOR</span></td>
+      <td class="file">All project.md files</td>
+    </tr>
+    <tr>
+      <td class="n-col">7</td>
+      <td><strong>4 projects have missing summary.</strong> ciemny-odcien-czerni, mksp, obietnica, pisto — no summary means blank text on cards.</td>
+      <td><span class="severity major">MAJOR</span></td>
+      <td class="file">content/projects/{ciemny-odcien-czerni,mksp,obietnica,pisto}/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">8</td>
+      <td><strong>pisto <code>summary</code> is commented out.</strong> Uses <code>#summary:</code> which YAML ignores. Intentional or mistake?</td>
+      <td><span class="severity minor">MINOR</span></td>
+      <td class="file">content/projects/pisto/project.md</td>
+    </tr>
+    <tr>
+      <td class="n-col">9</td>
+      <td><strong>edition specs inconsistency.</strong> Some editions use top-level <code>specs</code>, some use <code>variants[].specs</code>. Builder handles fallback but content should be normalized.</td>
+      <td><span class="severity minor">MINOR</span></td>
+      <td class="file">Various edition .md files</td>
+    </tr>
+    <tr>
+      <td class="n-col">10</td>
+      <td><strong>Most editions lack buy_links.</strong> Only 12 out of 35 editions have them. This is the primary monetization path — every published edition should have a buy link.</td>
+      <td><span class="severity crit">CRITICAL</span></td>
+      <td class="file">23 edition .md files</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13: Content cleanup explained                            -->
+<!-- ============================================================ -->
+<section class="slide" id="s13">
+  <h2><span class="n">13</span> Content Cleanup Explained</h2>
+
+  <h3>1. Add <code>draft: true</code> support to builder</h3>
+  <p>The <code>obietnica</code> project uses an HTML comment hack to disable itself. The correct approach is a <code>draft: true</code> frontmatter flag. The builder should skip projects and editions with <code>draft: true</code>. This is a 3-line change in <code>parsing.py</code>.</p>
+
+  <h3>2. Enforce summary ≠ body</h3>
+  <p>Add a validation step: if <code>summary</code> text appears as a prefix of the body, emit a warning at build time. The fix is editorial: rewrite the body to provide additional depth, or leave it empty (let the summary speak for itself).</p>
+
+  <h3>3. Normalize all YAML quoting</h3>
+  <p>Pick a convention and enforce it. Recommendation: quote all string values in frontmatter. This prevents YAML parsing surprises with special characters (e.g., the <code>™</code> in "MidGuard™" or the <code>,</code> in "PAAtrzcie, co oni robią!"). Use a pre-commit hook or a build-time linter.</p>
+
+  <h3>4. Require cover_image and summary</h3>
+  <p>Add build-time validation: every non-draft project must have both <code>cover_image</code> (pointing to an existing file) and <code>summary</code>. Currently the builder silently accepts missing data and renders broken cards.</p>
+
+  <h3>5. Buy links audit</h3>
+  <p>23 of 35 editions have no buy links. For a publisher website, this is the equivalent of a retail store with no price tags. Every published (non-draft, non-announcement) edition should have at least one buy link. Add a build-time warning for published editions missing <code>buy_links</code>.</p>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 14: URL Structure — Current vs Proposed                  -->
+<!-- ============================================================ -->
+<section class="slide" id="s14">
+  <h2><span class="n">14</span> URL Structure: Current vs Proposed</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current — 106 pages, 16 redirects</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="w">SECTION PAGES (4):</span>
+/publikacje/
+/dobre-licho/
+/mecenat/
+/studio/
+
+<span class="w">LISTING PAGES (2):</span>
+/nowe/
+/zapowiedzi/
+
+<span class="hl">PROJECT PAGES (18, but with legacy dupes):</span>
+/publikacje/kodiak/      (canonical)
+/kodiak/                 (legacy_landing → full copy!)
+/publikacje/belzebubs/   (canonical)
+/belzebubs/              (redirect)
+/publikacje/mama-zabila-mi-psa/  (canonical)
+/mama-zabila-mi-psa/     (redirect)
+/mama/                   (legacy_path → redirect)
+
+<span class="w">REDIRECT SHIM PAGES (16):</span>
+/belzebubs/ /ciekawscy/ /ciemny-odcien-czerni/
+/czlowiek-ciec/ /hadfield/ /herosi-vs-horrory/
+/mama/ /mama-zabila-mi-psa/ /mksp/ /obietnica/
+/paatrzcie-co-oni-robia/ /psu-z-gardla/
+/pzg/ /spolka-zlo/ /winon/ /zvyrke/
+
+<span class="brand">Problems:</span>
+• 16 HTML redirect pages waste build output
+• legacy_landing creates FULL page duplicates
+  (same content, 2 URLs → SEO penalty)
+• Inconsistent: some slugs redirect,
+  some serve full content
+• 3-level deep edition URLs:
+  /publikacje/kodiak/01/
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed — ~65 pages, 0 redirect HTML</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">PAGES:</span>
+/                         (home)
+/komiksy/                 (unified catalog)
+/komiksy/kodiak/          (project)
+/komiksy/kodiak/01/       (edition)
+/komiksy/kodiak/02/       (edition)
+/komiksy/belzebubs/       (project)
+/komiksy/belzebubs/t01/   (edition)
+/blog/                    (blog index)
+/blog/nowa-strona/        (blog post)
+/ludzie/                  (people index)
+/ludzie/zvyrke/           (person)
+/kontakt/                 (page)
+
+<span class="g">REDIRECTS (in _redirects file, not HTML):</span>
+/publikacje/*  /komiksy/:splat  301
+/dobre-licho/*  /komiksy/#dobre-licho  301
+/mecenat/*  /komiksy/#mecenat  301
+/studio/*  /komiksy/#studio  301
+/nowe/  /  301
+/zapowiedzi/  /  301
+/kodiak/*  /komiksy/kodiak/:splat  301
+/belzebubs/*  /komiksy/belzebubs/:splat  301
+/mama/*  /komiksy/mama-zabila-mi-psa/:splat  301
+/pzg/*  /komiksy/psu-z-gardla/:splat  301
+/spz/*  /komiksy/spolka-zlo/:splat  301
+/ciecio/*  /komiksy/czlowiek-ciec/:splat  301
+/zvyrke/  /ludzie/zvyrke/  301
+
+<span class="g">Benefits:</span>
+• Zero HTML redirect pages
+• Every URL has unique content
+• Clean 2-level hierarchy:
+  /komiksy/{project}/{edition}/
+• _redirects file handles all legacy
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15: URL changes explained                                -->
+<!-- ============================================================ -->
+<section class="slide" id="s15">
+  <h2><span class="n">15</span> URL Changes Explained</h2>
+
+  <h3>1. Replace <code>/publikacje/</code> with <code>/komiksy/</code></h3>
+  <p>"Publikacje" is bureaucratic. "Komiksy" is what people search for. DH uses "Comics" — the vernacular name for the product. This is both a brand decision and an SEO one (Polish users search "komiksy wydawnictwo" not "publikacje wydawnictwo").</p>
+
+  <h3>2. Eliminate all HTML redirect pages</h3>
+  <p>GitHub Pages supports a <code>404.html</code> but not server-side redirects. For GitHub Pages deployment: generate a <code>404.html</code> with JS-based redirect logic that reads the URL mapping. Or better: switch to Cloudflare Pages/Netlify which support <code>_redirects</code> natively.</p>
+  <p>If staying on GitHub Pages: keep the minimal HTML redirect approach but consolidate it into a single JS router in <code>404.html</code> rather than 16 separate files.</p>
+
+  <h3>3. Flatten all project URLs under <code>/komiksy/</code></h3>
+  <p>Currently, line-specific prefixes exist: <code>/dobre-licho/ciekawscy/</code>, <code>/mecenat/bzik/</code>, <code>/studio/paatrzcie-co-oni-robia/</code>. These prefixes add URL depth without helping the user. Proposed: <code>/komiksy/{project-slug}/</code> for everything. The line is a display grouping, not a URL namespace.</p>
+
+  <h3>4. Remove <code>legacy_path</code> and <code>legacy_landing</code> from model</h3>
+  <p>These fields exist only to generate duplicate pages. Replace with a <code>redirects</code> list in frontmatter or a global <code>_redirects.yml</code> config. The builder generates a <code>_redirects</code> file from this config. Models become simpler, builder becomes simpler.</p>
+
+  <h3>5. URL consistency</h3>
+  <p>Current: some editions use slug names (<code>/drzazga/</code>), some use numbers (<code>/01/</code>), some use special prefixes (<code>/t01/</code>, <code>/x1/</code>). Proposed: keep edition slugs as-is (they're human-chosen), but ensure they're unique within a project. No builder-level renaming needed.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16: Builder / CSS debt audit                             -->
+<!-- ============================================================ -->
+<section class="slide" id="s16">
+  <h2><span class="n">16</span> Builder / CSS Debt Audit</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">CSS debt</div>
+      <div class="compare-panel__body">
+        <ul>
+          <li><strong>28 <code>!important</code></strong> in <code>diablaq.css</code> — all to fight Pico CSS specificity</li>
+          <li><strong>Pico CSS loaded but 80%+ overridden.</strong> The site uses <code>pico.min.css</code> (45KB) as a base, then overrides almost everything. Net effect: 45KB of dead weight, plus specificity fights requiring <code>!important</code></li>
+          <li><strong>Dead CSS classes:</strong> <code>.edition-card</code> family used in 1 template, <code>.project-tile__cover</code> unused (replaced by <code>.project-card__cover</code>)</li>
+          <li><strong><code>--color-*</code> custom properties</strong> from an older MVP.css theme still present but unused</li>
+          <li><strong>3 CSS files loaded:</strong> <code>pico.min.css</code> + <code>fonts.css</code> + <code>diablaq.css</code>. Could be 1 file</li>
+          <li><strong>Google Fonts @import</strong> in <code>fonts.css</code> is a render-blocking chain (CSS loads CSS)</li>
+          <li><strong>No CSS minification</strong> in build step</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Builder debt</div>
+      <div class="compare-panel__body">
+        <ul>
+          <li><strong><code>_render</code> lambda</strong> in <code>builder.py</code> wraps <code>render_template</code> with default context injection, but the signature is confusing (pops from <code>**ctx</code>)</li>
+          <li><strong>Circular function injection:</strong> <code>_render_all()</code> passes <code>_render</code>, <code>_write_html</code>, <code>_write_section</code> as callbacks — this is dependency injection done through function parameters instead of a context object</li>
+          <li><strong><code>legacy_landing</code> logic</strong> in <code>render_project_pages()</code> spans 20+ lines of conditional path construction</li>
+          <li><strong><code>date.today()</code> called at parse time</strong> in <code>load_projects_and_editions()</code> — makes testing deterministic dates hard</li>
+          <li><strong>No validation pass.</strong> Missing covers, missing summaries, dead image refs pass silently</li>
+          <li><strong>No sitemap generation.</strong> No 404 page generation. No OG meta tag injection.</li>
+          <li><strong><code>mvp.css</code></strong> file exists in <code>css/</code> but is not referenced anywhere — dead asset</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17: Builder changes explained                            -->
+<!-- ============================================================ -->
+<section class="slide" id="s17">
+  <h2><span class="n">17</span> Builder Changes Explained</h2>
+
+  <h3>1. Drop Pico CSS</h3>
+  <p>Pico is a classless CSS framework — it styles raw HTML elements. The site uses custom classes for everything. Pico's contribution is negative: it adds 45KB, forces <code>!important</code> overrides, and fights every layout choice. Replace with a minimal CSS reset (normalize.css or custom 50-line reset) and own the entire stylesheet.</p>
+
+  <h3>2. Self-host fonts</h3>
+  <p>Google Fonts <code>@import</code> in CSS creates a render-blocking request chain: browser loads <code>fonts.css</code> → which loads Google Fonts CSS → which loads WOFF2 files. Self-hosting (downloading the font files into <code>fonts/</code>) eliminates the chain and improves TTFB. Two font families × 3-4 weights = ~200KB of WOFF2 files, loaded in parallel instead of sequentially.</p>
+
+  <h3>3. Single CSS output file</h3>
+  <p>Merge <code>fonts.css</code> + <code>diablaq.css</code> into one file during build. Optionally minify with a simple regex-based minifier (no node.js dependency needed). One file = one HTTP request = faster.</p>
+
+  <h3>4. Simplify builder architecture</h3>
+  <p>Replace callback injection pattern (<code>_render</code>, <code>_write_html</code>, <code>_write_section</code>) with a simple <code>BuildContext</code> dataclass that holds <code>env</code>, <code>out_dir</code>, <code>site_url</code>, <code>nav_projects</code>. Each render function receives the context object. Less ceremony, easier to test.</p>
+
+  <h3>5. Add validation pass</h3>
+  <p>After loading content and before rendering, run a validation pass that checks:</p>
+  <ul>
+    <li>Every non-draft project has <code>cover_image</code> (pointing to existing file) and <code>summary</code></li>
+    <li>Every published edition has <code>buy_links</code></li>
+    <li>No <code>summary</code> text duplicated in body</li>
+    <li>All <code>cover_image</code> paths resolve to existing files</li>
+  </ul>
+  <p>Emit warnings (not errors) so the build doesn't break, but the author gets feedback.</p>
+
+  <h3>6. Remove <code>mvp.css</code></h3>
+  <p>The file <code>css/mvp.css</code> exists but is not loaded by any template. Delete it.</p>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 18: Missing infrastructure                               -->
+<!-- ============================================================ -->
+<section class="slide" id="s18">
+  <h2><span class="n">18</span> Missing Infrastructure</h2>
+
+  <div class="compare">
+    <div class="compare-panel">
+      <div class="compare-panel__head bad">Current — zero discoverability infra</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="w">❌ No OG/social meta tags</span>
+   Sharing on Facebook/Twitter shows:
+   - No image
+   - Generic "Wydawnictwo Diablaq" title
+   - No description
+
+<span class="w">❌ No sitemap.xml</span>
+   Google has no index of all pages
+   106 pages discovered only via crawling
+
+<span class="w">❌ No 404 page</span>
+   Dead links show GitHub Pages default
+   "There isn't a GitHub Pages site here"
+
+<span class="w">❌ No robots.txt</span>
+   No crawl guidance
+
+<span class="w">❌ No structured data</span>
+   No schema.org markup for:
+   - BreadcrumbList
+   - Book/ComicIssue
+   - Organization
+
+<span class="w">❌ Newsletter CTA dead</span>
+   <span class="hl">&lt;a href="#"&gt;Zapisz się&lt;/a&gt;</span>
+   Links to nothing
+</pre>
+      </div>
+    </div>
+
+    <div class="compare-panel">
+      <div class="compare-panel__head good">Proposed — full coverage</div>
+      <div class="compare-panel__body">
+<pre class="wire">
+<span class="g">✓ OG meta tags on every page</span>
+   og:title, og:description, og:image
+   twitter:card, twitter:title, twitter:image
+   Per-page: use project/edition cover + title
+
+<span class="g">✓ sitemap.xml auto-generated</span>
+   Builder emits sitemap.xml during build
+   Lists all canonical URLs with lastmod
+
+<span class="g">✓ Branded 404 page</span>
+   Custom 404.html with:
+   - Site nav (user can navigate away)
+   - Suggestion links
+   - Optional: JS redirect for legacy URLs
+
+<span class="g">✓ robots.txt</span>
+   Allow: /
+   Sitemap: https://diablaq.com/sitemap.xml
+
+<span class="g">✓ schema.org markup (Phase 2)</span>
+   BreadcrumbList on all pages
+   Organization on home
+   Book/ComicIssue on edition pages
+
+<span class="g">✓ Newsletter conditional</span>
+   Show CTA only when NEWSLETTER_URL
+   env var is set. Until then, hidden.
+</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19: Infrastructure changes explained                     -->
+<!-- ============================================================ -->
+<section class="slide" id="s19">
+  <h2><span class="n">19</span> Infrastructure Changes Explained</h2>
+
+  <h3>1. OG meta tags</h3>
+  <p>Add to <code>base.html</code> <code>&lt;head&gt;</code>:</p>
+<pre><code>&lt;meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}"&gt;
+&lt;meta property="og:description" content="{% block og_description %}Piekielnie dobre komiksy!{% endblock %}"&gt;
+&lt;meta property="og:image" content="{% block og_image %}{{ abs_url('/img/logo.png') }}{% endblock %}"&gt;
+&lt;meta property="og:url" content="{{ canonical_url }}"&gt;
+&lt;meta property="og:type" content="website"&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></pre>
+  <p>Each child template overrides <code>og_title</code>, <code>og_description</code>, <code>og_image</code> with specific data. Edition pages use <code>edition.cover_image</code> as <code>og:image</code>.</p>
+
+  <h3>2. Sitemap generation</h3>
+  <p>After rendering all pages, the builder collects all canonical URLs and emits <code>sitemap.xml</code>. Simple XML template, no external dependency. ~15 lines of code in a new <code>_generate_sitemap()</code> function.</p>
+
+  <h3>3. 404 page</h3>
+  <p>Create <code>templates/404.html</code> extending <code>base.html</code>. Content: "Strona nie została znaleziona" + links to home, catalog, blog. GitHub Pages serves <code>404.html</code> automatically for missing URLs.</p>
+
+  <h3>4. robots.txt</h3>
+  <p>Static file in project root, copied to <code>dist/</code> during build (alongside <code>CNAME</code> and <code>.nojekyll</code>). Contents:</p>
+<pre><code>User-agent: *
+Allow: /
+Sitemap: https://diablaq.com/sitemap.xml</code></pre>
+
+  <h3>5. Newsletter conditional rendering</h3>
+  <p>Pass a <code>newsletter_url</code> variable from builder config (env var or YAML config). The <code>base.html</code> template wraps the newsletter section in <code>{% if newsletter_url %}</code>. No more dead <code>href="#"</code> buttons.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20: Execution Plan                                       -->
+<!-- ============================================================ -->
+<section class="slide" id="s20">
+  <h2><span class="n">20</span> Execution Plan — Phased Roadmap</h2>
+
+  <h3>Phase 1: Content cleanup <span class="tag tag-warn">DATA</span></h3>
+  <p>Zero code changes. Fix the source .md files.</p>
+  <ol>
+    <li>Add <code>draft: true</code> to <code>obietnica/project.md</code>, restore proper YAML frontmatter</li>
+    <li>Fix <code>mksp/project.md</code>: add <code>line: dobre-licho</code> and uncomment <code>summary</code></li>
+    <li>Fix <code>ciemny-odcien-czerni</code>: add actual cover image or use placeholder</li>
+    <li>Deduplicate summary/body in 4 projects</li>
+    <li>Uncomment <code>pisto/project.md</code> summary</li>
+    <li>Normalize YAML quoting across all .md files</li>
+    <li>Add missing <code>buy_links</code> to all published editions (editorial task)</li>
+    <li>Add <code>summary</code> to all projects missing it</li>
+  </ol>
+
+  <h3>Phase 2: Builder + model simplification <span class="tag tag-bad">CODE</span></h3>
+  <ol>
+    <li>Add <code>draft</code> support to <code>parsing.py</code> (skip draft projects/editions)</li>
+    <li>Add build-time validation warnings (missing cover, summary, buy_links)</li>
+    <li>Remove <code>legacy_landing</code> and <code>legacy_path</code> from model — generate <code>_redirects</code> file instead</li>
+    <li>Replace callback injection with <code>BuildContext</code> dataclass</li>
+    <li>Fix <code>buy_links</code> template bug (<code>v.buy_links</code> condition)</li>
+    <li>Add <code>featured: true</code> flag support for hero curation</li>
+    <li>Add sitemap.xml generation</li>
+    <li>Add 404.html generation</li>
+    <li>Add robots.txt copy step</li>
+  </ol>
+
+  <h3>Phase 3: Navigation + URL overhaul <span class="tag tag-bad">CODE</span></h3>
+  <ol>
+    <li>Change URL scheme: <code>/publikacje/</code> → <code>/komiksy/</code></li>
+    <li>Merge 4 section pages into 1 catalog page</li>
+    <li>Remove <code>/nowe/</code> and <code>/zapowiedzi/</code> standalone pages</li>
+    <li>Flatten nav: kill cat-nav, simplify header</li>
+    <li>Add active nav state via <code>aria-current</code></li>
+    <li>Add breadcrumbs to project + edition pages</li>
+    <li>Simplify mobile nav (no nested details)</li>
+  </ol>
+
+  <h3>Phase 4: CSS rebuild <span class="tag tag-good">STYLE</span></h3>
+  <ol>
+    <li>Drop Pico CSS entirely</li>
+    <li>Write minimal CSS reset (~50 lines)</li>
+    <li>Self-host Oswald + Roboto Condensed (WOFF2)</li>
+    <li>Merge all CSS into single file</li>
+    <li>Remove all <code>!important</code> declarations</li>
+    <li>Delete <code>mvp.css</code></li>
+    <li>Clean dead CSS classes</li>
+    <li>Add CSS minification to build step</li>
+  </ol>
+
+  <h3>Phase 5: Social + SEO <span class="tag tag-good">META</span></h3>
+  <ol>
+    <li>Add OG meta tags to <code>base.html</code> + overrides per template</li>
+    <li>Add schema.org BreadcrumbList</li>
+    <li>Add schema.org Organization (home page)</li>
+    <li>Add schema.org Book/ComicIssue (edition pages, stretch goal)</li>
+    <li>Conditional newsletter CTA (show only with real URL)</li>
+  </ol>
+
+  <h3>Estimated effort</h3>
+  <table>
+    <tr><th>Phase</th><th>Effort</th><th>Risk</th></tr>
+    <tr><td>1. Content cleanup</td><td>2–3 hours (editorial)</td><td>Low</td></tr>
+    <tr><td>2. Builder + model</td><td>4–6 hours</td><td>Medium (test coverage exists)</td></tr>
+    <tr><td>3. Navigation + URLs</td><td>4–6 hours</td><td>High (URL changes need redirect coverage)</td></tr>
+    <tr><td>4. CSS rebuild</td><td>6–8 hours</td><td>Medium (visual regression risk)</td></tr>
+    <tr><td>5. Social + SEO</td><td>2–3 hours</td><td>Low</td></tr>
+  </table>
+
+  <p style="margin-top:2rem;color:var(--muted);font-size:.85rem">Total: ~20–26 hours of focused work. Phases 1–3 are blocking. Phases 4–5 can run in parallel.</p>
+</section>
+
+<footer style="text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.8rem;border-top:1px solid #222">
+  <p>Generated by hostile code review · diablaq.com total overhaul · April 2026</p>
+  <p><a href="#top">↑ Back to top</a></p>
+</footer>
+
+</body>
+</html>

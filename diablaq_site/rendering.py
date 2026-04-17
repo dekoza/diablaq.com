@@ -14,7 +14,7 @@ _MONTHS_PL = [
 
 
 def format_date_pl(d: _date | None) -> str:
-    """Format a Python date as a Polish genitive string: '15 listopada 2024'.
+    """Format a Python date as Polish genitive string: '15 listopada 2024'.
 
     Returns 'Wkrótce' for year 9999 (TBA placeholder) and '' for None.
     """
@@ -26,67 +26,39 @@ def format_date_pl(d: _date | None) -> str:
 
 
 def _render(env: Environment, template_name: str, **ctx):
-    """Internal renderer: fetch template and render with context."""
     template = env.get_template(template_name)
     return template.render(**ctx)
 
 
 def abs_url(site_url: str):
-    """Return a function that constructs absolute URLs from site_url.
-
-    Args:
-        site_url: Base URL (e.g., "http://example.com")
-
-    Returns:
-        Callable that takes a relative path and returns absolute URL.
-    """
-
+    """Return a function that constructs absolute URLs from site_url."""
     def _abs_url_fn(path: str) -> str:
-        # Normalize path: ensure leading slash
         path = "/" + path.lstrip("/")
         return f"{site_url}{path}" if site_url else path
-
     return _abs_url_fn
 
 
 def render_template(env: Environment, template_name: str, *, nav_projects, site_url, **ctx) -> str:
-    """Render a Jinja2 template with standard context injection.
-
-    Args:
-        env: Jinja2 Environment instance
-        template_name: Name of the template to render
-        nav_projects: Navigation projects list (injected into context)
-        site_url: Base site URL for absolute URL construction
-        **ctx: Additional context variables
-
-    Returns:
-        Rendered HTML string
-
-    Raises:
-        jinja2.TemplateNotFound: If template_name does not exist
-    """
-    # Build abs_url callable with site_url captured
+    """Render a Jinja2 template with standard context injection."""
     abs_url_fn = abs_url(site_url)
-
-    # Combine standard context with user-provided context
     combined_context = {
         "nav_projects": nav_projects,
         "abs_url": abs_url_fn,
         **ctx,
     }
-
     return _render(env, template_name, **combined_context)
 
 
 def render_home_page(
-    env: Environment,
+    env,
     out_dir,
-    site_url: str,
+    site_url,
     nav_projects,
     projects,
     new_editions,
     announcements,
     newest_anytime,
+    hero_edition,
     _render_fn,
     _write_html_fn,
 ) -> None:
@@ -100,64 +72,65 @@ def render_home_page(
             site_url=site_url,
             canonical_url=(site_url + "/"),
             projects=projects,
-            new_editions=newest_anytime,
+            new_editions=new_editions,
             announcements=announcements[:12],
+            newest_anytime=newest_anytime,
+            hero_edition=hero_edition,
         ),
     )
 
 
-def render_listing_pages(
-    env: Environment,
+def render_catalog_page(
+    env,
     out_dir,
-    site_url: str,
+    site_url,
     nav_projects,
-    new_editions,
-    announcements,
-    newest_anytime,
+    projects,
     _render_fn,
     _write_html_fn,
 ) -> None:
-    """Render listing pages (nowe, zapowiedzi)."""
+    """Render the unified catalog page (/komiksy/) with projects grouped by line."""
+    lines_order = ["diablaq", "dobre-licho", "mecenat", "studio"]
+    lines_labels = {
+        "diablaq": "Główna linia",
+        "dobre-licho": "Dobre Licho",
+        "mecenat": "Mecenat",
+        "studio": "Studio",
+    }
+    groups = []
+    for line in lines_order:
+        line_projects = [p for p in projects if p.line == line]
+        if line_projects:
+            groups.append({
+                "id": line,
+                "label": lines_labels.get(line, line),
+                "projects": line_projects,
+            })
+    # Any unlisted lines
+    used = set(lines_order)
+    for p in projects:
+        if p.line not in used:
+            used.add(p.line)
+            groups.append({
+                "id": p.line,
+                "label": p.line,
+                "projects": [pp for pp in projects if pp.line == p.line],
+            })
+
     _write_html_fn(
-        out_dir / "nowe" / "index.html",
+        out_dir / "komiksy" / "index.html",
         _render_fn(
             env,
-            "listing.html",
+            "catalog.html",
             nav_projects=nav_projects,
             site_url=site_url,
-            canonical_url=(site_url + "/nowe/"),
-            title="Nowości",
-            description="Najnowsze publikacje.",
-            items=new_editions if new_editions else newest_anytime,
-        ),
-    )
-    _write_html_fn(
-        out_dir / "zapowiedzi" / "index.html",
-        _render_fn(
-            env,
-            "listing.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + "/zapowiedzi/"),
-            title="Zapowiedzi",
-            description="Co nowego nadchodzi w Diablaq.",
-            items=announcements,
-            empty_message="Już wkrótce ogłosimy kolejne zapowiedzi. Zajrzyj ponownie za jakiś czas."
-            if not announcements
-            else None,
+            canonical_url=(site_url + "/komiksy/"),
+            groups=groups,
         ),
     )
 
 
-def render_content_pages(
-    env: Environment,
-    out_dir,
-    site_url: str,
-    nav_projects,
-    pages,
-    _render_fn,
-    _write_html_fn,
-) -> None:
+def render_content_pages(env, out_dir, site_url, nav_projects, pages, _render_fn, _write_html_fn) -> None:
     """Render static content pages."""
     for page in pages:
         _write_html_fn(
@@ -173,15 +146,7 @@ def render_content_pages(
         )
 
 
-def render_people_pages(
-    env: Environment,
-    out_dir,
-    site_url: str,
-    nav_projects,
-    people_with_editions,
-    _render_fn,
-    _write_html_fn,
-) -> None:
+def render_people_pages(env, out_dir, site_url, nav_projects, people_with_editions, _render_fn, _write_html_fn) -> None:
     """Render people index and individual person pages."""
     _write_html_fn(
         out_dir / "ludzie" / "index.html",
@@ -222,24 +187,15 @@ def render_people_pages(
 
 
 def render_blog_pages(
-    env: Environment,
-    out_dir,
-    site_url: str,
-    nav_projects,
-    sorted_blog,
-    _render_fn,
-    _write_html_fn,
-    _build_tags_index_fn,
-    slugify_tag_fn,
+    env, out_dir, site_url, nav_projects, sorted_blog,
+    _render_fn, _write_html_fn, _build_tags_index_fn, slugify_tag_fn,
 ) -> None:
     """Render blog index, posts, and tag pages."""
     _write_html_fn(
         out_dir / "blog" / "index.html",
         _render_fn(
-            env,
-            "blog_index.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
+            env, "blog_index.html",
+            nav_projects=nav_projects, site_url=site_url,
             canonical_url=(site_url + "/blog/"),
             posts=sorted_blog,
         ),
@@ -248,10 +204,8 @@ def render_blog_pages(
         _write_html_fn(
             out_dir / post.url.strip("/") / "index.html",
             _render_fn(
-                env,
-                "blog_post.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
+                env, "blog_post.html",
+                nav_projects=nav_projects, site_url=site_url,
                 canonical_url=(site_url + post.url),
                 post=post,
                 post_tags=[{"name": t, "url": f"/blog/tag/{slugify_tag_fn(t)}/"} for t in post.tags],
@@ -262,10 +216,8 @@ def render_blog_pages(
         _write_html_fn(
             out_dir / "blog" / "tag" / tag_slug / "index.html",
             _render_fn(
-                env,
-                "blog_index.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
+                env, "blog_index.html",
+                nav_projects=nav_projects, site_url=site_url,
                 canonical_url=(site_url + f"/blog/tag/{tag_slug}/"),
                 posts=sorted(items, key=lambda p: p.date, reverse=True),
             ),
@@ -273,104 +225,70 @@ def render_blog_pages(
 
 
 def render_project_pages(
-    env: Environment,
-    out_dir,
-    site_url: str,
-    nav_projects,
-    projects,
-    editions,
-    _render_fn,
-    _write_html_fn,
-    _write_section_fn,
+    env, out_dir, site_url, nav_projects, projects, editions, _render_fn, _write_html_fn,
 ) -> None:
-    """Render project pages, editions, and redirects."""
+    """Render project pages and all edition pages.
+
+    One-shot comics (edition_slug='index') render at the project URL using edition.html.
+    Multi-edition projects render a project page + individual edition pages.
+    Legacy path redirects are no longer HTML pages — handled by _redirects file.
+    """
     for pr in projects:
         pr_editions = sorted(
             [e for e in editions if e.project_slug == pr.slug],
             key=lambda e: e.release_date,
             reverse=True,
         )
-        project_html = _render_fn(
-            env,
-            "project.html",
-            nav_projects=nav_projects,
-            site_url=site_url,
-            canonical_url=(site_url + pr.url),
-            project=pr,
-            editions=pr_editions,
-        )
-        _write_html_fn(out_dir / pr.url.strip("/") / "index.html", project_html)
-        if (
-            pr.legacy_landing
-            and pr.legacy_path
-            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
-        ):
-            _write_html_fn(out_dir / pr.legacy_path.strip("/") / "index.html", project_html)
-        legacy_slug_path = f"/{pr.slug}/"
-        if legacy_slug_path.rstrip("/") != pr.url.rstrip("/") and not (
-            pr.legacy_landing and legacy_slug_path.rstrip("/") == (pr.legacy_path or "").rstrip("/")
-        ):
+
+        # Check if this project has an index edition (collapses to project URL)
+        index_edition = next((e for e in pr_editions if e.url == pr.url), None)
+
+        if index_edition:
+            # One-shot: render edition.html at the project URL
             _write_html_fn(
-                out_dir / pr.slug / "index.html",
+                out_dir / pr.url.strip("/") / "index.html",
                 _render_fn(
-                    env,
-                    "redirect.html",
-                    nav_projects=nav_projects,
-                    site_url=site_url,
+                    env, "edition.html",
+                    nav_projects=nav_projects, site_url=site_url,
                     canonical_url=(site_url + pr.url),
-                    to_url=pr.url,
+                    edition=index_edition,
+                    project=pr,
+                    breadcrumb=[
+                        {"label": "Komiksy", "url": "/komiksy/"},
+                    ],
                 ),
             )
-        if (
-            pr.legacy_path
-            and pr.legacy_path.rstrip("/") != pr.url.rstrip("/")
-            and not pr.legacy_landing
-            and pr.legacy_path.rstrip("/") != legacy_slug_path.rstrip("/")
-        ):
+        else:
+            # Multi-edition project page
             _write_html_fn(
-                out_dir / pr.legacy_path.strip("/") / "index.html",
+                out_dir / pr.url.strip("/") / "index.html",
                 _render_fn(
-                    env,
-                    "redirect.html",
-                    nav_projects=nav_projects,
-                    site_url=site_url,
+                    env, "project.html",
+                    nav_projects=nav_projects, site_url=site_url,
                     canonical_url=(site_url + pr.url),
-                    to_url=pr.url,
+                    project=pr,
+                    editions=pr_editions,
+                    breadcrumb=[
+                        {"label": "Komiksy", "url": "/komiksy/"},
+                    ],
                 ),
             )
+
+        # Render individual edition pages (skip those with URL == project URL = already rendered)
         for e in pr_editions:
-            if not e.url.endswith("/index/"):
-                _write_html_fn(
-                    out_dir / e.url.strip("/") / "index.html",
-                    _render_fn(
-                        env,
-                        "edition.html",
-                        nav_projects=nav_projects,
-                        site_url=site_url,
-                        canonical_url=(site_url + e.url),
-                        edition=e,
-                        project=pr,
-                    ),
-                )
-    _write_section_fn(
-        "publikacje",
-        title="Publikacje",
-        line="diablaq",
-        description="Główna linia wydawnicza Diablaq.",
-    )
-    _write_section_fn(
-        "dobre-licho", title="Dobre Licho", line="dobre-licho", description="Imprint dla dzieci."
-    )
-    _write_section_fn(
-        "mecenat",
-        title="Mecenat",
-        line="mecenat",
-        description="Publikacje rozwijane w formule mecenatu.",
-    )
-    if any(p.line == "studio" for p in projects):
-        _write_section_fn(
-            "studio",
-            title="Studio",
-            line="studio",
-            description="Produkcje komiksowe dla innych wydawnictw/klientów.",
-        )
+            if e.url == pr.url:
+                continue  # already rendered as project page above
+            _write_html_fn(
+                out_dir / e.url.strip("/") / "index.html",
+                _render_fn(
+                    env, "edition.html",
+                    nav_projects=nav_projects, site_url=site_url,
+                    canonical_url=(site_url + e.url),
+                    edition=e,
+                    project=pr,
+                    breadcrumb=[
+                        {"label": "Komiksy", "url": "/komiksy/"},
+                        {"label": pr.title, "url": pr.url},
+                    ],
+                ),
+            )

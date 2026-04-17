@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Strona nie znaleziona – Wydawnictwo Diablaq{% endblock %}
+
+{% block content %}
+<header class="page-header" style="text-align:center;padding:4rem 0 2rem">
+  <h1 style="font-size:clamp(3rem,8vw,6rem);color:#ba2d00">404</h1>
+  <p class="page-header__lead" style="margin-inline:auto">Tej strony nie ma. Może przeniosła się pod nowy adres?</p>
+</header>
+
+<section style="text-align:center;padding-bottom:4rem">
+  <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:1.5rem">
+    <a href="/" class="btn btn-primary">Strona główna</a>
+    <a href="/komiksy/" class="btn btn-secondary">Katalog komiksów</a>
+    <a href="/blog/" class="btn btn-secondary">Blog</a>
+  </div>
+</section>
+{% endblock %}

@@ -15,29 +15,7 @@ class BuyLink:
 
 @dataclass(frozen=True)
 class EditionVariant:
-    """Pojedynczy wariant wydania bez osobnej podstrony.
-
-    Wariant może opisywać oprawę (miękka/twarda) albo wersję (elektroniczna).
-
-    Dane w frontmatter (docelowo):
-
-    variants:
-      - binding: miekka
-        isbn13: "..."
-        specs:
-          "Cena": "69,90 zł"
-          "Wymiary": "165 x 235 mm"
-        buy_links: [...]
-
-      - version: elektroniczna
-        isbn13: "..."
-        specs:
-          "Cena": "..."
-        buy_links: [...]
-
-    Dla kompatybilności wspieramy też legacy:
-      - kind: miekka|twarda|elektroniczna
-    """
+    """Pojedynczy wariant wydania bez osobnej podstrony."""
 
     binding: str | None  # miekka | twarda
     version: str | None  # elektroniczna
@@ -88,6 +66,7 @@ class Edition:
     subseries: str | None
     issue_number: int | None
     issue_number_display: str | None
+    featured: bool = False
 
 
 @dataclass(frozen=True)
@@ -102,6 +81,7 @@ class Project:
     cover_image: str | None
     cover_aspect_class: str
     html_body: str
+    draft: bool = False
 
 
 @dataclass(frozen=True)

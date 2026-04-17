@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Komiksy – Wydawnictwo Diablaq{% endblock %}
+{% block og_description %}Pełny katalog komiksów wydawnictwa Diablaq – główna linia, Dobre Licho, Mecenat i Studio.{% endblock %}
+
+{% block content %}
+<header class="page-header">
+  <h1>Komiksy</h1>
+  <p class="page-header__lead">Wszystkie serie i tytuły wydawnictwa Diablaq.</p>
+</header>
+
+{% for group in groups %}
+  <section class="catalog-section" id="{{ group.id }}">
+    <header class="catalog-section__head">
+      <h2>{{ group.label }}</h2>
+    </header>
+    <div class="tiles">
+      {% for p in group.projects %}
+        {% include "_partials/project_card.html" with context %}
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+
+{% if not groups %}
+  <p>Brak pozycji w katalogu.</p>
+{% endif %}
+{% endblock %}

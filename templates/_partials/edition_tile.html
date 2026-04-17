@@ -2,7 +2,7 @@
   <a class="edition-tile__cover {{ e.cover_aspect_class }}" href="{{ e.url }}" aria-label="{{ e.title }}">
     {% if e.issue_number_display %}<span class="edition-tile__number">#{{ e.issue_number_display }}</span>{% endif %}
     {% if e.cover_image %}
-      <img src="{{ e.cover_image }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
+      <img class="cover-img" src="{{ e.cover_image }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
     {% else %}
       <div class="cover-placeholder" aria-label="{{ e.title }}">
         <span class="cover-placeholder__initials">{{ e.title[:2] | upper }}</span>

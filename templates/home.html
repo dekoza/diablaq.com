@@ -1,57 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}Wydawnictwo Diablaq{% endblock %}
+{% block title %}Wydawnictwo Diablaq – Piekielnie dobre komiksy{% endblock %}
+{% block og_description %}Wydawnictwo Diablaq – piekielnie dobre komiksy polskich i zagranicznych twórców.{% endblock %}
+{% block og_image %}{% if hero_edition and hero_edition.cover_image %}{{ abs_url(hero_edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block hero %}
-{# Build hero list: announcements first, then newest releases, filter to those with a cover image #}
-{% set hero_editions = [] %}
-{% for e in (announcements + new_editions) %}
-  {% if e.cover_image and hero_editions | length < 5 %}
-    {% set _ = hero_editions.append(e) %}
-  {% endif %}
-{% endfor %}
-
-<section class="home-hero" aria-label="Wyróżnione wydania">
-  {% if hero_editions %}
-    {% set h = hero_editions[0] %}
-    <a class="home-hero__main" href="{{ h.url }}" aria-label="{{ h.title }}">
-      <img src="{{ h.cover_image }}" alt="{{ h.cover_alt or h.title }}">
+<section class="home-hero" aria-label="Wyróżnione wydanie">
+  {% if hero_edition %}
+    <a class="home-hero__main" href="{{ hero_edition.url }}" aria-label="{{ hero_edition.title }}">
+      <img src="{{ hero_edition.cover_image }}" alt="{{ hero_edition.cover_alt or hero_edition.title }}">
       <div class="home-hero__overlay">
-        <h1 class="home-hero__title">{{ h.title }}</h1>
-        {% if h.creator_names %}
-          <p class="home-hero__authors">{{ h.creator_names | join(", ") }}</p>
+        <h1 class="home-hero__title">{{ hero_edition.title }}</h1>
+        {% if hero_edition.creator_names %}
+          <p class="home-hero__authors">{{ hero_edition.creator_names | join(", ") }}</p>
         {% endif %}
-        <span class="home-hero__cta">Zobacz wydanie</span>
+        <span class="home-hero__cta">{% if hero_edition.is_announcement %}Przedpremiera{% else %}Zobacz wydanie{% endif %}</span>
       </div>
     </a>
-    {% if hero_editions | length > 1 %}
-      <div class="home-hero__strip" aria-label="Więcej wydań">
-        {% for e in hero_editions[1:] %}
-          <a class="home-hero__thumb" href="{{ e.url }}" aria-label="{{ e.title }}">
-            <img src="{{ e.cover_image }}" alt="{{ e.cover_alt or e.title }}" loading="lazy">
-          </a>
-        {% endfor %}
-      </div>
-    {% endif %}
   {% else %}
     <div class="home-hero__empty">
       <h1>Wydawnictwo Diablaq</h1>
-      <p class="page-header__lead">Piekielnie dobre komiksy!</p>
+      <p style="margin-top:.75rem;color:#888">Piekielnie dobre komiksy!</p>
     </div>
   {% endif %}
 </section>
 {% endblock %}
 
 {% block content %}
+
 {% if announcements %}
 <section>
   <header class="section-header">
     <h2>Zapowiedzi</h2>
-    <a class="section-header__more" href="/zapowiedzi/">Zobacz wszystkie</a>
   </header>
-
-  <div class="tiles tiles--editions">
-    {% for e in announcements %}
+  <div class="tiles">
+    {% for e in announcements[:8] %}
       {% include "_partials/edition_tile.html" with context %}
     {% endfor %}
   </div>
@@ -62,31 +45,43 @@
 <section>
   <header class="section-header">
     <h2>Nowości</h2>
-    <a class="section-header__more" href="/nowe/">Zobacz wszystkie</a>
   </header>
-
-  <div class="tiles tiles--editions">
-    {% for e in new_editions %}
+  <div class="tiles">
+    {% for e in new_editions[:8] %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  </div>
+</section>
+{% elif newest_anytime %}
+<section>
+  <header class="section-header">
+    <h2>Ostatnio wydane</h2>
+    <a class="section-header__more" href="/komiksy/">Cały katalog</a>
+  </header>
+  <div class="tiles">
+    {% for e in newest_anytime %}
       {% include "_partials/edition_tile.html" with context %}
     {% endfor %}
   </div>
 </section>
 {% endif %}
 
-<section>
-  <header class="section-header">
-    <h2>Katalog</h2>
-    <a class="section-header__more" href="/publikacje/">Zobacz wszystkie</a>
-  </header>
-
-  {% if projects %}
-    <div class="tiles tiles--projects">
-      {% for p in projects[:4] %}
-        {% include "_partials/project_card.html" with context %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>Brak projektów w katalogu.</p>
+{# Full catalog grouped by line #}
+{% set lines_order = [('diablaq','Główna linia'), ('dobre-licho','Dobre Licho'), ('mecenat','Mecenat'), ('studio','Studio')] %}
+{% for line_id, line_label in lines_order %}
+  {% set line_projects = projects | selectattr('line', 'equalto', line_id) | list %}
+  {% if line_projects %}
+    <section class="catalog-section" id="{{ line_id }}">
+      <header class="catalog-section__head">
+        <h2>{{ line_label }}</h2>
+      </header>
+      <div class="tiles">
+        {% for p in line_projects %}
+          {% include "_partials/project_card.html" with context %}
+        {% endfor %}
+      </div>
+    </section>
   {% endif %}
-</section>
+{% endfor %}
+
 {% endblock %}

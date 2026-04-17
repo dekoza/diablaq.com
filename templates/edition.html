@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}{{ edition.title }} – Wydawnictwo Diablaq{% endblock %}
+{% block og_description %}{{ edition.title }}{% if edition.creator_names %} · {{ edition.creator_names | join(", ") }}{% endif %}{% if edition.release %} · {{ edition.release }}{% endif %}{% endblock %}
+{% block og_image %}{% if edition.cover_image %}{{ abs_url(edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block content %}
-<header class="page-header">
-  <h1>{{ edition.title }}</h1>
-  <p class="page-header__lead">
-    <a href="{{ project.url }}">← {{ project.title }}</a>
-  </p>
-</header>
+{# Breadcrumb #}
+{% if breadcrumb %}
+<nav class="breadcrumb" aria-label="Ścieżka nawigacji">
+  {% for crumb in breadcrumb %}
+    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+    <span class="sep" aria-hidden="true">›</span>
+  {% endfor %}
+  <span aria-current="page">{{ edition.title }}</span>
+</nav>
+{% endif %}
 
-<!-- gallery-support: covers + previews -->
 {% include "_partials/edition_details.html" with context %}
 {% endblock %}

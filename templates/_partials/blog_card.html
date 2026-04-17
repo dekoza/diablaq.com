@@ -13,6 +13,5 @@
     <p class="blog-card__summary">{{ post.summary }}</p>
   {% endif %}
 
-  <p class="blog-card__meta"><small>{{ post.date.isoformat() }}</small></p>
+  <p class="blog-card__meta"><time datetime="{{ post.date.isoformat() }}">{{ post.date | format_date_pl }}</time></p>
 </article>
-

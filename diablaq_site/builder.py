@@ -24,7 +24,7 @@ from diablaq_site.parsing import (
 )
 from diablaq_site.rendering import (
     render_home_page,
-    render_listing_pages,
+    render_catalog_page,
     render_content_pages,
     render_people_pages,
     render_blog_pages,
@@ -79,7 +79,7 @@ def _process_content(
         [e for e in editions if e.release_date.year < 9999 and e.release_date <= today],
         key=lambda e: e.release_date,
         reverse=True,
-    )[:8]
+    )[:5]
     return (
         new_editions,
         announcements,
@@ -112,6 +112,13 @@ def _render_all(
         **ctx,
     )
 
+    # Pick featured edition for hero (first with featured=True, or first announcement with cover)
+    hero_edition = next(
+        (e for e in editions if e.featured and e.cover_image), None
+    ) or next(
+        (e for e in (announcements + new_editions) if e.cover_image), None
+    )
+
     render_home_page(
         env,
         out_dir,
@@ -121,17 +128,16 @@ def _render_all(
         new_editions,
         announcements,
         newest_anytime,
+        hero_edition,
         _render,
         _write_html,
     )
-    render_listing_pages(
+    render_catalog_page(
         env,
         out_dir,
         site_url,
         nav_projects,
-        new_editions,
-        announcements,
-        newest_anytime,
+        projects,
         _render,
         _write_html,
     )
@@ -150,24 +156,6 @@ def _render_all(
         build_tags_index,
         slugify_tag,
     )
-
-    def _write_section(
-        path_slug: str, *, title: str, line: str, description: str | None = None
-    ) -> None:
-        _write_html(
-            out_dir / path_slug / "index.html",
-            _render(
-                env,
-                "section.html",
-                nav_projects=nav_projects,
-                site_url=site_url,
-                canonical_url=(site_url + f"/{path_slug}/"),
-                title=title,
-                description=description,
-                projects=[p for p in projects if p.line == line],
-            ),
-        )
-
     render_project_pages(
         env,
         out_dir,
@@ -177,13 +165,63 @@ def _render_all(
         editions,
         _render,
         _write_html,
-        _write_section,
     )
 
 
-def _finalize(root: Path, out_dir: Path, people: list[Person]) -> None:
+def _generate_redirects(out_dir: Path, projects: list[Project]) -> None:
+    """Generate _redirects file for legacy URLs (Netlify/Cloudflare Pages format)."""
+    lines = [
+        "# Legacy section redirects",
+        "/publikacje/*  /komiksy/:splat  301",
+        "/dobre-licho/*  /komiksy/:splat  301",
+        "/mecenat/*  /komiksy/:splat  301",
+        "/studio/*  /komiksy/:splat  301",
+        "/nowe/  /  301",
+        "/zapowiedzi/  /  301",
+        "",
+        "# Legacy project slug redirects",
+    ]
+    seen: set[str] = set()
+
+    def _add(src: str, dst: str) -> None:
+        entry = f"{src}*  {dst}:splat  301"
+        if entry not in seen:
+            seen.add(entry)
+            lines.append(entry)
+
+    for pr in projects:
+        canonical = pr.url
+        if pr.legacy_path and pr.legacy_path.rstrip("/") != canonical.rstrip("/"):
+            _add(pr.legacy_path, canonical)
+        slug_path = f"/{pr.slug}/"
+        if slug_path.rstrip("/") != canonical.rstrip("/"):
+            _add(slug_path, canonical)
+
+    lines.append("/zvyrke/  /ludzie/zvyrke/  301")
+    (out_dir / "_redirects").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _generate_sitemap(out_dir: Path, site_url: str, pages: list[str]) -> None:
+    """Generate sitemap.xml with all canonical URLs."""
+    entries = "\n".join(
+        f"  <url><loc>{site_url}{p}</loc></url>"
+        for p in pages
+    )
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{entries}
+</urlset>
+"""
+    (out_dir / "sitemap.xml").write_text(xml, encoding="utf-8")
+
+
+def _finalize(root: Path, out_dir: Path, people: list[Person], projects: list[Project], site_url: str, env: Environment) -> None:
     _copy_tree(root / "img", out_dir / "img")
     _copy_tree(root / "css", out_dir / "css")
+    # Copy fonts if self-hosted
+    fonts_dir = root / "fonts"
+    if fonts_dir.exists():
+        _copy_tree(fonts_dir, out_dir / "fonts")
     for person in people:
         if person.photo:
             src_photo = root / person.photo.lstrip("/")
@@ -191,10 +229,16 @@ def _finalize(root: Path, out_dir: Path, people: list[Person]) -> None:
                 generate_thumbnail(
                     src_photo, out_dir / thumb_path_from_photo(person.photo).lstrip("/")
                 )
-    for file_name in ["CNAME", ".nojekyll"]:
+    for file_name in ["CNAME", ".nojekyll", "robots.txt"]:
         src = root / file_name
         if src.exists():
             shutil.copy2(src, out_dir / file_name)
+    _generate_redirects(out_dir, projects)
+    # 404 page
+    _write_html(
+        out_dir / "404.html",
+        render_template(env, "404.html", nav_projects=[], site_url=site_url, canonical_url=""),
+    )
 
 
 def build_site(*, root: Path, out_dir: Path) -> None:
@@ -217,4 +261,4 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         people_with_editions,
         sorted_blog,
     )
-    _finalize(root, out_dir, people_with_editions)
+    _finalize(root, out_dir, people_with_editions, projects, site_url, env)

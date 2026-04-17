@@ -1,57 +1,48 @@
 {% extends "base.html" %}
 
 {% block title %}{{ project.title }} – Wydawnictwo Diablaq{% endblock %}
+{% block og_description %}{{ project.summary or project.title }}{% endblock %}
+{% block og_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block content %}
-<header class="page-header">
-  <h1>{{ project.title }}</h1>
-  {% if project.summary %}<p class="page-header__lead">{{ project.summary }}</p>{% endif %}
-</header>
+{# Breadcrumb #}
+{% if breadcrumb %}
+<nav class="breadcrumb" aria-label="Ścieżka nawigacji">
+  {% for crumb in breadcrumb %}
+    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+    <span class="sep" aria-hidden="true">›</span>
+  {% endfor %}
+  <span aria-current="page">{{ project.title }}</span>
+</nav>
+{% endif %}
 
-{% if project.html_body and project.html_body.strip() %}
+{# Project hero: cover + title + description side by side #}
+<div class="project-hero">
+  {% if project.cover_image %}
+  <figure class="project-hero__cover">
+    <img src="{{ project.cover_image }}" alt="{{ project.title }} – okładka">
+  </figure>
+  {% endif %}
+
+  <div class="project-hero__body">
+    <h1 class="project-hero__title">{{ project.title }}</h1>
+    {% if project.summary %}<p class="project-hero__summary">{{ project.summary }}</p>{% endif %}
+    {% if project.html_body and project.html_body.strip() %}
+      <div class="project-hero__desc">{{ project.html_body | safe }}</div>
+    {% endif %}
+  </div>
+</div>
+
+{% if editions %}
 <section>
   <header class="section-header">
-    <h2>O komiksie</h2>
+    <h2>Wydania</h2>
   </header>
-  {{ project.html_body | safe }}
+  <div class="tiles">
+    {% for e in editions %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  </div>
 </section>
-{% endif %}
-
-{# Jednotomówki: gdy jest dokładnie jedno wydanie, pokaż od razu szczegóły.
-   Dodatkowo: jeśli istnieje wydanie `index`, traktujemy je jak treść jednostki. #}
-{% set index_edition = none %}
-{% if editions %}
-  {% for e in editions %}
-    {% if '/index/' in e.url %}
-      {% set index_edition = e %}
-    {% endif %}
-  {% endfor %}
-{% endif %}
-
-{% if editions and (editions|length == 1 or index_edition) %}
-  {% set edition = index_edition or editions[0] %}
-  {% include "_partials/edition_details.html" with context %}
-{% else %}
-  <section>
-    <header class="section-header">
-      <h2>Wydania</h2>
-    </header>
-
-    {% if editions %}
-      <div class="tiles tiles--editions">
-        {% for e in editions %}
-          {% if project.legacy_landing and e.legacy_anchor %}
-            <article id="{{ e.legacy_anchor }}">
-              {% include "_partials/edition_tile.html" with context %}
-            </article>
-          {% else %}
-            {% include "_partials/edition_tile.html" with context %}
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% else %}
-      <p>Brak wydań.</p>
-    {% endif %}
-  </section>
 {% endif %}
 {% endblock %}

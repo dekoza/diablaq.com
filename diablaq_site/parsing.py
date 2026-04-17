@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -329,9 +330,10 @@ def parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], lis
             raise ValueError(f"creators[{i}] musi mieć name w {source_path}")
 
         creators.append(Creator(role=role, name=name, person_slug=person_slug))
-        names.append(name)
+        if name not in names:
+            names.append(name)
 
-    return creators, list(set(names))
+    return creators, names
 
 
 def parse_specs(meta: dict) -> dict[str, str]:
@@ -366,7 +368,7 @@ def load_pages(pages_dir: Path) -> list:
 
 
 def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, list]:
-    """Load all projects and their editions."""
+    """Load all projects and their editions, skipping those with draft: true."""
     from collections import defaultdict
     from diablaq_site.models import Edition, Project
     from diablaq_site.images import get_cover_aspect_class
@@ -380,10 +382,24 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
         if not project_md.exists():
             continue
         meta, body_html = read_markdown_file(project_md)
+
+        # Skip draft projects
+        if bool(meta.get("draft", False)):
+            continue
+
         slug, line = project_dir.name, str(meta.get("line") or "diablaq")
         cover_image = str(meta.get("cover_image") or "").strip() or None
         summary = str(meta["summary"]) if meta.get("summary") is not None else None
         legacy_path = str(meta["legacy_path"]) if meta.get("legacy_path") is not None else None
+
+        # Validation warnings
+        if not cover_image:
+            print(f"WARNING: {project_md} has no cover_image", file=sys.stderr)
+        elif not (root / cover_image.lstrip("/")).exists():
+            print(f"WARNING: {project_md} cover_image not found: {cover_image}", file=sys.stderr)
+        if not summary:
+            print(f"WARNING: {project_md} has no summary", file=sys.stderr)
+
         projects.append(
             Project(
                 slug=slug,
@@ -396,6 +412,7 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 cover_image=cover_image,
                 cover_aspect_class=get_cover_aspect_class(cover_image, root),
                 html_body=body_html,
+                draft=False,
             )
         )
 
@@ -448,36 +465,48 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             legacy_anchor = (
                 str(emeta["legacy_anchor"]) if emeta.get("legacy_anchor") is not None else None
             )
-            editions.append(
-                Edition(
-                    url=canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug),
-                    title=str(emeta.get("title") or ed_slug),
-                    project_slug=slug,
-                    release=str(emeta.get("release") or "") or None,
-                    release_date=sort_date,
-                    is_new=force_new or (auto_is_new and not force_announcement),
-                    is_announcement=force_announcement or (auto_is_announcement and not force_new),
-                    presale_url=presale_url,
-                    legacy_anchor=legacy_anchor,
-                    cover_image=cover_image,
-                    cover_alt=cover_alt,
-                    cover_aspect_class=get_cover_aspect_class(cover_image, root),
-                    covers=parse_image_list(emeta, "covers", source_path=source),
-                    previews=parse_image_list(emeta, "previews", source_path=source),
-                    creators=creators,
-                    creator_names=creator_names,
-                    specs=parse_specs(emeta),
-                    buy_links=parse_buy_links(emeta, source_path=source),
-                    variants=parse_variants(emeta, source_path=source),
-                    html_body=ebody_html,
-                    standalone=standalone,
-                    subseries=str(emeta.get("subseries") or "").strip() or None,
-                    issue_number=issue_number,
-                    issue_number_display=f"{issue_number:02d}"
-                    if issue_number is not None
-                    else None,
-                )
+            featured = bool(emeta.get("featured", False))
+
+            edition = Edition(
+                url=canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug),
+                title=str(emeta.get("title") or ed_slug),
+                project_slug=slug,
+                release=str(emeta.get("release") or "") or None,
+                release_date=sort_date,
+                is_new=force_new or (auto_is_new and not force_announcement),
+                is_announcement=force_announcement or (auto_is_announcement and not force_new),
+                presale_url=presale_url,
+                legacy_anchor=legacy_anchor,
+                cover_image=cover_image,
+                cover_alt=cover_alt,
+                cover_aspect_class=get_cover_aspect_class(cover_image, root),
+                covers=parse_image_list(emeta, "covers", source_path=source),
+                previews=parse_image_list(emeta, "previews", source_path=source),
+                creators=creators,
+                creator_names=creator_names,
+                specs=parse_specs(emeta),
+                buy_links=parse_buy_links(emeta, source_path=source),
+                variants=parse_variants(emeta, source_path=source),
+                html_body=ebody_html,
+                standalone=standalone,
+                subseries=str(emeta.get("subseries") or "").strip() or None,
+                issue_number=issue_number,
+                issue_number_display=f"{issue_number:02d}"
+                if issue_number is not None
+                else None,
+                featured=featured,
             )
+
+            # Warn if published edition has no buy links
+            if not edition.is_announcement and not edition.buy_links and not any(
+                v.buy_links for v in edition.variants
+            ) and edition.release_date.year < 9999:
+                print(
+                    f"WARNING: {source} has no buy_links",
+                    file=sys.stderr,
+                )
+
+            editions.append(edition)
 
     return projects, editions
 

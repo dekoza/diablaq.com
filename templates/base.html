@@ -9,10 +9,25 @@
     <link rel="canonical" href="{{ canonical_url }}">
   {% endif %}
 
-  <link rel="stylesheet" href="/css/pico.min.css">
+  {# Social / OG meta #}
+  <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Piekielnie dobre komiksy polskich twórców.{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ abs_url('/img/logo.png') }}{% endblock %}">
+  {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Wydawnictwo Diablaq">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block tw_title %}{{ self.title() }}{% endblock %}">
+  <meta name="twitter:image" content="{% block tw_image %}{{ abs_url('/img/logo.png') }}{% endblock %}">
+
+  {# Google Fonts via <link> (parallel load, no @import render-blocking chain) #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto+Condensed:wght@400;600;700&display=swap">
+
   <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/diablaq.css">
-  <link rel="icon" type="image/x-icon" href="/img/icon.png">
+  <link rel="icon" type="image/png" href="/img/icon.png">
 </head>
 <body>
 
@@ -20,40 +35,27 @@
 
 <header class="site-header">
   <div class="container">
+    {# Desktop nav #}
     <nav class="nav-desktop" aria-label="Nawigacja">
-      <a class="site-logo" href="/" aria-label="Strona główna">
+      <a class="site-logo" href="/" aria-label="Strona główna Diablaq">
         <img alt="Diablaq" src="/img/logo.png">
       </a>
-
       <ul class="nav-links">
-        <li><a href="/blog/">Blog</a></li>
-        <li><a href="/zapowiedzi/">Zapowiedzi</a></li>
-        <li><a href="/nowe/">Nowości</a></li>
-
-        <li class="nav-links__group">
-          <details>
-            <summary>Publikacje</summary>
-            <div class="nav-links__dropdown" role="menu">
-              <a href="/publikacje/" role="menuitem">Główna linia</a>
-              <a href="/dobre-licho/" role="menuitem">Dobre Licho</a>
-              <a href="/mecenat/" role="menuitem">Mecenat</a>
-              <a href="/studio/" role="menuitem">Studio</a>
-            </div>
-          </details>
-        </li>
-
-        <li><a href="/ludzie/">Ludzie</a></li>
-        <li><a href="https://strefakomiksu.pl/">Sklep</a></li>
-        <li><a href="/kontakt/">Kontakt</a></li>
+        <li><a href="/komiksy/"{% if canonical_url and canonical_url.startswith(abs_url('/komiksy/')) %} aria-current="page"{% endif %}>Komiksy</a></li>
+        <li><a href="/komiksy/#dobre-licho"{% if canonical_url and '#dobre-licho' in canonical_url %} aria-current="page"{% endif %}>Dobre Licho</a></li>
+        <li><a href="/komiksy/#mecenat"{% if canonical_url and '#mecenat' in canonical_url %} aria-current="page"{% endif %}>Mecenat</a></li>
+        <li><a href="/blog/"{% if canonical_url and '/blog/' in canonical_url %} aria-current="page"{% endif %}>Blog</a></li>
+        <li><a href="/ludzie/"{% if canonical_url and '/ludzie/' in canonical_url %} aria-current="page"{% endif %}>Ludzie</a></li>
+        <li><a href="https://strefakomiksu.pl/" target="_blank" rel="noopener noreferrer">Sklep</a></li>
+        <li><a href="/kontakt/"{% if canonical_url and '/kontakt/' in canonical_url %} aria-current="page"{% endif %}>Kontakt</a></li>
       </ul>
     </nav>
 
-    {# Mobile top bar (menu icon po prawej) #}
+    {# Mobile top bar #}
     <nav class="nav-mobilebar" aria-label="Nawigacja mobilna">
       <a class="site-logo" href="/" aria-label="Strona główna">
         <img alt="Diablaq" src="/img/logo.png">
       </a>
-
       <label class="nav-toggle-btn" for="nav-toggle" role="button" aria-label="Otwórz menu">
         <img src="/img/ui/menu.svg" alt="Menu">
       </label>
@@ -61,31 +63,19 @@
   </div>
 </header>
 
-{# Mobile overlay + panel (Penpot: pełnoekranowe, duże linki) #}
+{# Mobile overlay panel #}
 <div class="nav-mobile" aria-hidden="true">
   <div class="nav-mobile__panel" role="dialog" aria-label="Menu" aria-modal="true">
     <div class="nav-mobile__header">
-      <span class="nav-mobile__spacer"></span>
       <label class="nav-mobile__close" for="nav-toggle" role="button" aria-label="Zamknij menu">
         <img src="/img/ui/close.svg" alt="Zamknij">
       </label>
     </div>
-
     <nav class="nav-mobile__links" aria-label="Menu">
+      <a href="/komiksy/">Komiksy</a>
+      <a href="/komiksy/#dobre-licho">Dobre Licho</a>
+      <a href="/komiksy/#mecenat">Mecenat</a>
       <a href="/blog/">Blog</a>
-      <a href="/zapowiedzi/">Zapowiedzi</a>
-      <a href="/nowe/">Nowości</a>
-
-      <details>
-        <summary>Publikacje</summary>
-        <div class="nav-mobile__sub">
-          <a href="/publikacje/">Główna linia</a>
-          <a href="/dobre-licho/">Dobre Licho</a>
-          <a href="/mecenat/">Mecenat</a>
-          <a href="/studio/">Studio</a>
-        </div>
-      </details>
-
       <a href="/ludzie/">Ludzie</a>
       <a href="https://strefakomiksu.pl/">Sklep</a>
       <a href="/kontakt/">Kontakt</a>
@@ -93,37 +83,25 @@
   </div>
 </div>
 
-{# Hero slot — only home.html fills this; all other pages leave it empty #}
 {% block hero %}{% endblock %}
-
-<nav class="cat-nav" aria-label="Kategorie">
-  <div class="container cat-nav__inner">
-    <a href="/publikacje/">Publikacje</a>
-    <a href="/zapowiedzi/">Zapowiedzi</a>
-    <a href="/nowe/">Nowości</a>
-    <a href="/dobre-licho/">Dobre Licho</a>
-    <a href="/mecenat/">Mecenat</a>
-    <a href="/studio/">Studio</a>
-    <a href="/blog/">Blog</a>
-  </div>
-</nav>
 
 <main class="container">
   {% block content %}{% endblock %}
 </main>
 
+{% if newsletter_url is defined and newsletter_url %}
 <section class="site-newsletter" aria-label="Newsletter">
   <div class="container site-newsletter__inner">
     <div class="site-newsletter__text">
       <h2 class="site-newsletter__title">Newsletter</h2>
-      <p class="site-newsletter__lead">Dostawaj informacje o nowościach, zapowiedziach i wydarzeniach (targi, live, premiery).</p>
+      <p class="site-newsletter__lead">Dostawaj informacje o nowościach, zapowiedziach i wydarzeniach.</p>
     </div>
     <div class="site-newsletter__cta">
-      {# Link do formularza — podmienić na docelowy adres MailerLite/Brevo #}
-      <a class="site-newsletter__button" href="#" role="button">Zapisz się</a>
+      <a class="site-newsletter__button" href="{{ newsletter_url }}">Zapisz się</a>
     </div>
   </div>
 </section>
+{% endif %}
 
 <footer class="site-footer" aria-label="Stopka">
   <div class="container site-footer__grid">
@@ -131,29 +109,26 @@
       <a class="site-footer__logo" href="/" aria-label="Strona główna">
         <img alt="Diablaq" src="/img/logo.png">
       </a>
-      <p class="site-footer__note"><small>&copy; 2024-2026 Diablaq sp. z o.o.</small></p>
+      <p class="site-footer__note"><small>&copy; 2024–2026 Diablaq sp. z o.o.</small></p>
     </div>
 
-    <nav class="site-footer__links" aria-label="Linki">
+    <nav class="site-footer__links" aria-label="Linki stopki">
       <div class="site-footer__col">
-        <h3 class="site-footer__head">Wydawnictwo</h3>
-        <a href="/publikacje/">Publikacje</a>
-        <a href="/zapowiedzi/">Zapowiedzi</a>
-        <a href="/nowe/">Nowości</a>
-        <a href="/ludzie/">Ludzie</a>
+        <h3 class="site-footer__head">Komiksy</h3>
+        <a href="/komiksy/">Katalog</a>
+        <a href="/komiksy/#dobre-licho">Dobre Licho</a>
+        <a href="/komiksy/#mecenat">Mecenat</a>
+        <a href="/komiksy/#studio">Studio</a>
       </div>
-
       <div class="site-footer__col">
-        <h3 class="site-footer__head">Oferta</h3>
-        <a href="/mecenat/">Mecenat</a>
-        <a href="/studio/">Studio</a>
+        <h3 class="site-footer__head">Diablaq</h3>
+        <a href="/ludzie/">Ludzie</a>
         <a href="/blog/">Blog</a>
         <a href="https://strefakomiksu.pl/">Sklep</a>
-      </div>
-
-      <div class="site-footer__col">
-        <h3 class="site-footer__head">Kontakt</h3>
         <a href="/kontakt/">Kontakt</a>
+      </div>
+      <div class="site-footer__col">
+        <h3 class="site-footer__head">Social</h3>
         <a href="https://fb.me/Diablaq" target="_blank" rel="noopener noreferrer">Facebook</a>
         <a href="https://www.instagram.com/Diablaq" target="_blank" rel="noopener noreferrer">Instagram</a>
       </div>
@@ -162,4 +137,3 @@
 </footer>
 </body>
 </html>
-

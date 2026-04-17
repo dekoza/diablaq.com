@@ -1,6 +1,6 @@
 ---
-cover_image: /img/ciemny-odc-czerni1.jpg
+cover_image: /img/coc1.jpg
 line: diablaq
-title: Ciemny odcień czerni
+summary: "Noir opowieść o tym, że nikt nie jest tylko ofiarą ani tylko katem."
+title: "Ciemny odcień czerni"
 ---
-

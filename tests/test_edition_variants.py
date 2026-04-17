@@ -27,8 +27,8 @@ def test_build_with_variants(tmp_path: Path) -> None:
     build_site(root=repo_root, out_dir=out_dir)
 
     # Belzebubs ma w repo wydania z wariantami; sprawdzamy, że podstrony powstają.
-    assert (out_dir / "publikacje" / "belzebubs" / "t01" / "index.html").exists()
-    assert (out_dir / "publikacje" / "belzebubs" / "t02" / "index.html").exists()
+    assert (out_dir / "komiksy" / "belzebubs" / "t01" / "index.html").exists()
+    assert (out_dir / "komiksy" / "belzebubs" / "t02" / "index.html").exists()
 
 
 @pytest.mark.parametrize(
@@ -102,7 +102,7 @@ def test_isbn13_is_validated_by_build(tmp_path: Path, isbn: str, is_valid: bool)
 
     if is_valid:
         build_site(root=work_root, out_dir=out_dir)
-        assert (out_dir / "publikacje" / "belzebubs" / "test" / "index.html").exists()
+        assert (out_dir / "komiksy" / "belzebubs" / "test" / "index.html").exists()
     else:
         with pytest.raises(ValueError):
             build_site(root=work_root, out_dir=out_dir)
