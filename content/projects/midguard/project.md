@@ -1,10 +1,10 @@
 ---
-cover_image: /img/mg_cudowni_1.jpg
-legacy_landing: true
+cover_image: /img/midguard-logo.webp
 legacy_path: /midguard/
 line: diablaq
-summary: Seria osadzona w świecie MidGuard™.
+kind: universe
+summary: Mroczne uniwersum science fantasy, w którym ukazują się niezależne historie i serie.
 title: MidGuard™
 ---
 
-Seria **MidGuard™**.
+**MidGuard™** to wspólne uniwersum dla opowieści rozgrywających się w świecie Huskarlów, dawnych legend i nadciągających zagrożeń z innego wymiaru.

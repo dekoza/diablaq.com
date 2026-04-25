@@ -1,10 +1,10 @@
 ---
-title: "MidGuard™ - Cudowni"
+title: "Cudowni"
 release_date: 2024-11-01
 release: "premiera - listopad 2024"
-legacy_anchor: cudowni
 cover_image: "/img/mg_cudowni_1.jpg"
 cover_alt: "Cudowni – okładka standardowa"
+standalone: true
 creators:
   - role: "Scenariusz"
     name: "Marcin Bałczewski"

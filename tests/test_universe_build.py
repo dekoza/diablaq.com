@@ -118,3 +118,39 @@ def test_title_page_links_back_to_universe(tmp_path: Path) -> None:
     assert "MidGuard™" in title_html
     assert "/komiksy/midguard/" in title_html
     assert "Uniwersum" in title_html
+
+
+
+def test_repo_build_moves_universe_titles_to_top_level_urls(tmp_path: Path) -> None:
+    """Real content should expose universe pages and top-level title URLs."""
+    repo_root = Path(__file__).resolve().parents[1]
+    out_dir = tmp_path / "dist"
+
+    build_site(root=repo_root, out_dir=out_dir)
+
+    assert (out_dir / "komiksy" / "midguard" / "index.html").exists()
+    assert (out_dir / "komiksy" / "herosi-vs-horrory" / "index.html").exists()
+    assert (out_dir / "komiksy" / "cudowni" / "index.html").exists()
+    assert (out_dir / "komiksy" / "drzazga" / "index.html").exists()
+    assert not (out_dir / "komiksy" / "midguard" / "cudowni" / "index.html").exists()
+    assert not (
+        out_dir / "komiksy" / "herosi-vs-horrory" / "drzazga" / "index.html"
+    ).exists()
+
+
+
+def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: Path) -> None:
+    """Real catalog should list titles, while title pages link back to their universe."""
+    repo_root = Path(__file__).resolve().parents[1]
+    out_dir = tmp_path / "dist"
+
+    build_site(root=repo_root, out_dir=out_dir)
+
+    catalog_html = (out_dir / "komiksy" / "index.html").read_text(encoding="utf-8")
+    drzazga_html = (out_dir / "komiksy" / "drzazga" / "index.html").read_text(encoding="utf-8")
+
+    assert "Cudowni" in catalog_html
+    assert "Drzazga" in catalog_html
+    assert "Herosi vs Horrory" not in catalog_html
+    assert "MidGuard™" not in catalog_html
+    assert "Uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html

@@ -1,8 +1,10 @@
 ---
 title: "Herosi vs Horrory"
 line: diablaq
-summary: "Uniwersum: jednotomówki oraz miniserie."
+kind: universe
+summary: "Mroczne uniwersum, w którym superbohaterskie historie ścierają się z horrorem."
 legacy_path: /herosi-vs-horrory/
+cover_image: /img/herosi-logo.webp
 ---
 
-**Herosi vs Horrory** to uniwersum, w którym ukazują się jednotomówki oraz miniserie.
+**Herosi vs Horrory** to wspólne uniwersum dla jednotomówek, miniserii i innych opowieści balansujących między superbohaterską pulpą a grozą.
