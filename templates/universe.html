@@ -3,6 +3,7 @@
 {% block title %}{{ project.title }} – Uniwersum – Wydawnictwo Diablaq{% endblock %}
 {% block og_description %}{{ project.summary or project.title }}{% endblock %}
 {% block og_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block content %}
 {% if breadcrumb %}

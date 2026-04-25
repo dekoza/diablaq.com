@@ -69,6 +69,7 @@ def _build_fixture_site(tmp_path: Path) -> Path:
             'title: "Cudowni"\n'
             "release_date: 2024-11-01\n"
             "standalone: true\n"
+            "featured: true\n"
             "cover_image: /img/mg_cudowni_1.jpg\n"
             'cover_alt: "Cudowni – okładka"\n'
             "buy_links:\n"
@@ -91,6 +92,7 @@ def test_catalog_lists_titles_but_not_universes(tmp_path: Path) -> None:
 
     catalog_html = (out_dir / "komiksy" / "index.html").read_text(encoding="utf-8")
 
+    assert "Wszystkie komiksy wydawnictwa Diablaq." in catalog_html
     assert "Cudowni" in catalog_html
     assert "Pierwsza opowieść z tego świata." in catalog_html
     assert "MidGuard™" not in catalog_html
@@ -117,7 +119,7 @@ def test_title_page_links_back_to_universe(tmp_path: Path) -> None:
 
     assert "MidGuard™" in title_html
     assert "/komiksy/midguard/" in title_html
-    assert "Uniwersum" in title_html
+    assert "Z uniwersum: <a href=\"/komiksy/midguard/\">MidGuard™</a>" in title_html
 
 
 
@@ -148,9 +150,28 @@ def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: P
 
     catalog_html = (out_dir / "komiksy" / "index.html").read_text(encoding="utf-8")
     drzazga_html = (out_dir / "komiksy" / "drzazga" / "index.html").read_text(encoding="utf-8")
+    midguard_html = (out_dir / "komiksy" / "midguard" / "index.html").read_text(encoding="utf-8")
 
+    assert "Wszystkie komiksy wydawnictwa Diablaq." in catalog_html
     assert "Cudowni" in catalog_html
     assert "Drzazga" in catalog_html
     assert "Herosi vs Horrory" not in catalog_html
     assert "MidGuard™" not in catalog_html
-    assert "Uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html
+    assert "Z uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html
+    assert "legend, Huskarlów i zagrożeń z innych światów" in midguard_html
+
+
+def test_social_images_match_page_visuals(tmp_path: Path) -> None:
+    """Twitter cards should use the same lead image as OG for key page types."""
+    out_dir = _build_fixture_site(tmp_path)
+
+    home_html = (out_dir / "index.html").read_text(encoding="utf-8")
+    universe_html = (out_dir / "komiksy" / "midguard" / "index.html").read_text(encoding="utf-8")
+    title_html = (out_dir / "komiksy" / "cudowni" / "index.html").read_text(encoding="utf-8")
+
+    assert '<meta property="og:image" content="/img/mg_cudowni_1.jpg">' in home_html
+    assert '<meta name="twitter:image" content="/img/mg_cudowni_1.jpg">' in home_html
+    assert '<meta property="og:image" content="/img/midguard-logo.webp">' in universe_html
+    assert '<meta name="twitter:image" content="/img/midguard-logo.webp">' in universe_html
+    assert '<meta property="og:image" content="/img/mg_cudowni_1.jpg">' in title_html
+    assert '<meta name="twitter:image" content="/img/mg_cudowni_1.jpg">' in title_html

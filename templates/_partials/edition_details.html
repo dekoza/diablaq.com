@@ -43,7 +43,7 @@
     {# ── Meta column ──────────────────────────────────────────── #}
     <div class="edition-details__meta">
       {% if universe %}
-        <p class="project-meta-link">Uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
+        <p class="project-meta-link">Z uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
       {% endif %}
       <h1 class="edition-details__title">{{ edition.title }}</h1>
       {% if edition.release and not (edition.release | string | length == 10 and edition.release[4:5] == '-') %}<p class="edition-details__release">{{ edition.release }}</p>{% endif %}

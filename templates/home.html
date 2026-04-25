@@ -3,6 +3,7 @@
 {% block title %}Wydawnictwo Diablaq – Piekielnie dobre komiksy{% endblock %}
 {% block og_description %}Wydawnictwo Diablaq – piekielnie dobre komiksy polskich i zagranicznych twórców.{% endblock %}
 {% block og_image %}{% if hero_edition and hero_edition.cover_image %}{{ abs_url(hero_edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if hero_edition and hero_edition.cover_image %}{{ abs_url(hero_edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block hero %}
 <section class="home-hero" aria-label="Wyróżnione wydanie">

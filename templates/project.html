@@ -3,6 +3,7 @@
 {% block title %}{{ project.title }} – Wydawnictwo Diablaq{% endblock %}
 {% block og_description %}{{ project.summary or project.title }}{% endblock %}
 {% block og_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block content %}
 {# Breadcrumb #}
@@ -26,7 +27,7 @@
 
   <div class="project-hero__body">
     {% if universe %}
-      <p class="project-meta-link">Uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
+      <p class="project-meta-link">Z uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
     {% endif %}
     <h1 class="project-hero__title">{{ project.title }}</h1>
     {% if project.summary %}<p class="project-hero__summary">{{ project.summary }}</p>{% endif %}

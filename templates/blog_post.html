@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}{{ post.title }} – Blog – Wydawnictwo Diablaq{% endblock %}
+{% block og_image %}{% if post.cover_image %}{{ abs_url(post.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if post.cover_image %}{{ abs_url(post.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block content %}
 <header class="page-header">
