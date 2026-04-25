@@ -273,6 +273,26 @@ class TestProject:
         )
         assert project.title == "Test Project"
         assert project.slug == "test-project"
+        assert project.kind == "title"
+        assert project.universe_slug is None
+
+    def test_project_instantiation_with_universe_relationship(self):
+        """Project can represent a title that belongs to a universe."""
+        project = Project(
+            slug="cudowni",
+            title="Cudowni",
+            line="diablaq",
+            summary="A title inside MidGuard.",
+            legacy_path=None,
+            url="/komiksy/cudowni/",
+            legacy_landing=False,
+            cover_image="cover.jpg",
+            cover_aspect_class="cover--standard",
+            html_body="<p>Body</p>",
+            universe_slug="midguard",
+        )
+        assert project.kind == "title"
+        assert project.universe_slug == "midguard"
 
     def test_project_frozen(self):
         """Project is frozen."""

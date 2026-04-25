@@ -83,6 +83,8 @@ class Project:
     cover_aspect_class: str
     html_body: str
     draft: bool = False
+    kind: str = "title"
+    universe_slug: str | None = None
 
 
 @dataclass(frozen=True)

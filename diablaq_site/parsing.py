@@ -177,6 +177,7 @@ def _normalize_isbn13(value: str) -> str:
 # These constants must be available locally for parse_variants
 _ALLOWED_BINDINGS = {"miekka", "twarda"}
 _ALLOWED_VERSIONS = {"elektroniczna"}
+_ALLOWED_PROJECT_KINDS = {"title", "universe"}
 
 
 def parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
@@ -388,6 +389,20 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             continue
 
         slug, line = project_dir.name, str(meta.get("line") or "diablaq")
+        kind = str(meta.get("kind") or "title").strip() or "title"
+        if kind not in _ALLOWED_PROJECT_KINDS:
+            raise ValueError(
+                f"Nieprawidłowe kind={kind!r} w {project_md}. Dozwolone: title, universe."
+            )
+        universe_slug = (
+            str(meta["universe_slug"]).strip() if meta.get("universe_slug") is not None else None
+        )
+        if kind == "universe" and universe_slug:
+            raise ValueError(
+                f"Projekt ma universe_slug, ale kind=universe w {project_md}."
+            )
+        if universe_slug == slug:
+            raise ValueError(f"Projekt nie może wskazywać samego siebie jako universe_slug: {project_md}")
         cover_image = str(meta.get("cover_image") or "").strip() or None
         summary = str(meta["summary"]) if meta.get("summary") is not None else None
         legacy_path = str(meta["legacy_path"]) if meta.get("legacy_path") is not None else None
@@ -413,6 +428,8 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 cover_aspect_class=get_cover_aspect_class(cover_image, root),
                 html_body=body_html,
                 draft=False,
+                kind=kind,
+                universe_slug=universe_slug,
             )
         )
 
@@ -511,6 +528,20 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 )
 
             editions.append(edition)
+
+    projects_by_slug = {project.slug: project for project in projects}
+    for project in projects:
+        if not project.universe_slug:
+            continue
+        universe = projects_by_slug.get(project.universe_slug)
+        if universe is None:
+            raise ValueError(
+                f"Projekt {project.slug} wskazuje nieistniejące universe_slug={project.universe_slug!r}."
+            )
+        if universe.kind != "universe":
+            raise ValueError(
+                f"Projekt {project.slug} wskazuje universe_slug={project.universe_slug!r}, ale ten projekt nie ma kind=universe."
+            )
 
     return projects, editions
 

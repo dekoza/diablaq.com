@@ -858,3 +858,185 @@ def test_parse_specs_strips_whitespace():
     result = parse_specs(meta)
 
     assert result == {"Cena": "69,90 zł", "Wymiary": "165 x 235 mm"}
+
+
+# --- load_projects_and_editions tests ---
+
+
+def _write_project_fixture(
+    projects_dir: Path,
+    *,
+    slug: str,
+    project_frontmatter: str,
+    edition_slug: str = "index",
+    edition_frontmatter: str | None = None,
+) -> None:
+    project_dir = projects_dir / slug
+    (project_dir / "editions").mkdir(parents=True)
+    (project_dir / "project.md").write_text(project_frontmatter, encoding="utf-8")
+    if edition_frontmatter is not None:
+        (project_dir / "editions" / f"{edition_slug}.md").write_text(
+            edition_frontmatter,
+            encoding="utf-8",
+        )
+
+
+def test_load_projects_and_editions_defaults_project_kind_to_title(tmp_path):
+    """Missing kind should default to a regular title project."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="cudowni",
+        project_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "line: diablaq\n"
+            'summary: "Jednotomowa opowieść."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "---\n"
+        ),
+    )
+
+    projects, _ = load_projects_and_editions(projects_dir, tmp_path)
+
+    assert len(projects) == 1
+    assert projects[0].kind == "title"
+    assert projects[0].universe_slug is None
+
+
+def test_load_projects_and_editions_reads_universe_relationship(tmp_path):
+    """Universe projects and their child titles should parse with explicit metadata."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="midguard",
+        project_frontmatter=(
+            "---\n"
+            'title: "MidGuard™"\n'
+            "line: diablaq\n"
+            "kind: universe\n"
+            'summary: "Shared world."\n'
+            "---\n"
+        ),
+        edition_frontmatter=None,
+    )
+    _write_project_fixture(
+        projects_dir,
+        slug="cudowni",
+        project_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "line: diablaq\n"
+            "kind: title\n"
+            "universe_slug: midguard\n"
+            'summary: "A MidGuard title."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "---\n"
+        ),
+    )
+
+    projects, _ = load_projects_and_editions(projects_dir, tmp_path)
+
+    by_slug = {project.slug: project for project in projects}
+    assert by_slug["midguard"].kind == "universe"
+    assert by_slug["midguard"].universe_slug is None
+    assert by_slug["cudowni"].kind == "title"
+    assert by_slug["cudowni"].universe_slug == "midguard"
+
+
+def test_load_projects_and_editions_rejects_unknown_project_kind(tmp_path):
+    """Unknown project kind should fail fast."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="broken",
+        project_frontmatter=(
+            "---\n"
+            'title: "Broken"\n'
+            "line: diablaq\n"
+            "kind: franchise\n"
+            'summary: "Invalid kind."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Broken"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "---\n"
+        ),
+    )
+
+    with pytest.raises(ValueError, match=r"kind.*title.*universe"):
+        load_projects_and_editions(projects_dir, tmp_path)
+
+
+def test_load_projects_and_editions_rejects_universe_slug_on_universe(tmp_path):
+    """Universe projects cannot belong to another universe."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="midguard",
+        project_frontmatter=(
+            "---\n"
+            'title: "MidGuard™"\n'
+            "line: diablaq\n"
+            "kind: universe\n"
+            "universe_slug: rootverse\n"
+            'summary: "Invalid."\n'
+            "---\n"
+        ),
+        edition_frontmatter=None,
+    )
+
+    with pytest.raises(ValueError, match=r"universe_slug.*kind=universe"):
+        load_projects_and_editions(projects_dir, tmp_path)
+
+
+def test_load_projects_and_editions_rejects_unknown_universe_slug(tmp_path):
+    """Title projects must point to an existing universe slug."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="cudowni",
+        project_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "line: diablaq\n"
+            "universe_slug: missing-universe\n"
+            'summary: "Orphaned title."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "---\n"
+        ),
+    )
+
+    with pytest.raises(ValueError, match=r"missing-universe"):
+        load_projects_and_editions(projects_dir, tmp_path)
