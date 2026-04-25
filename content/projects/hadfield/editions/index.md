@@ -2,8 +2,10 @@
 title: "Jak będę duży, to zostanę Hadfieldem"
 release_date: 2024-12-01
 release: "grudzień 2024"
+legacy_path: /komiksy/hadfield/01/
 cover_image: "/img/hadfield.jpg"
 cover_alt: "Jak będę duży, to zostanę Hadfieldem – okładka"
+standalone: true
 creators:
   - role: "Scenariusz"
     name: "Bartek Biedrzycki"

@@ -465,6 +465,9 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             legacy_anchor = (
                 str(emeta["legacy_anchor"]) if emeta.get("legacy_anchor") is not None else None
             )
+            edition_legacy_path = (
+                str(emeta["legacy_path"]) if emeta.get("legacy_path") is not None else None
+            )
             featured = bool(emeta.get("featured", False))
 
             edition = Edition(
@@ -495,6 +498,7 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 if issue_number is not None
                 else None,
                 featured=featured,
+                legacy_path=edition_legacy_path,
             )
 
             # Warn if published edition has no buy links

@@ -3,6 +3,7 @@ title: "PAAtrzcie, co oni robią!"
 line: studio
 release_date: 2025-12-15
 summary: "Komiks dla PAA."
+legacy_path: /komiksy/paatrzcie-co-oni-robia/01/
 cover_image: "/img/paa1.jpg"
 cover_alt: "PAAtrzcie, co oni robią!"
 standalone: true

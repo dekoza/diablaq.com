@@ -168,7 +168,7 @@ def _render_all(
     )
 
 
-def _generate_redirects(out_dir: Path, projects: list[Project]) -> None:
+def _generate_redirects(out_dir: Path, projects: list[Project], editions: list[Edition]) -> None:
     """Generate _redirects file for legacy URLs (Netlify/Cloudflare Pages format)."""
     lines = [
         "# Legacy section redirects",
@@ -197,6 +197,10 @@ def _generate_redirects(out_dir: Path, projects: list[Project]) -> None:
         if slug_path.rstrip("/") != canonical.rstrip("/"):
             _add(slug_path, canonical)
 
+    for edition in editions:
+        if edition.legacy_path and edition.legacy_path.rstrip("/") != edition.url.rstrip("/"):
+            _add(edition.legacy_path, edition.url)
+
     lines.append("/zvyrke/  /ludzie/zvyrke/  301")
     (out_dir / "_redirects").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -215,7 +219,15 @@ def _generate_sitemap(out_dir: Path, site_url: str, pages: list[str]) -> None:
     (out_dir / "sitemap.xml").write_text(xml, encoding="utf-8")
 
 
-def _finalize(root: Path, out_dir: Path, people: list[Person], projects: list[Project], site_url: str, env: Environment) -> None:
+def _finalize(
+    root: Path,
+    out_dir: Path,
+    people: list[Person],
+    projects: list[Project],
+    editions: list[Edition],
+    site_url: str,
+    env: Environment,
+) -> None:
     _copy_tree(root / "img", out_dir / "img")
     _copy_tree(root / "css", out_dir / "css")
     # Copy fonts if self-hosted
@@ -233,7 +245,7 @@ def _finalize(root: Path, out_dir: Path, people: list[Person], projects: list[Pr
         src = root / file_name
         if src.exists():
             shutil.copy2(src, out_dir / file_name)
-    _generate_redirects(out_dir, projects)
+    _generate_redirects(out_dir, projects, editions)
     # 404 page
     _write_html(
         out_dir / "404.html",
@@ -261,4 +273,4 @@ def build_site(*, root: Path, out_dir: Path) -> None:
         people_with_editions,
         sorted_blog,
     )
-    _finalize(root, out_dir, people_with_editions, projects, site_url, env)
+    _finalize(root, out_dir, people_with_editions, projects, editions, site_url, env)

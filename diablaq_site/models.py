@@ -67,6 +67,7 @@ class Edition:
     issue_number: int | None
     issue_number_display: str | None
     featured: bool = False
+    legacy_path: str | None = None
 
 
 @dataclass(frozen=True)
