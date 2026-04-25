@@ -25,6 +25,9 @@
   {% endif %}
 
   <div class="project-hero__body">
+    {% if universe %}
+      <p class="project-meta-link">Uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
+    {% endif %}
     <h1 class="project-hero__title">{{ project.title }}</h1>
     {% if project.summary %}<p class="project-hero__summary">{{ project.summary }}</p>{% endif %}
     {% if project.html_body and project.html_body.strip() %}

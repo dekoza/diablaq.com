@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} – Uniwersum – Wydawnictwo Diablaq{% endblock %}
+{% block og_description %}{{ project.summary or project.title }}{% endblock %}
+{% block og_image %}{% if project.cover_image %}{{ abs_url(project.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+
+{% block content %}
+{% if breadcrumb %}
+<nav class="breadcrumb" aria-label="Ścieżka nawigacji">
+  {% for crumb in breadcrumb %}
+    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+    <span class="sep" aria-hidden="true">›</span>
+  {% endfor %}
+  <span aria-current="page">{{ project.title }}</span>
+</nav>
+{% endif %}
+
+<section class="universe-hero">
+  {% if project.cover_image %}
+    <div class="universe-hero__art">
+      <img src="{{ project.cover_image }}" alt="{{ project.title }} – logo uniwersum">
+    </div>
+  {% endif %}
+
+  <div class="universe-hero__body">
+    <p class="universe-kicker">Uniwersum</p>
+    <h1 class="universe-hero__title">{{ project.title }}</h1>
+    {% if project.summary %}
+      <p class="universe-hero__summary">{{ project.summary }}</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if project.html_body and project.html_body.strip() %}
+  <section class="universe-intro">
+    <div class="universe-intro__body">
+      {{ project.html_body | safe }}
+    </div>
+  </section>
+{% endif %}
+
+<section class="universe-titles">
+  <header class="section-header">
+    <h2>Tytuły w uniwersum</h2>
+  </header>
+
+  {% if related_titles %}
+    <div class="tiles">
+      {% for p in related_titles %}
+        {% include "_partials/project_card.html" with context %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Brak tytułów w tym uniwersum.</p>
+  {% endif %}
+</section>
+{% endblock %}

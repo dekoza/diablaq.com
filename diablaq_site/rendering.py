@@ -63,6 +63,7 @@ def render_home_page(
     _write_html_fn,
 ) -> None:
     """Render home page."""
+    display_projects = [project for project in projects if project.kind == "title"]
     _write_html_fn(
         out_dir / "index.html",
         _render_fn(
@@ -71,7 +72,7 @@ def render_home_page(
             nav_projects=nav_projects,
             site_url=site_url,
             canonical_url=(site_url + "/"),
-            projects=projects,
+            projects=display_projects,
             new_editions=new_editions,
             announcements=announcements[:12],
             newest_anytime=newest_anytime,
@@ -97,9 +98,10 @@ def render_catalog_page(
         "mecenat": "Mecenat",
         "studio": "Studio",
     }
+    display_projects = [project for project in projects if project.kind == "title"]
     groups = []
     for line in lines_order:
-        line_projects = [p for p in projects if p.line == line]
+        line_projects = [p for p in display_projects if p.line == line]
         if line_projects:
             groups.append({
                 "id": line,
@@ -108,13 +110,13 @@ def render_catalog_page(
             })
     # Any unlisted lines
     used = set(lines_order)
-    for p in projects:
+    for p in display_projects:
         if p.line not in used:
             used.add(p.line)
             groups.append({
                 "id": p.line,
                 "label": p.line,
-                "projects": [pp for pp in projects if pp.line == p.line],
+                "projects": [pp for pp in display_projects if pp.line == p.line],
             })
 
     _write_html_fn(
@@ -227,13 +229,46 @@ def render_blog_pages(
 def render_project_pages(
     env, out_dir, site_url, nav_projects, projects, editions, _render_fn, _write_html_fn,
 ) -> None:
-    """Render project pages and all edition pages.
+    """Render universe pages, title pages, and all edition pages.
 
     One-shot comics (edition_slug='index') render at the project URL using edition.html.
-    Multi-edition projects render a project page + individual edition pages.
+    Multi-edition title projects render a project page + individual edition pages.
+    Universe projects render a dedicated universe landing page with related titles.
     Legacy path redirects are no longer HTML pages — handled by _redirects file.
     """
+    projects_by_slug = {project.slug: project for project in projects}
+    titles_by_universe: dict[str, list] = {}
+    for project in projects:
+        if project.kind != "title" or not project.universe_slug:
+            continue
+        titles_by_universe.setdefault(project.universe_slug, []).append(project)
+    for related_titles in titles_by_universe.values():
+        related_titles.sort(key=lambda project: project.title.lower())
+
     for pr in projects:
+        if pr.kind == "universe":
+            _write_html_fn(
+                out_dir / pr.url.strip("/") / "index.html",
+                _render_fn(
+                    env,
+                    "universe.html",
+                    nav_projects=nav_projects,
+                    site_url=site_url,
+                    canonical_url=(site_url + pr.url),
+                    project=pr,
+                    related_titles=titles_by_universe.get(pr.slug, []),
+                    breadcrumb=[
+                        {"label": "Komiksy", "url": "/komiksy/"},
+                    ],
+                ),
+            )
+            continue
+
+        universe = projects_by_slug.get(pr.universe_slug) if pr.universe_slug else None
+        breadcrumb = [{"label": "Komiksy", "url": "/komiksy/"}]
+        if universe is not None:
+            breadcrumb.append({"label": universe.title, "url": universe.url})
+
         pr_editions = sorted(
             [e for e in editions if e.project_slug == pr.slug],
             key=lambda e: e.release_date,
@@ -253,9 +288,8 @@ def render_project_pages(
                     canonical_url=(site_url + pr.url),
                     edition=index_edition,
                     project=pr,
-                    breadcrumb=[
-                        {"label": "Komiksy", "url": "/komiksy/"},
-                    ],
+                    universe=universe,
+                    breadcrumb=breadcrumb,
                 ),
             )
         else:
@@ -267,10 +301,9 @@ def render_project_pages(
                     nav_projects=nav_projects, site_url=site_url,
                     canonical_url=(site_url + pr.url),
                     project=pr,
+                    universe=universe,
                     editions=pr_editions,
-                    breadcrumb=[
-                        {"label": "Komiksy", "url": "/komiksy/"},
-                    ],
+                    breadcrumb=breadcrumb,
                 ),
             )
 
@@ -286,8 +319,8 @@ def render_project_pages(
                     canonical_url=(site_url + e.url),
                     edition=e,
                     project=pr,
-                    breadcrumb=[
-                        {"label": "Komiksy", "url": "/komiksy/"},
+                    universe=universe,
+                    breadcrumb=breadcrumb + [
                         {"label": pr.title, "url": pr.url},
                     ],
                 ),

@@ -930,6 +930,98 @@ main a:hover, main a:focus-visible { color: var(--brand); }
   margin-bottom: .75rem;
 }
 
+.project-meta-link {
+  margin: 0 0 .6rem;
+  font-family: var(--font-heading);
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+
+.project-meta-link a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.project-meta-link a:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+}
+
+.universe-hero {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.25rem 0 2rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .universe-hero {
+    grid-template-columns: minmax(260px, 420px) 1fr;
+    gap: 2.5rem;
+    min-height: 320px;
+  }
+}
+
+.universe-hero__art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  min-height: 220px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top, rgba(186, 45, 0, .14), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)),
+    var(--bg-2);
+}
+
+.universe-hero__art img {
+  width: 100%;
+  max-width: 520px;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.universe-kicker {
+  margin: 0 0 .45rem;
+  font-family: var(--font-heading);
+  font-size: .82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--brand);
+}
+
+.universe-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+.universe-hero__summary {
+  max-width: 58ch;
+  margin-top: .75rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.universe-intro {
+  padding: .5rem 0 1rem;
+}
+
+.universe-intro__body {
+  max-width: 65ch;
+  color: var(--text);
+}
+
+.universe-titles {
+  padding: .5rem 0 1rem;
+}
+
 /* ── Reduced motion ─────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none; animation: none; }
