@@ -1,4 +1,4 @@
-"""Batch-edit project page copy through a single workbook file."""
+"""Batch-edit project and edition copy through a single workbook file."""
 
 from __future__ import annotations
 
@@ -14,7 +14,13 @@ import frontmatter
 
 
 DEFAULT_WORKBOOK_NAME = "project-page-workbook.md"
-_STATUS_ORDER = {
+_NEW_EDITION_PLACEHOLDER = "__new_edition__"
+_LINE_OPTIONS = ("diablaq", "dobre-licho", "mecenat", "studio")
+_PROJECT_KIND_OPTIONS = ("title", "universe")
+_BINDING_OPTIONS = ("miekka", "twarda")
+_VERSION_OPTIONS = ("elektroniczna",)
+_BOOL_OPTIONS = ("true", "false")
+_PROJECT_STATUS_ORDER = {
     "missing-project-file": 0,
     "empty-file": 1,
     "missing-frontmatter": 2,
@@ -22,6 +28,14 @@ _STATUS_ORDER = {
     "missing-body": 4,
     "missing-summary": 5,
     "short-body": 6,
+}
+_EDITION_STATUS_ORDER = {
+    "empty-file": 0,
+    "missing-frontmatter": 1,
+    "invalid-frontmatter": 2,
+    "missing-title": 3,
+    "missing-body": 4,
+    "short-body": 5,
 }
 _STATUS_LABELS = {
     "missing-project-file": "brak pliku project.md",
@@ -31,6 +45,7 @@ _STATUS_LABELS = {
     "missing-body": "brak opisu",
     "missing-summary": "brak summary",
     "short-body": "krótki opis",
+    "missing-title": "brak title",
 }
 _FRONTMATTER_BLOCK_RE = re.compile(
     r"<!-- FRONTMATTER START: (?P<slug>[a-z0-9-]+) -->\n"
@@ -44,17 +59,45 @@ _BODY_BLOCK_RE = re.compile(
     r"<!-- BODY END: (?P=slug) -->",
     re.DOTALL,
 )
+_EDITION_FRONTMATTER_BLOCK_RE = re.compile(
+    r"<!-- EDITION FRONTMATTER START: (?P<project>[a-z0-9-]+)/(?P<edition>[a-z0-9_][a-z0-9_-]*) -->\n"
+    r"(?P<content>.*?)\n"
+    r"<!-- EDITION FRONTMATTER END: (?P=project)/(?P=edition) -->",
+    re.DOTALL,
+)
+_EDITION_BODY_BLOCK_RE = re.compile(
+    r"<!-- EDITION BODY START: (?P<project>[a-z0-9-]+)/(?P<edition>[a-z0-9_][a-z0-9_-]*) -->\n"
+    r"(?P<content>.*?)\n"
+    r"<!-- EDITION BODY END: (?P=project)/(?P=edition) -->",
+    re.DOTALL,
+)
+_SIMPLE_SCALAR_RE = re.compile(r"^[A-Za-z0-9_./-]+$")
+_INTEGER_RE = re.compile(r"^-?\d+$")
 
 
 @dataclass(frozen=True)
-class EditionNote:
-    filename: str
+class EditionEntry:
+    project_slug: str
+    slug: str
+    path: Path
+    frontmatter_block: str
+    body: str
+    statuses: tuple[str, ...]
     title: str
     release_label: str | None
     creators: tuple[str, ...]
+    cover_image: str | None
     teaser: str | None
     parse_error: str | None
-    is_empty: bool
+    is_template: bool = False
+
+    @property
+    def workbook_id(self) -> str:
+        return f"{self.project_slug}/{self.slug}"
+
+    @property
+    def filename(self) -> str:
+        return f"{self.slug}.md"
 
 
 @dataclass(frozen=True)
@@ -64,11 +107,13 @@ class ProjectEntry:
     frontmatter_block: str
     body: str
     statuses: tuple[str, ...]
-    title: str | None
+    title: str
     line: str | None
     summary: str | None
     cover_image: str | None
-    editions: tuple[EditionNote, ...]
+    editions: tuple[EditionEntry, ...]
+    editable_editions: tuple[EditionEntry, ...]
+    new_edition_template: EditionEntry
     parse_error: str | None
 
 
@@ -84,8 +129,36 @@ def _yaml_quote(value: str) -> str:
     return f'"{escaped}"'
 
 
+def _yaml_scalar(value: object) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+
+    text = str(value).strip()
+    if not text:
+        return '""'
+
+    lowered = text.lower()
+    if (
+        _SIMPLE_SCALAR_RE.fullmatch(text)
+        and lowered not in {"null", "true", "false", "yes", "no", "on", "off", "~"}
+        and not _INTEGER_RE.fullmatch(text)
+    ):
+        return text
+
+    return _yaml_quote(text)
+
+
+def _bool_text(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    text = str(value).strip().lower()
+    return text or None
+
+
 def _pretty_title_from_slug(slug: str) -> str:
-    return slug.replace("-", " ").title()
+    return slug.replace("-", " ").replace("_", " ").title()
 
 
 def split_frontmatter(text: str) -> tuple[str | None, str]:
@@ -129,24 +202,416 @@ def _teaser(text: str) -> str | None:
     return textwrap.shorten(lines[0], width=160, placeholder="…")
 
 
-def _build_frontmatter_template(slug: str, meta: dict[str, object]) -> str:
+def _options_suffix(options: tuple[str, ...], *, current: str | None = None) -> str:
+    if len(options) >= 5:
+        return ""
+
+    remaining = [option for option in options if option != current] if current else list(options)
+    if not remaining:
+        return ""
+    return " # " + " | ".join(remaining)
+
+
+def _render_text_field(name: str, value: object | None, *, comment_out_if_missing: bool = False) -> str:
+    text = _string_value(value)
+    if text is None:
+        prefix = "# " if comment_out_if_missing else ""
+        return f"{prefix}{name}:"
+    return f"{name}: {_yaml_scalar(text)}"
+
+
+def _render_enum_field(
+    name: str,
+    value: object | None,
+    options: tuple[str, ...],
+    *,
+    comment_out_if_missing: bool = False,
+) -> str:
+    text = _string_value(value)
+    if text is None:
+        if comment_out_if_missing:
+            placeholder = " | ".join(options) if len(options) < 5 else ""
+            return f"# {name}: {placeholder}".rstrip()
+        return f"{name}: {_options_suffix(options)}".rstrip()
+    return f"{name}: {_yaml_scalar(text)}{_options_suffix(options, current=text)}"
+
+
+def _render_bool_field(
+    name: str,
+    value: object | None,
+    *,
+    comment_out_if_missing: bool = True,
+) -> str:
+    text = _bool_text(value)
+    if text is None:
+        return _render_enum_field(
+            name,
+            None,
+            _BOOL_OPTIONS,
+            comment_out_if_missing=comment_out_if_missing,
+        )
+    return f"{name}: {text}{_options_suffix(_BOOL_OPTIONS, current=text)}"
+
+
+def _commented_block(lines: list[str], *, indent: str = "") -> list[str]:
+    return [f"{indent}# {line}" if line else f"{indent}#" for line in lines]
+
+
+def _guess_edition_title(project_title: str, edition_slug: str) -> str:
+    if edition_slug == "index":
+        return project_title
+    if edition_slug == _NEW_EDITION_PLACEHOLDER:
+        return f"{project_title} — nowe wydanie"
+    return f"{project_title} {edition_slug}".strip()
+
+
+def _creator_labels(raw_creators: object) -> tuple[str, ...]:
+    if not isinstance(raw_creators, list):
+        return ()
+
+    creators: list[str] = []
+    for creator in raw_creators:
+        if isinstance(creator, dict):
+            name = _string_value(creator.get("name"))
+            role = _string_value(creator.get("role"))
+            if name and role:
+                creators.append(f"{role}: {name}")
+            elif name:
+                creators.append(name)
+            continue
+
+        name = _string_value(creator)
+        if name:
+            creators.append(name)
+
+    return tuple(creators)
+
+
+def _render_image_list_field(name: str, raw_value: object, *, indent: str = "") -> list[str]:
+    if not isinstance(raw_value, list) or not raw_value:
+        return _commented_block(
+            [f"{name}:", "  - image:", "    alt:", "    caption:"],
+            indent=indent,
+        )
+
+    lines = [f"{indent}{name}:"]
+    for item in raw_value:
+        if not isinstance(item, dict):
+            lines.extend(
+                _commented_block(["  - image:", "    alt:", "    caption:"], indent=indent)
+            )
+            continue
+
+        image = _string_value(item.get("image"))
+        if image is None:
+            lines.extend(
+                _commented_block(["  - image:", "    alt:", "    caption:"], indent=indent)
+            )
+            continue
+
+        lines.append(f"{indent}  - image: {_yaml_scalar(image)}")
+        alt = _string_value(item.get("alt"))
+        if alt is None:
+            lines.extend(_commented_block(["alt:"], indent=f"{indent}    "))
+        else:
+            lines.append(f"{indent}    alt: {_yaml_scalar(alt)}")
+
+        caption = _string_value(item.get("caption"))
+        if caption is None:
+            lines.extend(_commented_block(["caption:"], indent=f"{indent}    "))
+        else:
+            lines.append(f"{indent}    caption: {_yaml_scalar(caption)}")
+
+    return lines
+
+
+def _render_creators_field(raw_value: object, *, indent: str = "") -> list[str]:
+    if not isinstance(raw_value, list) or not raw_value:
+        return _commented_block(
+            ["creators:", "  - role:", "    name:", "    person_slug:"],
+            indent=indent,
+        )
+
+    lines = [f"{indent}creators:"]
+    for item in raw_value:
+        if isinstance(item, dict):
+            role = _string_value(item.get("role"))
+            name = _string_value(item.get("name"))
+            person_slug = _string_value(item.get("person_slug"))
+
+            if role:
+                lines.append(f"{indent}  - role: {_yaml_scalar(role)}")
+                if name is None:
+                    lines.extend(_commented_block(["name:"], indent=f"{indent}    "))
+                else:
+                    lines.append(f"{indent}    name: {_yaml_scalar(name)}")
+            elif name:
+                lines.append(f"{indent}  - name: {_yaml_scalar(name)}")
+                lines.extend(_commented_block(["role:"], indent=f"{indent}    "))
+            else:
+                lines.append(f"{indent}  -")
+                lines.extend(_commented_block(["role:", "name:"], indent=f"{indent}    "))
+
+            if person_slug is None:
+                lines.extend(_commented_block(["person_slug:"], indent=f"{indent}    "))
+            else:
+                lines.append(f"{indent}    person_slug: {_yaml_scalar(person_slug)}")
+            continue
+
+        name = _string_value(item)
+        if name is None:
+            lines.extend(_commented_block(["  - name:"], indent=indent))
+            continue
+        lines.append(f"{indent}  - {_yaml_scalar(name)}")
+
+    return lines
+
+
+def _render_specs_field(raw_value: object, *, indent: str = "") -> list[str]:
+    template_lines = [
+        "specs:",
+        '  "Liczba stron":',
+        '  "Oprawa":',
+        '  "Wymiary":',
+        '  "Cena":',
+        '  "ISBN-13":',
+    ]
+    if not isinstance(raw_value, dict) or not raw_value:
+        return _commented_block(template_lines, indent=indent)
+
+    lines = [f"{indent}specs:"]
+    for key, value in raw_value.items():
+        key_text = _string_value(key)
+        value_text = _string_value(value)
+        if key_text is None or value_text is None:
+            continue
+        lines.append(f"{indent}  {_yaml_scalar(key_text)}: {_yaml_scalar(value_text)}")
+
+    if len(lines) == 1:
+        return _commented_block(template_lines, indent=indent)
+    return lines
+
+
+def _render_buy_links_field(raw_value: object, *, indent: str = "") -> list[str]:
+    template_lines = ["buy_links:", "  - label:", "    url:"]
+    if not isinstance(raw_value, list) or not raw_value:
+        return _commented_block(template_lines, indent=indent)
+
+    lines = [f"{indent}buy_links:"]
+    for item in raw_value:
+        if not isinstance(item, dict):
+            lines.extend(_commented_block(["  - label:", "    url:"], indent=indent))
+            continue
+
+        label = _string_value(item.get("label"))
+        url = _string_value(item.get("url"))
+        if label is None:
+            lines.append(f"{indent}  -")
+            lines.extend(_commented_block(["label:"], indent=f"{indent}    "))
+        else:
+            lines.append(f"{indent}  - label: {_yaml_scalar(label)}")
+
+        if url is None:
+            lines.extend(_commented_block(["url:"], indent=f"{indent}    "))
+        else:
+            lines.append(f"{indent}    url: {_yaml_scalar(url)}")
+
+    return lines
+
+
+def _variant_axes(item: dict[str, object]) -> tuple[str | None, str | None]:
+    binding = _string_value(item.get("binding"))
+    version = _string_value(item.get("version"))
+    if binding or version:
+        return binding, version
+
+    legacy_kind = _string_value(item.get("kind"))
+    if legacy_kind in _BINDING_OPTIONS:
+        return legacy_kind, None
+    if legacy_kind in _VERSION_OPTIONS:
+        return None, legacy_kind
+    return None, None
+
+
+def _render_variants_field(raw_value: object, *, indent: str = "") -> list[str]:
+    template_lines = [
+        "variants:",
+        "  - binding: miekka | twarda",
+        "    version: elektroniczna",
+        "    isbn13:",
+        "    limited_print_run:",
+        "    numbered: true | false",
+        "    specs:",
+        '      "Cena":',
+        "    buy_links:",
+        "      - label:",
+        "        url:",
+    ]
+    if not isinstance(raw_value, list) or not raw_value:
+        return _commented_block(template_lines, indent=indent)
+
+    lines = [f"{indent}variants:"]
+    for item in raw_value:
+        if not isinstance(item, dict):
+            lines.extend(_commented_block(template_lines[1:], indent=indent))
+            continue
+
+        binding, version = _variant_axes(item)
+        item_indent = f"{indent}  "
+        nested_indent = f"{indent}    "
+        if binding:
+            lines.append(
+                f"{item_indent}- binding: {_yaml_scalar(binding)}"
+                f"{_options_suffix(_BINDING_OPTIONS, current=binding)}"
+            )
+            lines.extend(
+                _commented_block(["version: elektroniczna"], indent=nested_indent)
+            )
+        elif version:
+            lines.append(f"{item_indent}- version: {_yaml_scalar(version)}")
+            lines.extend(
+                _commented_block(
+                    [f"binding: {' | '.join(_BINDING_OPTIONS)}"],
+                    indent=nested_indent,
+                )
+            )
+        else:
+            lines.append(f"{item_indent}-")
+            lines.extend(
+                _commented_block(
+                    [f"binding: {' | '.join(_BINDING_OPTIONS)}", "version: elektroniczna"],
+                    indent=nested_indent,
+                )
+            )
+
+        isbn13 = _string_value(item.get("isbn13"))
+        if isbn13 is None:
+            lines.extend(_commented_block(["isbn13:"], indent=nested_indent))
+        else:
+            lines.append(f"{nested_indent}isbn13: {_yaml_scalar(isbn13)}")
+
+        limited_print_run = _string_value(item.get("limited_print_run"))
+        if limited_print_run is None:
+            lines.extend(_commented_block(["limited_print_run:"], indent=nested_indent))
+        else:
+            lines.append(f"{nested_indent}limited_print_run: {_yaml_scalar(limited_print_run)}")
+
+        numbered = _bool_text(item.get("numbered"))
+        if numbered is None:
+            lines.extend(_commented_block(["numbered: true | false"], indent=nested_indent))
+        else:
+            lines.append(
+                f"{nested_indent}numbered: {numbered}"
+                f"{_options_suffix(_BOOL_OPTIONS, current=numbered)}"
+            )
+
+        specs_value = item.get("specs")
+        if isinstance(specs_value, dict) and any(_string_value(value) for value in specs_value.values()):
+            lines.extend(_render_specs_field(specs_value, indent=nested_indent))
+        else:
+            lines.extend(
+                _commented_block(["specs:", '  "Cena":'], indent=nested_indent)
+            )
+
+        buy_links_value = item.get("buy_links")
+        if isinstance(buy_links_value, list) and buy_links_value:
+            lines.extend(_render_buy_links_field(buy_links_value, indent=nested_indent))
+        else:
+            lines.extend(
+                _commented_block(["buy_links:", "  - label:", "    url:"], indent=nested_indent)
+            )
+
+    return lines
+
+
+def _render_project_frontmatter(slug: str, meta: dict[str, object]) -> str:
     title = _string_value(meta.get("title")) or _pretty_title_from_slug(slug)
-    line = _string_value(meta.get("line"))
-    summary = _string_value(meta.get("summary"))
-    cover_image = _string_value(meta.get("cover_image"))
 
     lines = [
         "---",
-        f"title: {_yaml_quote(title)}",
-        f"line: {_yaml_quote(line)}" if line else "line:  # diablaq | dobre-licho | mecenat | studio",
-        f"summary: {_yaml_quote(summary)}" if summary else "summary:",
-        f"cover_image: {_yaml_quote(cover_image)}" if cover_image else "cover_image:",
+        _render_text_field("title", title),
+        _render_enum_field("line", meta.get("line"), _LINE_OPTIONS),
+        _render_enum_field(
+            "kind",
+            meta.get("kind"),
+            _PROJECT_KIND_OPTIONS,
+            comment_out_if_missing=True,
+        ),
+        _render_text_field("universe_slug", meta.get("universe_slug"), comment_out_if_missing=True),
+        _render_text_field("summary", meta.get("summary")),
+        _render_text_field("legacy_path", meta.get("legacy_path"), comment_out_if_missing=True),
+        _render_text_field("cover_image", meta.get("cover_image")),
+        _render_bool_field("draft", meta.get("draft"), comment_out_if_missing=True),
+        _render_bool_field(
+            "legacy_landing",
+            meta.get("legacy_landing"),
+            comment_out_if_missing=True,
+        ),
         "---",
     ]
     return "\n".join(lines)
 
 
-def _collect_statuses(
+def _render_edition_frontmatter(
+    project_slug: str,
+    project_title: str,
+    edition_slug: str,
+    meta: dict[str, object],
+) -> str:
+    title = _string_value(meta.get("title")) or _guess_edition_title(project_title, edition_slug)
+
+    lines = [
+        "---",
+        _render_text_field("title", title),
+    ]
+
+    release_date = _string_value(meta.get("release_date"))
+    if release_date is None:
+        lines.extend(_commented_block(["release_date: YYYY-MM-DD"]))
+    else:
+        lines.append(f"release_date: {_yaml_scalar(release_date)}")
+
+    lines.append(_render_text_field("release", meta.get("release"), comment_out_if_missing=True))
+    lines.append(
+        _render_text_field("cover_image", meta.get("cover_image"), comment_out_if_missing=True)
+    )
+    lines.append(_render_text_field("cover_alt", meta.get("cover_alt"), comment_out_if_missing=True))
+    lines.extend(_render_image_list_field("covers", meta.get("covers")))
+    lines.extend(_render_image_list_field("previews", meta.get("previews")))
+    lines.extend(_render_creators_field(meta.get("creators")))
+    lines.extend(_render_specs_field(meta.get("specs")))
+    lines.extend(_render_buy_links_field(meta.get("buy_links")))
+    lines.extend(_render_variants_field(meta.get("variants")))
+    lines.append(_render_bool_field("force_new", meta.get("force_new"), comment_out_if_missing=True))
+    lines.append(
+        _render_bool_field(
+            "force_announcement",
+            meta.get("force_announcement"),
+            comment_out_if_missing=True,
+        )
+    )
+    lines.append(
+        _render_text_field("presale_url", meta.get("presale_url"), comment_out_if_missing=True)
+    )
+    lines.append(_render_bool_field("featured", meta.get("featured"), comment_out_if_missing=True))
+    lines.append(
+        _render_bool_field("standalone", meta.get("standalone"), comment_out_if_missing=True)
+    )
+    lines.append(_render_text_field("subseries", meta.get("subseries"), comment_out_if_missing=True))
+    lines.append(
+        _render_text_field("issue_number", meta.get("issue_number"), comment_out_if_missing=True)
+    )
+    lines.append(
+        _render_text_field("legacy_anchor", meta.get("legacy_anchor"), comment_out_if_missing=True)
+    )
+    lines.append(
+        _render_text_field("legacy_path", meta.get("legacy_path"), comment_out_if_missing=True)
+    )
+    lines.append("---")
+    return "\n".join(lines)
+
+
+def _collect_project_statuses(
     *,
     file_exists: bool,
     text: str,
@@ -176,50 +641,107 @@ def _collect_statuses(
     if not _string_value(meta.get("summary")):
         statuses.append("missing-summary")
 
-    unique_statuses = sorted(set(statuses), key=lambda status: _STATUS_ORDER[status])
-    return tuple(unique_statuses)
+    return tuple(sorted(set(statuses), key=lambda status: _PROJECT_STATUS_ORDER[status]))
 
 
-def _collect_editions(project_dir: Path) -> tuple[EditionNote, ...]:
+def _collect_edition_statuses(
+    *,
+    text: str,
+    frontmatter_block: str | None,
+    body: str,
+    meta: dict[str, object],
+    parse_error: str | None,
+) -> tuple[str, ...]:
+    statuses: list[str] = []
+
+    if not text.strip():
+        statuses.append("empty-file")
+    if frontmatter_block is None:
+        statuses.append("missing-frontmatter")
+    if parse_error:
+        statuses.append("invalid-frontmatter")
+    if not _string_value(meta.get("title")):
+        statuses.append("missing-title")
+
+    body_lines = _non_empty_lines(body)
+    if not body_lines:
+        statuses.append("missing-body")
+    elif len(body_lines) <= 2:
+        statuses.append("short-body")
+
+    return tuple(sorted(set(statuses), key=lambda status: _EDITION_STATUS_ORDER[status]))
+
+
+def _collect_editions(
+    project_dir: Path,
+    *,
+    project_slug: str,
+    project_title: str,
+) -> tuple[EditionEntry, ...]:
     editions_dir = project_dir / "editions"
     if not editions_dir.exists():
         return ()
 
-    notes: list[EditionNote] = []
+    entries: list[EditionEntry] = []
     for edition_path in sorted(editions_dir.glob("*.md")):
         text = edition_path.read_text(encoding="utf-8")
-        meta, body, parse_error = _parse_post(text)
-        creators: list[str] = []
-        raw_creators = meta.get("creators")
-        if isinstance(raw_creators, list):
-            for creator in raw_creators:
-                if not isinstance(creator, dict):
-                    continue
-                name = _string_value(creator.get("name"))
-                role = _string_value(creator.get("role"))
-                if name and role:
-                    creators.append(f"{role}: {name}")
-                elif name:
-                    creators.append(name)
+        frontmatter_block, raw_body = split_frontmatter(text)
+        meta, parsed_body, parse_error = _parse_post(text)
+        body = raw_body if frontmatter_block is not None else parsed_body or raw_body
+        slug = edition_path.stem
 
-        release_label = _string_value(meta.get("release_date")) or _string_value(meta.get("release"))
-        notes.append(
-            EditionNote(
-                filename=edition_path.name,
-                title=_string_value(meta.get("title")) or edition_path.stem,
-                release_label=release_label,
-                creators=tuple(creators),
+        entries.append(
+            EditionEntry(
+                project_slug=project_slug,
+                slug=slug,
+                path=edition_path,
+                frontmatter_block=_render_edition_frontmatter(
+                    project_slug,
+                    project_title,
+                    slug,
+                    meta,
+                ).strip("\n"),
+                body=body.strip("\n"),
+                statuses=_collect_edition_statuses(
+                    text=text,
+                    frontmatter_block=frontmatter_block,
+                    body=body,
+                    meta=meta,
+                    parse_error=parse_error,
+                ),
+                title=_string_value(meta.get("title")) or _guess_edition_title(project_title, slug),
+                release_label=_string_value(meta.get("release_date")) or _string_value(meta.get("release")),
+                creators=_creator_labels(meta.get("creators")),
+                cover_image=_string_value(meta.get("cover_image")),
                 teaser=_teaser(body),
                 parse_error=parse_error,
-                is_empty=not text.strip(),
             )
         )
 
-    return tuple(notes)
+    return tuple(entries)
+
+
+def _build_new_edition_template(project_slug: str, project_dir: Path, project_title: str) -> EditionEntry:
+    slug = _NEW_EDITION_PLACEHOLDER
+    return EditionEntry(
+        project_slug=project_slug,
+        slug=slug,
+        path=project_dir / "editions" / f"{slug}.md",
+        frontmatter_block=_render_edition_frontmatter(project_slug, project_title, slug, {}).strip("\n"),
+        body="",
+        statuses=(),
+        title=_guess_edition_title(project_title, slug),
+        release_label=None,
+        creators=(),
+        cover_image=None,
+        teaser=None,
+        parse_error=None,
+        is_template=True,
+    )
 
 
 def collect_project_entries(root: Path, *, include_complete: bool = False) -> list[ProjectEntry]:
-    """Collect project pages that should appear in the workbook."""
+    """Collect project pages and edition pages that should appear in the workbook."""
     projects_dir = root / "content" / "projects"
     if not projects_dir.exists():
         return []
@@ -233,7 +755,12 @@ def collect_project_entries(root: Path, *, include_complete: bool = False) -> li
         frontmatter_block, raw_body = split_frontmatter(text)
         meta, parsed_body, parse_error = _parse_post(text)
         body = raw_body if frontmatter_block is not None else parsed_body or raw_body
-        statuses = _collect_statuses(
+        title = _string_value(meta.get("title")) or _pretty_title_from_slug(slug)
+        editions = _collect_editions(project_dir, project_slug=slug, project_title=title)
+        editable_editions = (
+            editions if include_complete else tuple(edition for edition in editions if edition.statuses)
+        )
+        statuses = _collect_project_statuses(
             file_exists=file_exists,
             text=text,
             frontmatter_block=frontmatter_block,
@@ -241,30 +768,31 @@ def collect_project_entries(root: Path, *, include_complete: bool = False) -> li
             meta=meta,
             parse_error=parse_error,
         )
-        if not include_complete and not statuses:
+
+        if not include_complete and not statuses and not editable_editions:
             continue
 
         entries.append(
             ProjectEntry(
                 slug=slug,
                 path=project_path,
-                frontmatter_block=(frontmatter_block or _build_frontmatter_template(slug, meta)).strip(
-                    "\n"
-                ),
+                frontmatter_block=_render_project_frontmatter(slug, meta).strip("\n"),
                 body=body.strip("\n"),
                 statuses=statuses,
-                title=_string_value(meta.get("title")) or _pretty_title_from_slug(slug),
+                title=title,
                 line=_string_value(meta.get("line")),
                 summary=_string_value(meta.get("summary")),
                 cover_image=_string_value(meta.get("cover_image")),
-                editions=_collect_editions(project_dir),
+                editions=editions,
+                editable_editions=editable_editions,
+                new_edition_template=_build_new_edition_template(slug, project_dir, title),
                 parse_error=parse_error,
             )
         )
 
     entries.sort(
         key=lambda entry: (
-            min((_STATUS_ORDER[status] for status in entry.statuses), default=99),
+            min((_PROJECT_STATUS_ORDER[status] for status in entry.statuses), default=99),
             entry.slug,
         )
     )
@@ -277,57 +805,117 @@ def _format_statuses(statuses: tuple[str, ...]) -> str:
     return ", ".join(_STATUS_LABELS[status] for status in statuses)
 
 
-def _render_edition_notes(lines: list[str], editions: tuple[EditionNote, ...]) -> None:
+def _render_edition_notes(lines: list[str], editions: tuple[EditionEntry, ...]) -> None:
     if not editions:
         lines.append("Brak plików wydań w tym projekcie.")
         return
 
     for edition in editions:
         lines.append(f"- `{edition.filename}` — {edition.title}")
+        if edition.statuses:
+            lines.append(f"  - status: {_format_statuses(edition.statuses)}")
         if edition.release_label:
             lines.append(f"  - premiera: {edition.release_label}")
         if edition.creators:
             lines.append(f"  - twórcy: {', '.join(edition.creators)}")
+        if edition.cover_image:
+            lines.append(f"  - okładka: {edition.cover_image}")
         if edition.teaser:
             lines.append(f"  - zajawka: {edition.teaser}")
-        if edition.is_empty:
-            lines.append("  - stan: pusty plik")
         if edition.parse_error:
             lines.append(f"  - uwaga: błąd frontmatter ({edition.parse_error})")
 
 
+def _render_edition_editor(lines: list[str], edition: EditionEntry, *, root: Path) -> None:
+    relative_path = edition.path.relative_to(root)
+    lines.extend(
+        [
+            f"#### {edition.filename}",
+            f"- plik: `{relative_path}`",
+            f"- status: {_format_statuses(edition.statuses)}",
+            f"- tytuł: {edition.title}",
+            f"- premiera: {edition.release_label or '—'}",
+            f"- okładka: {edition.cover_image or '—'}",
+            f"- twórcy: {', '.join(edition.creators) if edition.creators else '—'}",
+        ]
+    )
+    if edition.parse_error:
+        lines.append(f"- uwaga: obecny frontmatter nie parsuje się poprawnie ({edition.parse_error})")
+
+    lines.extend(
+        [
+            "",
+            "##### Edytowalny frontmatter wydania",
+            f"<!-- EDITION FRONTMATTER START: {edition.workbook_id} -->",
+            edition.frontmatter_block,
+            f"<!-- EDITION FRONTMATTER END: {edition.workbook_id} -->",
+            "",
+            "##### Edytowalny opis wydania",
+            "Wskazówki: 1–3 krótkie akapity. Najpierw haczyk fabularny, potem najważniejsze informacje o wydaniu, na końcu powód, żeby kliknąć dalej albo kupić.",
+            f"<!-- EDITION BODY START: {edition.workbook_id} -->",
+            edition.body,
+            f"<!-- EDITION BODY END: {edition.workbook_id} -->",
+            "",
+        ]
+    )
+
+
+def _render_new_edition_template(lines: list[str], template: EditionEntry) -> None:
+    lines.extend(
+        [
+            "### Szablon nowego wydania",
+            "Skopiuj oba bloki poniżej, zmień identyfikator `__new_edition__` na docelowy slug pliku (np. `projekt/02` albo `projekt/index`), a dopiero potem uzupełnij treść.",
+            f"<!-- EDITION FRONTMATTER START: {template.workbook_id} -->",
+            template.frontmatter_block,
+            f"<!-- EDITION FRONTMATTER END: {template.workbook_id} -->",
+            "",
+            f"<!-- EDITION BODY START: {template.workbook_id} -->",
+            template.body,
+            f"<!-- EDITION BODY END: {template.workbook_id} -->",
+            "",
+        ]
+    )
+
+
 def render_workbook(entries: list[ProjectEntry], *, root: Path, include_complete: bool) -> str:
-    """Render a single editable workbook for project pages."""
-    counts = Counter(status for entry in entries for status in entry.statuses)
+    """Render a single editable workbook for project and edition pages."""
+    project_counts = Counter(status for entry in entries for status in entry.statuses)
+    edition_counts = Counter(
+        status for entry in entries for edition in entry.editable_editions for status in edition.statuses
+    )
+    edition_sections = sum(len(entry.editable_editions) for entry in entries)
 
     lines = [
         "# Project page workbook",
         "",
-        "Jeden plik do szybkiego uzupełniania opisów `content/projects/*/project.md`.",
-        "Edytuj tylko bloki między markerami `FRONTMATTER` i `BODY`, a potem zaimportuj je z powrotem.",
+        "Jeden plik do szybkiego uzupełniania `content/projects/*/project.md` i `content/projects/*/editions/*.md`.",
+        "Edytuj tylko bloki między markerami `FRONTMATTER`, `BODY`, `EDITION FRONTMATTER` i `EDITION BODY`, a potem zaimportuj je z powrotem.",
         "",
         "## Jak używać",
         "1. `uv run diablaq-project-workbook export` — wygeneruj skoroszyt.",
-        "2. Uzupełnij treść między markerami dla wybranych projektów.",
-        "3. `uv run diablaq-project-workbook import` — zapisz zmiany z powrotem do `project.md`.",
-        "4. `uv run diablaq-build` — sprawdź efekt w `dist/`.",
+        "2. Uzupełnij treść między markerami dla wybranych projektów i wydań.",
+        "3. Jeśli dodajesz nowe wydanie, skopiuj blok `__new_edition__`, zmień identyfikator na `projekt/slug-wydania`, a potem uzupełnij treść.",
+        "4. `uv run diablaq-project-workbook import` — zapisz zmiany z powrotem do `project.md` i `editions/*.md`.",
+        "5. `uv run diablaq-build` — sprawdź efekt w `dist/`.",
         "",
         "## Zakres",
-        f"- tryb eksportu: {'wszystkie projekty' if include_complete else 'tylko projekty wymagające pracy'}",
+        f"- tryb eksportu: {'wszystkie projekty i wydania' if include_complete else 'tylko sekcje wymagające pracy'}",
         f"- liczba projektów w skoroszycie: {len(entries)}",
-        f"- puste pliki: {counts['empty-file']}",
-        f"- brak pliku project.md: {counts['missing-project-file']}",
-        f"- brak opisu: {counts['missing-body']}",
-        f"- krótkie opisy: {counts['short-body']}",
-        f"- brak summary: {counts['missing-summary']}",
+        f"- liczba sekcji wydań w skoroszycie: {edition_sections}",
+        f"- puste pliki `project.md`: {project_counts['empty-file']}",
+        f"- puste pliki wydań: {edition_counts['empty-file']}",
+        f"- brak opisów projektów: {project_counts['missing-body']}",
+        f"- brak opisów wydań: {edition_counts['missing-body']}",
+        f"- krótkie opisy projektów: {project_counts['short-body']}",
+        f"- krótkie opisy wydań: {edition_counts['short-body']}",
         "",
     ]
 
     if not entries:
         lines.extend(
             [
-                "Nie znaleziono projektów do uzupełnienia.",
-                "Użyj `uv run diablaq-project-workbook export --all`, jeśli chcesz zobaczyć wszystkie strony projektów.",
+                "Nie znaleziono projektów ani wydań do uzupełnienia.",
+                "Użyj `uv run diablaq-project-workbook export --all`, jeśli chcesz zobaczyć cały katalog.",
                 "",
             ]
         )
@@ -338,9 +926,9 @@ def render_workbook(entries: list[ProjectEntry], *, root: Path, include_complete
         lines.extend(
             [
                 f"## {entry.slug}",
-                f"- plik: `{relative_path}`",
-                f"- status: {_format_statuses(entry.statuses)}",
-                f"- tytuł: {entry.title or '—'}",
+                f"- plik projektu: `{relative_path}`",
+                f"- status projektu: {_format_statuses(entry.statuses)}",
+                f"- tytuł: {entry.title}",
                 f"- linia: {entry.line or '—'}",
                 f"- summary: {entry.summary or '—'}",
                 f"- okładka: {entry.cover_image or '—'}",
@@ -349,32 +937,35 @@ def render_workbook(entries: list[ProjectEntry], *, root: Path, include_complete
         if entry.parse_error:
             lines.append(f"- uwaga: obecny frontmatter nie parsuje się poprawnie ({entry.parse_error})")
 
-        lines.extend(
-            [
-                "",
-                "### Materiały pomocnicze z wydań",
-            ]
-        )
+        lines.extend(["", "### Materiały pomocnicze z wydań"])
         _render_edition_notes(lines, entry.editions)
 
         lines.extend(
             [
                 "",
-                "### Edytowalny frontmatter",
+                "### Edytowalny frontmatter projektu",
                 f"<!-- FRONTMATTER START: {entry.slug} -->",
                 entry.frontmatter_block,
                 f"<!-- FRONTMATTER END: {entry.slug} -->",
                 "",
-                "### Edytowalny opis",
+                "### Edytowalny opis projektu",
                 "Wskazówki: 2–4 krótkie akapity. Najpierw 'o czym to jest', potem 'dla kogo i co wyróżnia serię', na końcu 'co znajdzie czytelnik na tej stronie'.",
                 f"<!-- BODY START: {entry.slug} -->",
                 entry.body,
                 f"<!-- BODY END: {entry.slug} -->",
                 "",
-                "---",
-                "",
+                "### Edytowalne wydania",
             ]
         )
+
+        if entry.editable_editions:
+            for edition in entry.editable_editions:
+                _render_edition_editor(lines, edition, root=root)
+        else:
+            lines.extend(["Brak wydań wymagających pracy.", ""])
+
+        _render_new_edition_template(lines, entry.new_edition_template)
+        lines.extend(["---", ""])
 
     return "\n".join(lines).rstrip() + "\n"
 
@@ -389,64 +980,112 @@ def export_workbook(root: Path, workbook_path: Path, *, include_complete: bool =
     return entries
 
 
-def _extract_blocks(workbook_text: str, *, pattern: re.Pattern[str], label: str) -> dict[str, str]:
+def _extract_blocks(
+    workbook_text: str,
+    *,
+    pattern: re.Pattern[str],
+    label: str,
+    key_builder,
+) -> dict[str, str]:
     blocks: dict[str, str] = {}
     for match in pattern.finditer(workbook_text):
-        slug = match.group("slug")
-        if slug in blocks:
-            raise ValueError(f"Duplikat sekcji {label} dla projektu {slug}.")
-        blocks[slug] = match.group("content").strip("\n")
+        identifier = key_builder(match)
+        if identifier in blocks:
+            raise ValueError(f"Duplikat sekcji {label} dla {identifier}.")
+        blocks[identifier] = match.group("content").strip("\n")
     return blocks
 
 
-def _validate_frontmatter_block(slug: str, block: str) -> str:
+def _assert_matching_block_sets(
+    frontmatters: dict[str, str],
+    bodies: dict[str, str],
+    *,
+    prefix: str,
+) -> None:
+    if set(frontmatters) == set(bodies):
+        return
+
+    label_prefix = f"{prefix} " if prefix else ""
+    missing_frontmatter = sorted(set(bodies) - set(frontmatters))
+    missing_body = sorted(set(frontmatters) - set(bodies))
+    problems: list[str] = []
+    if missing_frontmatter:
+        problems.append(
+            f"brak {label_prefix}FRONTMATTER dla: {', '.join(missing_frontmatter)}"
+        )
+    if missing_body:
+        problems.append(f"brak {label_prefix}BODY dla: {', '.join(missing_body)}")
+    raise ValueError("Niespójny skoroszyt: " + "; ".join(problems))
+
+
+def _validate_frontmatter_block(identifier: str, block: str, *, subject_label: str) -> str:
     block = block.strip("\n")
     frontmatter_block, _ = split_frontmatter(block + "\n")
     if frontmatter_block is None:
-        raise ValueError(f"Projekt {slug} nie ma poprawnego bloku frontmatter między markerami.")
+        raise ValueError(
+            f"{subject_label} {identifier} nie ma poprawnego bloku frontmatter między markerami."
+        )
 
     try:
         frontmatter.loads(block + "\n")
     except Exception as exc:  # noqa: BLE001 - show exact YAML issue to authors
-        raise ValueError(f"Projekt {slug} ma nieprawidłowy frontmatter: {exc}") from exc
+        raise ValueError(f"{subject_label} {identifier} ma nieprawidłowy frontmatter: {exc}") from exc
     return block
 
 
-def _render_project_file(frontmatter_block: str, body: str) -> str:
+def _render_markdown_file(frontmatter_block: str, body: str) -> str:
     if body.strip():
         return f"{frontmatter_block.rstrip()}\n\n{body.strip()}\n"
     return f"{frontmatter_block.rstrip()}\n"
 
 
 def apply_workbook(root: Path, workbook_path: Path) -> list[Path]:
-    """Apply workbook changes back into per-project project.md files."""
+    """Apply workbook changes back into per-project and per-edition Markdown files."""
     workbook_text = workbook_path.read_text(encoding="utf-8")
-    frontmatters = _extract_blocks(
+    project_frontmatters = _extract_blocks(
         workbook_text,
         pattern=_FRONTMATTER_BLOCK_RE,
         label="FRONTMATTER",
+        key_builder=lambda match: match.group("slug"),
     )
-    bodies = _extract_blocks(workbook_text, pattern=_BODY_BLOCK_RE, label="BODY")
+    project_bodies = _extract_blocks(
+        workbook_text,
+        pattern=_BODY_BLOCK_RE,
+        label="BODY",
+        key_builder=lambda match: match.group("slug"),
+    )
+    edition_frontmatters = _extract_blocks(
+        workbook_text,
+        pattern=_EDITION_FRONTMATTER_BLOCK_RE,
+        label="EDITION FRONTMATTER",
+        key_builder=lambda match: f"{match.group('project')}/{match.group('edition')}",
+    )
+    edition_bodies = _extract_blocks(
+        workbook_text,
+        pattern=_EDITION_BODY_BLOCK_RE,
+        label="EDITION BODY",
+        key_builder=lambda match: f"{match.group('project')}/{match.group('edition')}",
+    )
 
-    if set(frontmatters) != set(bodies):
-        missing_frontmatter = sorted(set(bodies) - set(frontmatters))
-        missing_body = sorted(set(frontmatters) - set(bodies))
-        problems: list[str] = []
-        if missing_frontmatter:
-            problems.append(f"brak FRONTMATTER dla: {', '.join(missing_frontmatter)}")
-        if missing_body:
-            problems.append(f"brak BODY dla: {', '.join(missing_body)}")
-        raise ValueError("Niespójny skoroszyt: " + "; ".join(problems))
+    _assert_matching_block_sets(project_frontmatters, project_bodies, prefix="")
+    _assert_matching_block_sets(edition_frontmatters, edition_bodies, prefix="EDITION")
 
-    baseline_entries = {
-        entry.slug: entry for entry in collect_project_entries(root, include_complete=True)
+    baseline_entries = collect_project_entries(root, include_complete=True)
+    baseline_projects = {entry.slug: entry for entry in baseline_entries}
+    baseline_editions = {
+        edition.workbook_id: edition
+        for entry in baseline_entries
+        for edition in entry.editions
+    }
+    edition_templates = {
+        entry.new_edition_template.workbook_id: entry.new_edition_template for entry in baseline_entries
     }
 
     updates: list[tuple[Path, str]] = []
-    for slug, frontmatter_block in frontmatters.items():
-        validated_frontmatter = _validate_frontmatter_block(slug, frontmatter_block)
-        body = bodies[slug].strip("\n")
-        baseline = baseline_entries.get(slug)
+    for slug, frontmatter_block in project_frontmatters.items():
+        validated_frontmatter = _validate_frontmatter_block(slug, frontmatter_block, subject_label="Projekt")
+        body = project_bodies[slug].strip("\n")
+        baseline = baseline_projects.get(slug)
         if baseline is not None and (
             validated_frontmatter == baseline.frontmatter_block and body == baseline.body.strip("\n")
         ):
@@ -455,16 +1094,45 @@ def apply_workbook(root: Path, workbook_path: Path) -> list[Path]:
         project_path = root / "content" / "projects" / slug / "project.md"
         if not project_path.parent.exists():
             raise ValueError(f"Projekt {slug} nie istnieje w katalogu content/projects/.")
-        updates.append((project_path, _render_project_file(validated_frontmatter, body)))
+        updates.append((project_path, _render_markdown_file(validated_frontmatter, body)))
+
+    for identifier, frontmatter_block in edition_frontmatters.items():
+        validated_frontmatter = _validate_frontmatter_block(
+            identifier,
+            frontmatter_block,
+            subject_label="Wydanie",
+        )
+        body = edition_bodies[identifier].strip("\n")
+        template = edition_templates.get(identifier)
+        if template is not None:
+            if validated_frontmatter == template.frontmatter_block and body == template.body.strip("\n"):
+                continue
+            raise ValueError(
+                f"Szablon nowego wydania {identifier} został zmieniony, ale nadal ma identyfikator szablonu. "
+                "Skopiuj blok i zmień marker na docelowy slug wydania."
+            )
+
+        baseline = baseline_editions.get(identifier)
+        if baseline is not None and (
+            validated_frontmatter == baseline.frontmatter_block and body == baseline.body.strip("\n")
+        ):
+            continue
+
+        project_slug, edition_slug = identifier.split("/", maxsplit=1)
+        project_dir = root / "content" / "projects" / project_slug
+        if not project_dir.exists():
+            raise ValueError(f"Projekt {project_slug} nie istnieje w katalogu content/projects/.")
+        edition_path = project_dir / "editions" / f"{edition_slug}.md"
+        updates.append((edition_path, _render_markdown_file(validated_frontmatter, body)))
 
     updated_paths: list[Path] = []
-    for project_path, content in updates:
-        current_content = project_path.read_text(encoding="utf-8") if project_path.exists() else None
+    for target_path, content in updates:
+        current_content = target_path.read_text(encoding="utf-8") if target_path.exists() else None
         if current_content == content:
             continue
-        project_path.parent.mkdir(parents=True, exist_ok=True)
-        project_path.write_text(content, encoding="utf-8")
-        updated_paths.append(project_path)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        target_path.write_text(content, encoding="utf-8")
+        updated_paths.append(target_path)
 
     return updated_paths
 
@@ -495,13 +1163,13 @@ def main() -> None:
     export_parser.add_argument(
         "--all",
         action="store_true",
-        help="Uwzględnij także projekty, które już mają kompletne opisy.",
+        help="Uwzględnij także projekty i wydania, które są już kompletne.",
     )
 
     import_parser = subparsers.add_parser(
         "import",
         parents=[common_parser],
-        help="Zapisz skoroszyt z powrotem do project.md.",
+        help="Zapisz skoroszyt z powrotem do plików treści.",
     )
     import_parser.add_argument(
         "--workbook",
@@ -517,13 +1185,11 @@ def main() -> None:
     try:
         if args.command == "export":
             entries = export_workbook(root, workbook_path, include_complete=args.all)
-            print(
-                f"Zapisano skoroszyt: {workbook_path} ({len(entries)} projektów)."
-            )
+            print(f"Zapisano skoroszyt: {workbook_path} ({len(entries)} projektów).")
             return
 
         updated_paths = apply_workbook(root, workbook_path)
-        print(f"Zaktualizowano {len(updated_paths)} plików project.md.")
+        print(f"Zaktualizowano {len(updated_paths)} plików treści.")
         for path in updated_paths:
             print(f"- {path.relative_to(root)}")
     except ValueError as exc:

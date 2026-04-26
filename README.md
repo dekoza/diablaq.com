@@ -5,8 +5,8 @@ Repozytorium strony wydawnictwa Diablaq.
 ## Edycja treści (dla nietechnicznych)
 Zobacz: `_migracja/INSTRUKCJA_DLA_REDAGUJACYCH.md`.
 
-## Skoroszyt do szybkiego uzupełniania stron projektów
-Jeśli trzeba szybko uzupełnić wiele pustych albo zbyt krótkich opisów w `content/projects/*/project.md`, użyj skoroszytu roboczego.
+## Skoroszyt do szybkiego uzupełniania stron projektów i wydań
+Jeśli trzeba szybko uzupełnić wiele pustych albo zbyt krótkich opisów w `content/projects/*/project.md` i `content/projects/*/editions/*.md`, użyj skoroszytu roboczego.
 To wygodniejsza metoda niż otwieranie kilkudziesięciu plików osobno.
 
 ### Eksport skoroszytu
@@ -15,9 +15,9 @@ uv run diablaq-project-workbook export
 ```
 
 Polecenie tworzy plik `project-page-workbook.md` w katalogu głównym repozytorium.
-Domyślnie trafiają tam tylko projekty, które nadal wymagają uzupełnienia.
+Domyślnie trafiają tam tylko projekty, które same mają braki albo zawierają wydania wymagające uzupełnienia.
 
-Aby uwzględnić wszystkie strony projektów:
+Aby uwzględnić wszystkie projekty i wszystkie istniejące wydania:
 ```bash
 uv run diablaq-project-workbook export --all
 ```
@@ -26,22 +26,33 @@ uv run diablaq-project-workbook export --all
 Otwórz `project-page-workbook.md` i edytuj tylko bloki między markerami:
 - `<!-- FRONTMATTER START: ... -->` / `<!-- FRONTMATTER END: ... -->`
 - `<!-- BODY START: ... -->` / `<!-- BODY END: ... -->`
+- `<!-- EDITION FRONTMATTER START: projekt/slug-wydania -->` / `<!-- EDITION FRONTMATTER END: projekt/slug-wydania -->`
+- `<!-- EDITION BODY START: projekt/slug-wydania -->` / `<!-- EDITION BODY END: projekt/slug-wydania -->`
 
-Każda sekcja projektu zawiera już:
-- ścieżkę do pliku,
-- podsumowanie braków,
-- obecne wartości `title`, `line`, `summary`, `cover_image`,
-- pomocnicze informacje z plików wydań.
+Każda sekcja jest już wypełniona szkieletem pól:
+- pola opcjonalne są zakomentowane,
+- przy polach z krótką listą dozwolonych wartości pojawiają się podpowiedzi (`line`, `kind`, `binding`, `true | false` itd.),
+- sekcja projektu zawiera też pomocnicze informacje z istniejących plików wydań.
 
-### Import zmian z powrotem do plików projektu
+Aby dodać nowe wydanie:
+1. znajdź sekcję `Szablon nowego wydania`,
+2. skopiuj oba bloki z identyfikatorem `__new_edition__`,
+3. zmień identyfikator w obu markerach na docelowy slug, np. `bzik/09` albo `mama/index`,
+4. dopiero potem uzupełnij frontmatter i opis.
+
+### Import zmian z powrotem do plików treści
 ```bash
 uv run diablaq-project-workbook import
 ```
 
 Import jest celowo rygorystyczny:
-- błędny YAML/frontmatter zatrzyma import przed zapisem zmian,
-- niezmienione szablonowe sekcje są ignorowane,
-- projekty bez zmian są pomijane.
+- parsuje wyłącznie bloki między markerami; cała reszta skoroszytu jest ignorowana,
+- błędny YAML/frontmatter w dowolnym projekcie albo wydaniu zatrzyma import przed zapisem zmian,
+- zapisuje tylko `content/projects/<slug>/project.md` i `content/projects/<slug>/editions/<edition>.md`,
+- może utworzyć brakujący plik wydania, ale tylko wewnątrz istniejącego katalogu projektu,
+- nie tworzy nowych katalogów projektów,
+- niezmienione sekcje i nietknięte szablony `__new_edition__` są pomijane,
+- jeśli zmienisz treść szablonu `__new_edition__`, ale nie zmienisz jego identyfikatora, import zakończy się błędem.
 
 ### Podgląd efektu
 ```bash

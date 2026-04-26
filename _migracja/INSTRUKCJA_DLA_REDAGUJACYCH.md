@@ -23,9 +23,9 @@ Ta strona jest generowana automatycznie z plików tekstowych (Markdown). Nie trz
 
 ---
 
-## Szybkie uzupełnianie wielu stron projektów naraz
-Jeśli trzeba szybko dopisać lub poprawić opisy w wielu plikach `content/projects/*/project.md`, najwygodniej użyć skoroszytu roboczego.
-To jest jedna zbiorcza lista projektów do uzupełnienia, zamiast ręcznego otwierania każdego pliku osobno.
+## Szybkie uzupełnianie wielu stron projektów i wydań naraz
+Jeśli trzeba szybko dopisać lub poprawić opisy w wielu plikach `content/projects/*/project.md` i `content/projects/*/editions/*.md`, najwygodniej użyć skoroszytu roboczego.
+To jest jedna zbiorcza lista do uzupełnienia, zamiast ręcznego otwierania każdego pliku osobno.
 
 ### Krok 1: wygeneruj skoroszyt
 ```bash
@@ -33,9 +33,9 @@ uv run diablaq-project-workbook export
 ```
 
 Po tym poleceniu w katalogu głównym repo pojawi się plik `project-page-workbook.md`.
-Domyślnie są tam tylko projekty, które mają braki (np. pusty opis, brak `summary`, pusty `project.md`).
+Domyślnie są tam tylko projekty, które same mają braki albo zawierają wydania wymagające uzupełnienia.
 
-Jeśli chcesz zobaczyć wszystkie projekty, użyj:
+Jeśli chcesz zobaczyć wszystkie projekty i wszystkie istniejące wydania, użyj:
 ```bash
 uv run diablaq-project-workbook export --all
 ```
@@ -44,24 +44,40 @@ uv run diablaq-project-workbook export --all
 Otwórz `project-page-workbook.md` i edytuj tylko zawartość między markerami:
 - `<!-- FRONTMATTER START: ... -->` i `<!-- FRONTMATTER END: ... -->`
 - `<!-- BODY START: ... -->` i `<!-- BODY END: ... -->`
+- `<!-- EDITION FRONTMATTER START: projekt/slug-wydania -->` i `<!-- EDITION FRONTMATTER END: projekt/slug-wydania -->`
+- `<!-- EDITION BODY START: projekt/slug-wydania -->` i `<!-- EDITION BODY END: projekt/slug-wydania -->`
 
 Każda sekcja zawiera już:
 - ścieżkę do właściwego pliku,
 - informację, czego w nim brakuje,
-- obecne pola `title`, `line`, `summary`, `cover_image`,
-- pomocnicze notatki z plików wydań.
+- gotowy szkielet pól z zakomentowanymi opcjami,
+- podpowiedzi przy polach z krótką listą możliwych wartości (`line`, `kind`, `binding`, `true | false` itd.),
+- pomocnicze notatki z istniejących plików wydań.
 
-Dzięki temu da się szybko uzupełnić opisy nawet wtedy, gdy część stron projektów jest pusta.
+Dzięki temu da się szybko uzupełnić opis projektu, opis konkretnego wydania albo oba naraz.
 
-### Krok 3: zapisz zmiany z powrotem do plików projektu
+### Krok 2a: jak dodać nowe wydanie przez skoroszyt
+W każdej sekcji projektu jest też `Szablon nowego wydania`.
+
+Aby go użyć:
+1. skopiuj oba bloki z identyfikatorem `__new_edition__`,
+2. zmień identyfikator w obu markerach na docelowy slug, np. `bzik/09` albo `mama/index`,
+3. dopiero potem wpisz właściwy frontmatter i opis.
+
+Jeżeli zmienisz treść szablonu, ale zostawisz identyfikator `__new_edition__`, import zakończy się błędem — to zabezpieczenie przed przypadkowym zapisaniem szablonu jako prawdziwego pliku.
+
+### Krok 3: zapisz zmiany z powrotem do plików treści
 ```bash
 uv run diablaq-project-workbook import
 ```
 
 Ważne:
+- import parsuje tylko bloki między markerami; reszta skoroszytu jest ignorowana,
 - jeśli YAML/frontmatter jest błędny, import zatrzyma się przed zapisem,
 - niezmienione sekcje są pomijane,
-- projekty bez zmian nie są nadpisywane.
+- zapis trafia tylko do `content/projects/<slug>/project.md` i `content/projects/<slug>/editions/<edition>.md`,
+- import może utworzyć nowy plik wydania, ale tylko wewnątrz istniejącego projektu,
+- import nie tworzy nowych katalogów projektów.
 
 ### Krok 4: sprawdź wynik
 ```bash
