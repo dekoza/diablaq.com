@@ -23,6 +23,53 @@ Ta strona jest generowana automatycznie z plików tekstowych (Markdown). Nie trz
 
 ---
 
+## Szybkie uzupełnianie wielu stron projektów naraz
+Jeśli trzeba szybko dopisać lub poprawić opisy w wielu plikach `content/projects/*/project.md`, najwygodniej użyć skoroszytu roboczego.
+To jest jedna zbiorcza lista projektów do uzupełnienia, zamiast ręcznego otwierania każdego pliku osobno.
+
+### Krok 1: wygeneruj skoroszyt
+```bash
+uv run diablaq-project-workbook export
+```
+
+Po tym poleceniu w katalogu głównym repo pojawi się plik `project-page-workbook.md`.
+Domyślnie są tam tylko projekty, które mają braki (np. pusty opis, brak `summary`, pusty `project.md`).
+
+Jeśli chcesz zobaczyć wszystkie projekty, użyj:
+```bash
+uv run diablaq-project-workbook export --all
+```
+
+### Krok 2: uzupełnij treść w jednym pliku
+Otwórz `project-page-workbook.md` i edytuj tylko zawartość między markerami:
+- `<!-- FRONTMATTER START: ... -->` i `<!-- FRONTMATTER END: ... -->`
+- `<!-- BODY START: ... -->` i `<!-- BODY END: ... -->`
+
+Każda sekcja zawiera już:
+- ścieżkę do właściwego pliku,
+- informację, czego w nim brakuje,
+- obecne pola `title`, `line`, `summary`, `cover_image`,
+- pomocnicze notatki z plików wydań.
+
+Dzięki temu da się szybko uzupełnić opisy nawet wtedy, gdy część stron projektów jest pusta.
+
+### Krok 3: zapisz zmiany z powrotem do plików projektu
+```bash
+uv run diablaq-project-workbook import
+```
+
+Ważne:
+- jeśli YAML/frontmatter jest błędny, import zatrzyma się przed zapisem,
+- niezmienione sekcje są pomijane,
+- projekty bez zmian nie są nadpisywane.
+
+### Krok 4: sprawdź wynik
+```bash
+uv run diablaq-build
+```
+
+---
+
 ## Gdzie są treści
 Treści znajdują się w folderze `content/` i są podzielone na typy:
 - `content/pages/` — strony statyczne (np. Kontakt)

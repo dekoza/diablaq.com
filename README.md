@@ -5,6 +5,49 @@ Repozytorium strony wydawnictwa Diablaq.
 ## Edycja treści (dla nietechnicznych)
 Zobacz: `_migracja/INSTRUKCJA_DLA_REDAGUJACYCH.md`.
 
+## Skoroszyt do szybkiego uzupełniania stron projektów
+Jeśli trzeba szybko uzupełnić wiele pustych albo zbyt krótkich opisów w `content/projects/*/project.md`, użyj skoroszytu roboczego.
+To wygodniejsza metoda niż otwieranie kilkudziesięciu plików osobno.
+
+### Eksport skoroszytu
+```bash
+uv run diablaq-project-workbook export
+```
+
+Polecenie tworzy plik `project-page-workbook.md` w katalogu głównym repozytorium.
+Domyślnie trafiają tam tylko projekty, które nadal wymagają uzupełnienia.
+
+Aby uwzględnić wszystkie strony projektów:
+```bash
+uv run diablaq-project-workbook export --all
+```
+
+### Uzupełnianie treści
+Otwórz `project-page-workbook.md` i edytuj tylko bloki między markerami:
+- `<!-- FRONTMATTER START: ... -->` / `<!-- FRONTMATTER END: ... -->`
+- `<!-- BODY START: ... -->` / `<!-- BODY END: ... -->`
+
+Każda sekcja projektu zawiera już:
+- ścieżkę do pliku,
+- podsumowanie braków,
+- obecne wartości `title`, `line`, `summary`, `cover_image`,
+- pomocnicze informacje z plików wydań.
+
+### Import zmian z powrotem do plików projektu
+```bash
+uv run diablaq-project-workbook import
+```
+
+Import jest celowo rygorystyczny:
+- błędny YAML/frontmatter zatrzyma import przed zapisem zmian,
+- niezmienione szablonowe sekcje są ignorowane,
+- projekty bez zmian są pomijane.
+
+### Podgląd efektu
+```bash
+uv run diablaq-build
+```
+
 ## Blog
 Wpisy są w `content/blog/` (Markdown + frontmatter YAML).
 - Listing: `/blog/`

@@ -18,6 +18,7 @@ dependencies = [
 
 [project.scripts]
 diablaq-build = "diablaq_site.cli:main"
+diablaq-project-workbook = "diablaq_site.project_workbook:main"
 
 [tool.setuptools]
 packages = ["diablaq_site"]
