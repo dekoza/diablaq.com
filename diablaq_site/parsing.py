@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -555,15 +556,20 @@ def load_people(people_dir: Path) -> list:
     for person_md in sorted(people_dir.glob("*.md")):
         meta, body_html = read_markdown_file(person_md)
         slug = person_md.stem
+        name = str(meta.get("name") or "").strip() or None
+        credit_name = str(meta.get("credit_name") or "").strip() or None
+        if not name and not credit_name:
+            raise ValueError(f"Person must define name or credit_name in {person_md}")
         photo = str(meta.get("photo") or "").strip() or None
         people.append(
             Person(
                 slug=slug,
-                name=str(meta.get("name") or slug),
+                name=name,
                 photo=photo,
                 photo_thumb=thumb_path_from_photo(photo) if photo else None,
                 html_bio=body_html,
                 related_editions=[],
+                credit_name=credit_name,
             )
         )
     return people
@@ -599,6 +605,38 @@ def load_blog_posts(blog_dir: Path) -> list:
     return blog_posts
 
 
+def apply_person_credit_names(editions: list[Edition], people: list[Person]) -> list[Edition]:
+    """Replace linked creator names with the person's publication credit."""
+    people_by_slug = {person.slug: person for person in people}
+    resolved_editions: list[Edition] = []
+
+    for edition in editions:
+        resolved_creators: list[Creator] = []
+        for creator in edition.creators:
+            if creator.person_slug:
+                person = people_by_slug.get(creator.person_slug)
+                if person is not None:
+                    resolved_creators.append(
+                        Creator(
+                            role=creator.role,
+                            name=person.publication_name,
+                            person_slug=creator.person_slug,
+                        )
+                    )
+                    continue
+            resolved_creators.append(creator)
+
+        resolved_editions.append(
+            replace(
+                edition,
+                creators=resolved_creators,
+                creator_names=[creator.name for creator in resolved_creators],
+            )
+        )
+
+    return resolved_editions
+
+
 def build_people_index(people: list[Person], editions: list[Edition]) -> list[Person]:
     """Link people to their related editions."""
     out: list[Person] = []
@@ -608,7 +646,7 @@ def build_people_index(people: list[Person], editions: list[Edition]) -> list[Pe
             for e in editions
             if any(
                 (c.person_slug and c.person_slug == person.slug)
-                or (not c.person_slug and c.name.strip().lower() == person.name.strip().lower())
+                or (not c.person_slug and c.name.strip().lower() in person.match_names)
                 for c in e.creators
             )
         ]
@@ -620,6 +658,7 @@ def build_people_index(people: list[Person], editions: list[Edition]) -> list[Pe
                 photo_thumb=person.photo_thumb,
                 html_bio=person.html_bio,
                 related_editions=sorted(related, key=lambda e: e.release_date, reverse=True),
+                credit_name=person.credit_name,
             )
         )
     return out

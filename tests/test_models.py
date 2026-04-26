@@ -331,6 +331,41 @@ class TestPerson:
         )
         assert person.name == "Jan Kowalski"
         assert person.slug == "jan-kowalski"
+        assert person.display_name == "Jan Kowalski"
+        assert person.publication_name == "Jan Kowalski"
+        assert person.credit_label is None
+
+    def test_person_prefers_credit_name_for_publication_display(self):
+        """Publication display should prefer credit_name over full name."""
+        person = Person(
+            slug="werka-dobro",
+            name="Weronika Dobrowolska",
+            credit_name="Werka Dobro",
+            photo=None,
+            photo_thumb=None,
+            html_bio="",
+            related_editions=[],
+        )
+
+        assert person.display_name == "Weronika Dobrowolska"
+        assert person.publication_name == "Werka Dobro"
+        assert person.credit_label == "Publikuje jako: Werka Dobro"
+
+    def test_person_uses_credit_name_when_full_name_is_missing(self):
+        """Credit-only people should display and publish under credit_name."""
+        person = Person(
+            slug="zvyrke",
+            name=None,
+            credit_name="Zvyrke",
+            photo=None,
+            photo_thumb=None,
+            html_bio="",
+            related_editions=[],
+        )
+
+        assert person.display_name == "Zvyrke"
+        assert person.publication_name == "Zvyrke"
+        assert person.credit_label == "Pseudonim artystyczny: Zvyrke"
 
     def test_person_frozen(self):
         """Person is frozen."""

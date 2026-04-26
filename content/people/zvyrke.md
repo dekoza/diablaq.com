@@ -1,5 +1,5 @@
 ---
-name: "Zvyrke"
+credit_name: Zvyrke
 photo: "/img/people/zvyrke.png"
 ---
 

@@ -13,15 +13,15 @@
     <div class="tiles tiles--people">
       {% for p in people %}
         <article class="person-card">
-          <a class="person-card__photo" href="/ludzie/{{ p.slug }}/" aria-label="{{ p.name }}">
+          <a class="person-card__photo" href="/ludzie/{{ p.slug }}/" aria-label="{{ p.display_name }}">
             {% if p.photo_thumb or p.photo %}
-              <img src="{{ p.photo_thumb or p.photo }}" alt="{{ p.name }}" loading="lazy">
+              <img src="{{ p.photo_thumb or p.photo }}" alt="{{ p.display_name }}" loading="lazy">
             {% else %}
-              <span class="person-card__placeholder">{{ p.name[0] }}</span>
+              <span class="person-card__placeholder">{{ p.display_name[0] }}</span>
             {% endif %}
           </a>
           <h3 class="person-card__name">
-            <a href="/ludzie/{{ p.slug }}/">{{ p.name }}</a>
+            <a href="/ludzie/{{ p.slug }}/">{{ p.display_name }}</a>
           </h3>
         </article>
       {% endfor %}

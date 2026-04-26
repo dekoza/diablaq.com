@@ -90,11 +90,37 @@ class Project:
 @dataclass(frozen=True)
 class Person:
     slug: str
-    name: str
+    name: str | None
     photo: str | None
     photo_thumb: str | None
     html_bio: str
     related_editions: list[Edition]
+    credit_name: str | None = None
+
+    @property
+    def display_name(self) -> str:
+        return self.name or self.credit_name or self.slug
+
+    @property
+    def publication_name(self) -> str:
+        return self.credit_name or self.name or self.slug
+
+    @property
+    def credit_label(self) -> str | None:
+        if self.name and self.credit_name and self.credit_name != self.name:
+            return f"Publikuje jako: {self.credit_name}"
+        if not self.name and self.credit_name:
+            return f"Pseudonim artystyczny: {self.credit_name}"
+        return None
+
+    @property
+    def match_names(self) -> tuple[str, ...]:
+        names: list[str] = []
+        for value in (self.name, self.credit_name):
+            normalized = (value or "").strip().lower()
+            if normalized and normalized not in names:
+                names.append(normalized)
+        return tuple(names)
 
 
 @dataclass(frozen=True)

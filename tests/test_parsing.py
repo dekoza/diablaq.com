@@ -1040,3 +1040,155 @@ def test_load_projects_and_editions_rejects_unknown_universe_slug(tmp_path):
 
     with pytest.raises(ValueError, match=r"missing-universe"):
         load_projects_and_editions(projects_dir, tmp_path)
+
+
+# --- people credit-name tests ---
+
+
+def test_load_people_accepts_credit_name_without_full_name(tmp_path):
+    """People can be defined by credit_name only."""
+    from diablaq_site.parsing import load_people
+
+    people_dir = tmp_path / "content" / "people"
+    people_dir.mkdir(parents=True)
+    (people_dir / "zvyrke.md").write_text(
+        """\
+---
+credit_name: Zvyrke
+---
+
+Bio.
+""",
+        encoding="utf-8",
+    )
+
+    people = load_people(people_dir)
+
+    assert len(people) == 1
+    assert people[0].name is None
+    assert people[0].credit_name == "Zvyrke"
+    assert people[0].display_name == "Zvyrke"
+
+
+def test_load_people_requires_name_or_credit_name(tmp_path):
+    """People without any display name should be rejected."""
+    from diablaq_site.parsing import load_people
+
+    people_dir = tmp_path / "content" / "people"
+    people_dir.mkdir(parents=True)
+    (people_dir / "broken.md").write_text(
+        """\
+---
+photo: /img/people/broken.jpg
+---
+
+Bio.
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match=r"name or credit_name"):
+        load_people(people_dir)
+
+
+def test_apply_person_credit_names_prefers_credit_name_for_linked_creators():
+    """Linked creators should render using the person's publication credit."""
+    from diablaq_site.models import Creator, Edition, Person
+    from diablaq_site.parsing import apply_person_credit_names
+
+    editions = [
+        Edition(
+            url="/komiksy/test/",
+            title="Test",
+            project_slug="test",
+            release=None,
+            release_date=date(2024, 1, 1),
+            is_new=True,
+            is_announcement=False,
+            presale_url=None,
+            legacy_anchor=None,
+            cover_image=None,
+            cover_alt=None,
+            cover_aspect_class="cover--standard",
+            covers=[],
+            previews=[],
+            creators=[
+                Creator(
+                    role="Rysunki",
+                    name="Weronika Dobrowolska",
+                    person_slug="werka-dobro",
+                )
+            ],
+            creator_names=["Weronika Dobrowolska"],
+            specs={},
+            buy_links=[],
+            variants=[],
+            html_body="",
+            standalone=True,
+            subseries=None,
+            issue_number=None,
+            issue_number_display=None,
+        )
+    ]
+    people = [
+        Person(
+            slug="werka-dobro",
+            name="Weronika Dobrowolska",
+            credit_name="Werka Dobro",
+            photo=None,
+            photo_thumb=None,
+            html_bio="",
+            related_editions=[],
+        )
+    ]
+
+    resolved = apply_person_credit_names(editions, people)
+
+    assert resolved[0].creators[0].name == "Werka Dobro"
+    assert resolved[0].creator_names == ["Werka Dobro"]
+
+
+def test_build_people_index_matches_credit_name_when_person_slug_is_missing():
+    """Credit-only people should still link to editions by creator name."""
+    from diablaq_site.models import Creator, Edition, Person
+    from diablaq_site.parsing import build_people_index
+
+    person = Person(
+        slug="zvyrke",
+        name=None,
+        credit_name="Zvyrke",
+        photo=None,
+        photo_thumb=None,
+        html_bio="",
+        related_editions=[],
+    )
+    edition = Edition(
+        url="/komiksy/test/",
+        title="Test",
+        project_slug="test",
+        release=None,
+        release_date=date(2024, 1, 1),
+        is_new=True,
+        is_announcement=False,
+        presale_url=None,
+        legacy_anchor=None,
+        cover_image=None,
+        cover_alt=None,
+        cover_aspect_class="cover--standard",
+        covers=[],
+        previews=[],
+        creators=[Creator(role="Rysunki", name="Zvyrke", person_slug=None)],
+        creator_names=["Zvyrke"],
+        specs={},
+        buy_links=[],
+        variants=[],
+        html_body="",
+        standalone=True,
+        subseries=None,
+        issue_number=None,
+        issue_number_display=None,
+    )
+
+    indexed_people = build_people_index([person], [edition])
+
+    assert indexed_people[0].related_editions == [edition]

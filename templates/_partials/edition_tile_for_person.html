@@ -18,7 +18,7 @@
   {# Wyświetl role tej osoby w tym wydaniu #}
   {% set person_roles = [] %}
   {% for c in e.creators %}
-    {% if (c.person_slug and c.person_slug == person.slug) or (not c.person_slug and c.name.strip().lower() == person.name.strip().lower()) %}
+    {% if (c.person_slug and c.person_slug == person.slug) or (not c.person_slug and c.name.strip().lower() in person.match_names) %}
       {% if c.role %}
         {% set _ = person_roles.append(c.role) %}
       {% endif %}

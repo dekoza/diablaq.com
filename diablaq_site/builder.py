@@ -13,6 +13,7 @@ from diablaq_site.io import _write_html, _copy_tree
 from diablaq_site.images import get_cover_aspect_class, generate_thumbnail, thumb_path_from_photo
 from diablaq_site.models import BlogPost, Edition, Page, Person, Project
 from diablaq_site.parsing import (
+    apply_person_credit_names,
     build_nav_projects,
     build_people_index,
     build_tags_index,
@@ -256,6 +257,7 @@ def _finalize(
 def build_site(*, root: Path, out_dir: Path) -> None:
     env, content_dir, out_dir, site_url = _init_environment(root, out_dir)
     projects, editions, people, pages, blog_posts = _load_content(content_dir, root)
+    editions = apply_person_credit_names(editions, people)
     new_editions, announcements, newest_anytime, people_with_editions, nav_projects, sorted_blog = (
         _process_content(projects, editions, people, blog_posts)
     )

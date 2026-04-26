@@ -260,16 +260,19 @@ Body text. Rendered below the edition metadata panel.
 
 ```yaml
 ---
-name: "Full Name"
+name: "Full Name"                # optional when the person publishes only under a credit name
+credit_name: "Werka Dobro"       # optional; used on comic pages / credits; falls back to `name`
 photo: /img/people/<slug>.jpg      # optional; thumbnail auto-generated at build time
 ---
 
 Bio in Markdown. Shown on the person's page.
 ```
 
+At least one of `name` or `credit_name` must be present.
+
 Person ↔ edition linkage works in both directions:
 - Explicit: `person_slug: <slug>` in edition creators
-- Implicit: creator name matches `person.name` (case-insensitive)
+- Implicit: creator name matches `person.name` or `person.credit_name` (case-insensitive)
 
 ### `content/blog/<YYYY-MM-DD>-<slug>.md`
 
@@ -371,7 +374,7 @@ Body in Markdown. Rendered at /<slug>/.
 
 ### New person
 
-1. Add `content/people/<slug>.md` with `name` and optional `photo`.
+1. Add `content/people/<slug>.md` with `name` and/or `credit_name`, plus optional `photo`.
 2. Put the photo in `img/people/<slug>.jpg` (or `.png`). A thumbnail is generated at build time.
 3. Link from editions via `person_slug: <slug>` in creator entries.
 

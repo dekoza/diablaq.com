@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}{{ person.name }} – Wydawnictwo Diablaq{% endblock %}
+{% block title %}{{ person.display_name }} – Wydawnictwo Diablaq{% endblock %}
 
 {% block content %}
 <header class="page-header">
-  <h1>{{ person.name }}</h1>
+  <h1>{{ person.display_name }}</h1>
+  {% if person.credit_label %}<p class="page-header__lead">{{ person.credit_label }}</p>{% endif %}
 </header>
 
 <section class="person-hero">
   {% if person.photo %}
   <figure class="person-hero__photo">
-    <img src="{{ person.photo }}" alt="{{ person.name }}">
+    <img src="{{ person.photo }}" alt="{{ person.display_name }}">
   </figure>
   {% endif %}
 
