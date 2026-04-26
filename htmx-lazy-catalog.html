@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTMX Lazy Loading on a Static Site — Diablaq</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--fg:#e0e0e0;--muted:#777;--accent:#ba2d00;--accent2:#e84218;
+  --good:#22c55e;--bad:#ef4444;--warn:#f59e0b;--info:#38bdf8;--purple:#a78bfa;
+  --s1:#111;--s2:#161616;--s3:#1a1a1a;
+  --border:rgba(255,255,255,.09);
+  --mono:"SF Mono","Fira Code","Consolas",monospace;
+  --body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.82em;background:var(--s3);padding:.1em .38em;border-radius:3px}
+pre{background:var(--s3);padding:1rem 1.1rem;border-radius:7px;overflow-x:auto;font-size:.77rem;line-height:1.7;border:1px solid var(--border)}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* ─── TOC ─────────────────────────────────────────────────────── */
+.toc{max-width:880px;margin:0 auto;padding:3rem 1.5rem 2rem}
+.toc-title{font-size:2.1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem}
+.toc-sub{color:var(--muted);font-size:.95rem;margin-bottom:.5rem}
+.toc-premise{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0 1.75rem;font-size:.875rem;line-height:1.65}
+.toc-premise strong{color:var(--accent2)}
+.toc-premise .hi{color:var(--good);font-weight:700}
+.toc-list{display:grid;gap:.4rem}
+.toc-list a{display:flex;align-items:baseline;gap:.75rem;padding:.55rem .85rem;background:var(--s1);border:1px solid var(--border);border-radius:6px;transition:background .12s,border-color .12s}
+.toc-list a:hover{background:var(--s2);border-color:rgba(255,255,255,.16);text-decoration:none}
+.toc-list .n{color:var(--accent);font-weight:700;font-size:.85rem;min-width:2rem;font-family:var(--mono)}
+.toc-list .l{color:var(--fg);font-size:.9rem}
+
+/* ─── Slides ──────────────────────────────────────────────────── */
+.slide{max-width:880px;margin:0 auto;padding:3.5rem 1.5rem;border-top:1px solid #1e1e1e}
+.slide-head{margin-bottom:1.75rem}
+.slide-head h2{font-size:1.7rem;font-weight:800;letter-spacing:-.015em;display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+.slide-head h2 .n{font-size:.88rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.slide-head .deck{margin-top:.3rem;color:var(--muted);font-size:.82rem}
+h3{font-size:1.02rem;font-weight:700;color:var(--accent2);margin:1.75rem 0 .5rem}
+h3:first-child{margin-top:0}
+p{max-width:72ch;margin-bottom:.75rem}
+p:last-child{margin-bottom:0}
+ul,ol{padding-left:1.4rem;max-width:72ch}
+li{margin:.3rem 0}
+
+/* ─── Tags ────────────────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:4px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.4}
+.tg{background:rgba(34,197,94,.14);color:var(--good)}
+.tr{background:rgba(239,68,68,.14);color:var(--bad)}
+.ty{background:rgba(245,158,11,.14);color:var(--warn)}
+.tb{background:rgba(56,189,248,.14);color:var(--info)}
+.tp{background:rgba(167,139,250,.14);color:var(--purple)}
+.tgr{background:rgba(255,255,255,.07);color:var(--muted)}
+
+/* ─── Panels ──────────────────────────────────────────────────── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1.5rem 0}
+@media(max-width:620px){.compare{grid-template-columns:1fr}}
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ph{padding:.45rem .9rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.ph.bad{color:var(--bad);background:rgba(239,68,68,.07)}
+.ph.good{color:var(--good);background:rgba(34,197,94,.07)}
+.ph.info{color:var(--info);background:rgba(56,189,248,.07)}
+.ph.warn{color:var(--warn);background:rgba(245,158,11,.07)}
+.ph.purple{color:var(--purple);background:rgba(167,139,250,.07)}
+.ph.neutral{color:var(--muted);background:rgba(255,255,255,.03)}
+.pb{padding:.9rem 1rem;font-size:.8rem;line-height:1.65}
+.pb ul{padding-left:1.2rem}
+.pb li{margin:.2rem 0}
+
+/* ─── Wireframes ──────────────────────────────────────────────── */
+.wire{font-family:var(--mono);font-size:.72rem;line-height:1.7;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:1rem 1.1rem;overflow-x:auto;white-space:pre;color:#aaa;margin:.75rem 0}
+.wire .hi{color:#fff}
+.wire .dim{color:#444}
+.wire .acc{color:var(--accent2)}
+.wire .ok{color:var(--good)}
+.wire .warn{color:var(--warn)}
+.wire .info{color:var(--info)}
+.wire .pu{color:var(--purple)}
+.wire .mu{color:var(--muted)}
+
+/* ─── Metric boxes ────────────────────────────────────────────── */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:1.25rem 0}
+.metric{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.metric__val{font-size:1.8rem;font-weight:800;font-family:var(--mono);line-height:1;margin-bottom:.3rem}
+.metric__label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;line-height:1.4}
+.metric__note{font-size:.73rem;color:var(--muted);margin-top:.5rem;line-height:1.45}
+
+/* ─── Call-out boxes ──────────────────────────────────────────── */
+.callout{padding:1rem 1.25rem;border-radius:7px;margin:1.25rem 0;font-size:.875rem;line-height:1.65}
+.callout strong{font-weight:700}
+.callout.good{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2)}
+.callout.bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)}
+.callout.warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2)}
+.callout.info{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2)}
+.callout.purple{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2)}
+
+/* ─── Tables ──────────────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:1rem 0}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid #1c1c1c;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;background:var(--s1)}
+.yes{color:var(--good);font-weight:700}
+.no{color:var(--bad)}
+.partial{color:var(--warn)}
+.hl-row td{background:rgba(34,197,94,.05)}
+
+/* ─── Flow diagram ────────────────────────────────────────────── */
+.flow{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0}
+.flow-step{display:flex;align-items:flex-start;gap:.85rem;padding:.7rem .9rem;background:var(--s1);border:1px solid var(--border);border-radius:6px;font-size:.83rem}
+.flow-step .step-n{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--accent);min-width:1.5rem;margin-top:.1rem}
+.flow-arrow{text-align:center;color:#333;font-size:1rem;margin-left:.75rem}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TOC                                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="toc" id="top">
+  <p class="toc-title">HTMX lazy loading on a static site</p>
+  <p class="toc-sub">Diablaq.com · kwiecień 2026</p>
+
+  <div class="toc-premise">
+    <strong>The question:</strong> can HTMX be used to load static "partials" so not all images load with the main page?<br><br>
+    <strong>Short answer:</strong> yes, HTMX works perfectly with pre-generated static HTML partials — no server needed.
+    But <span class="hi">all cover images already carry <code>loading="lazy"</code></span>, which handles image loading.
+    The real question is whether you want HTMX for <em>UX reasons</em> (accordion sections)
+    rather than raw performance — and where it genuinely helps versus where it adds complexity for nothing.
+  </div>
+
+  <nav class="toc-list">
+    <a href="#s1"><span class="n">01</span><span class="l">Premise check — what loading="lazy" already handles</span></a>
+    <a href="#s2"><span class="n">02</span><span class="l">How HTMX works with a static file server</span></a>
+    <a href="#s3"><span class="n">03</span><span class="l">Pattern A — scroll-triggered load (hx-trigger="revealed")</span></a>
+    <a href="#s4"><span class="n">04</span><span class="l">Pattern B — accordion expand (click-triggered)</span></a>
+    <a href="#s5"><span class="n">05</span><span class="l">The SEO trap and the only safe pattern</span></a>
+    <a href="#s6"><span class="n">06</span><span class="l">Builder changes — generating static partials</span></a>
+    <a href="#s7"><span class="n">07</span><span class="l">Where HTMX actually helps: series pages, not catalog</span></a>
+    <a href="#s8"><span class="n">08</span><span class="l">Verdict and recommendation</span></a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 01 — Premise check                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s1">
+  <div class="slide-head">
+    <h2><span class="n">01</span> Premise check — what <code>loading="lazy"</code> already handles</h2>
+    <p class="deck">Before adding a dependency, understand what you already have</p>
+  </div>
+
+  <p>Every cover image in every partial in this codebase already has <code>loading="lazy"</code>:</p>
+
+  <pre><code><!-- _partials/project_card.html -->
+&lt;img class="cover-img" src="{{ p.cover_image }}" alt="..." <strong>loading="lazy"</strong>&gt;
+
+<!-- _partials/edition_tile.html -->
+&lt;img class="cover-img" src="{{ e.cover_image }}" alt="..." <strong>loading="lazy"</strong>&gt;</code></pre>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric__val" style="color:var(--info)">13 KB</div>
+      <div class="metric__label">catalog page HTML</div>
+      <div class="metric__note">16 project cards, 4 section groups, all markup</div>
+    </div>
+    <div class="metric">
+      <div class="metric__val" style="color:var(--warn)">3.4 MB</div>
+      <div class="metric__label">total cover images</div>
+      <div class="metric__note">16 covers, avg 215 KB each — but <strong>lazy loaded</strong></div>
+    </div>
+    <div class="metric">
+      <div class="metric__val" style="color:var(--good)">~0</div>
+      <div class="metric__label">images loaded on page open</div>
+      <div class="metric__note">Only covers near viewport download. Others wait.</div>
+    </div>
+  </div>
+
+  <h3>What <code>loading="lazy"</code> does and does not do</h3>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="ph good">What it handles</div>
+      <div class="pb">
+        <ul>
+          <li>Defers image <em>download</em> until the image is ~one viewport away from the scroll position</li>
+          <li>Requires no JavaScript — it's a native browser feature (supported in all modern browsers since 2019)</li>
+          <li>All 16 covers on <code>/komiksy/</code> are already lazy — scrolling below the fold is the trigger, not page load</li>
+          <li>Works for any future number of covers too — a 100-project catalog still loads only the visible ones</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph warn">What it does NOT do</div>
+      <div class="pb">
+        <ul>
+          <li>The <code>&lt;img&gt;</code> tags themselves are all in the DOM from initial page load — browser must parse, lay out, and hold memory for all of them</li>
+          <li>Does not reduce initial HTML payload — the 13 KB of markup is downloaded regardless</li>
+          <li>Does not give the user a collapsed/expanded UX — all sections are visible and scrollable</li>
+          <li>At 100 projects, the HTML grows to ~80 KB and the DOM has 100+ image nodes even before any images download</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <strong>Conclusion:</strong> At the current catalog size (18 projects, 13 KB HTML), the image loading concern is already solved. Adding HTMX lazy loading for performance reasons alone would be premature optimization. The question becomes: do you want it for <em>UX reasons</em> — specifically the accordion/progressive-reveal interaction pattern?
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 02 — How HTMX works with static files                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="slide-head">
+    <h2><span class="n">02</span> How HTMX works with a static file server</h2>
+    <p class="deck">No server-side rendering required — static partials are the "server"</p>
+  </div>
+
+  <p>HTMX issues a regular HTTP GET request for whatever URL is in <code>hx-get</code>. It doesn't care whether a dynamic server or a static file sits at that URL. GitHub Pages, Cloudflare Pages — they all serve files over HTTP. That's all HTMX needs.</p>
+
+  <div class="wire"><span class="hi">How it works — request flow</span>
+
+  User visits /komiksy/
+  Browser downloads: index.html (13 KB) + diablaq.css + htmx.min.js
+                     └── no cover images loaded yet (collapsed sections)
+
+  User clicks "Główna linia ▼"
+  HTMX fires GET /komiksy/partials/glowna-linia/
+  GitHub Pages serves: dist/komiksy/partials/glowna-linia/index.html
+  HTMX injects the response HTML into the target &lt;div&gt;
+  Browser renders 10 project cards + starts lazy-loading visible covers
+
+<span class="hi">What the builder must generate (new files):</span>
+
+  <span class="ok">dist/komiksy/index.html</span>         ← main page (headers only, no card content)
+  <span class="ok">dist/komiksy/partials/</span>
+  <span class="ok">  diablaq/index.html</span>             ← bare &lt;div class="tiles"&gt;...10 cards...&lt;/div&gt;
+  <span class="ok">  dobre-licho/index.html</span>         ← bare &lt;div class="tiles"&gt;...4 cards...&lt;/div&gt;
+  <span class="ok">  mecenat/index.html</span>             ← bare &lt;div class="tiles"&gt;...1 card...&lt;/div&gt;
+  <span class="ok">  studio/index.html</span>              ← bare &lt;div class="tiles"&gt;...1 card...&lt;/div&gt;
+
+<span class="hi">Partials are bare HTML fragments — no &lt;html&gt;, &lt;head&gt;, or &lt;body&gt;:</span>
+
+  <span class="dim">&lt;div class="tiles"&gt;</span>
+  <span class="dim">  &lt;article class="project-card"&gt;...&lt;/article&gt;</span>
+  <span class="dim">  &lt;article class="project-card"&gt;...&lt;/article&gt;</span>
+  <span class="dim">  ...10 more...</span>
+  <span class="dim">&lt;/div&gt;</span></div>
+
+  <h3>Key properties of this approach</h3>
+  <ul>
+    <li><strong>Static site stays static.</strong> The builder generates all files at build time. No runtime computation.</li>
+    <li><strong>CDN-friendly.</strong> Partials are cached by the CDN/browser just like any other static file.</li>
+    <li><strong>Partial URLs are real URLs.</strong> <code>/komiksy/partials/diablaq/</code> is a valid page you could link to or bookmark — though it would look odd without context (bare fragment).</li>
+    <li><strong>Same-origin only.</strong> Since partials and main page are on the same domain, there are no CORS issues.</li>
+  </ul>
+
+  <div class="callout info">
+    <strong>HTMX dependency cost:</strong> <code>htmx.min.js</code> is ~47 KB raw / ~14 KB gzipped. For a site that currently has zero JavaScript dependencies, this is the first one. It's small by modern standards but not zero. Weigh it against what you get.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 03 — Pattern A: scroll-triggered                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="slide-head">
+    <h2><span class="n">03</span> Pattern A — scroll-triggered load</h2>
+    <span class="tag tb">hx-trigger="revealed"</span>
+    <span class="tag tgr">transparent to user</span>
+  </div>
+
+  <p>Sections load automatically as the user scrolls toward them. Uses HTMX's <code>revealed</code> trigger, which fires when the element enters the viewport (equivalent to <code>IntersectionObserver</code>). The user sees no explicit interaction — content just appears as they scroll.</p>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="ph info">Catalog page HTML — initial state</div>
+      <div class="pb">
+<div class="wire" style="margin:0"><span class="hi">/komiksy/ — skeleton on first load</span>
+
+<span class="dim">── Główna linia ──────────────────</span>
+<span class="info">&lt;div id="s-diablaq"
+     hx-get="/komiksy/partials/diablaq/"
+     hx-trigger="revealed"
+     hx-swap="innerHTML"&gt;</span>
+  <span class="dim">[loading placeholder]</span>
+<span class="info">&lt;/div&gt;</span>
+
+<span class="dim">── Dobre Licho ───────────────────</span>
+<span class="info">&lt;div id="s-dobre-licho"
+     hx-get="/komiksy/partials/dobre-licho/"
+     hx-trigger="revealed"
+     hx-swap="innerHTML"&gt;</span>
+  <span class="dim">[loading placeholder]</span>
+<span class="info">&lt;/div&gt;</span></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph good">After scrolling into "Główna linia" viewport</div>
+      <div class="pb">
+<div class="wire" style="margin:0"><span class="hi">HTMX fires GET /komiksy/partials/diablaq/</span>
+<span class="hi">Response injected into #s-diablaq:</span>
+
+<span class="dim">── Główna linia ──────────────────</span>
+<span class="ok">&lt;div class="tiles"&gt;</span>
+<span class="ok">  [Belzebubs   ][Ciemny...   ]</span>
+<span class="ok">  [Człowiek... ][Karmiciel   ]</span>
+<span class="ok">  [Kodiak      ][Mama...     ]</span>
+<span class="ok">  ...10 cards, images lazy-loaded</span>
+<span class="ok">&lt;/div&gt;</span>
+
+<span class="dim">── Dobre Licho ───────────────────</span>
+<span class="dim">[placeholder still — not in viewport yet]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="ph good">Advantages</div>
+      <div class="pb">
+        <ul>
+          <li>Completely transparent — user never needs to click anything; content appears naturally as they scroll</li>
+          <li>Well-suited to a browse-and-discover pattern (catalog exploration)</li>
+          <li>Each section request is small (2–4 KB of HTML), fast, cacheable</li>
+          <li>Below-fold sections never load if user doesn't scroll to them</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph bad">Problems</div>
+      <div class="pb">
+        <ul>
+          <li><strong>Layout shift.</strong> When content loads in, the page height increases suddenly — sections below jump down. Must reserve height with CSS (e.g., <code>min-height</code> on placeholders) to prevent jarring layout shifts (Core Web Vitals: CLS).</li>
+          <li><strong>Scroll position feels unstable</strong> on slow connections — user scrolls into a section and content pops in while they're already reading the next one.</li>
+          <li><strong>SEO hole</strong> — initial HTML has no project names, covers, or descriptions. See slide 05.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 04 — Pattern B: accordion                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="slide-head">
+    <h2><span class="n">04</span> Pattern B — accordion expand</h2>
+    <span class="tag ty">click-triggered</span>
+    <span class="tag tgr">explicit user intent</span>
+  </div>
+
+  <p>Sections are collapsed by default with a visible header. Clicking the header loads and reveals the content. Uses native <code>&lt;details&gt;</code> as the container — HTMX fires on the <code>toggle</code> event, or the <code>&lt;summary&gt;</code> click triggers the request.</p>
+
+  <div class="wire"><span class="hi">/komiksy/ — accordion catalog</span>
+
+<span class="dim">┌───────────────────────────────────────────────────────────┐</span>
+│ <span class="hi">Komiksy</span>                                                   │
+│                                                           │
+│ <span class="ok">▶ Główna linia</span>  <span class="mu">12 tytułów</span>              <span class="acc">[kliknij, by rozwinąć]</span>│
+│ ─────────────────────────────────────────────────────── │
+│ <span class="dim">▶ Dobre Licho</span>  <span class="mu">4 tytuły</span>                                    │
+│ ─────────────────────────────────────────────────────── │
+│ <span class="dim">▶ Mecenat</span>      <span class="mu">1 tytuł</span>                                     │
+│ ─────────────────────────────────────────────────────── │
+│ <span class="dim">▶ Studio</span>       <span class="mu">1 tytuł</span>                                     │
+└───────────────────────────────────────────────────────────┘
+
+After clicking "▶ Główna linia":
+<span class="dim">┌───────────────────────────────────────────────────────────┐</span>
+│ <span class="ok">▼ Główna linia</span>  <span class="mu">12 tytułów</span>                                  │
+│ <span class="ok">┌──┐ ┌──┐ ┌──┐ ┌──┐</span>  ← HTMX loaded, images lazy-load     │
+│ <span class="ok">┌──┐ ┌──┐ ┌──┐ ┌──┐</span>                                        │
+│ <span class="ok">┌──┐ ┌──┐</span>                                                   │
+│ ─────────────────────────────────────────────────────── │
+│ <span class="dim">▶ Dobre Licho</span>  <span class="mu">4 tytuły</span>                                    │
+└───────────────────────────────────────────────────────────┘
+
+<span class="hi">Implementation using &lt;details&gt; + HTMX:</span>
+
+<span class="info">&lt;details class="catalog-group"&gt;</span>
+  <span class="info">&lt;summary class="catalog-group__head"</span>
+           <span class="info">hx-get="/komiksy/partials/diablaq/"</span>
+           <span class="info">hx-target="#tiles-diablaq"</span>
+           <span class="info">hx-trigger="click once"&gt;</span>  <span class="dim">← only load once, ever</span>
+    <span class="dim">Główna linia &lt;span class="count"&gt;12 tytułów&lt;/span&gt;</span>
+  <span class="info">&lt;/summary&gt;</span>
+  <span class="info">&lt;div id="tiles-diablaq"&gt;&lt;/div&gt;</span>
+<span class="info">&lt;/details&gt;</span></div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="ph good">Advantages</div>
+      <div class="pb">
+        <ul>
+          <li><strong>No layout shift</strong> — <code>&lt;details&gt;</code> expands in place, nothing below jumps unexpectedly</li>
+          <li>User expresses intent; content loads because they asked for it</li>
+          <li><code>hx-trigger="click once"</code> ensures the request fires only the first time — subsequent open/close toggles use the cached DOM</li>
+          <li>Works with the filter pills from the previous deck — "Dobre Licho" pill can <code>open</code> and trigger HTMX load of that section</li>
+          <li>Native <code>&lt;details&gt;</code> degrades gracefully — without JS, the section is open by default (browser's default <code>&lt;details&gt;</code> behavior)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph bad">Problems</div>
+      <div class="pb">
+        <ul>
+          <li>User must click to see any projects — extra friction for first-time visitors who don't know what to expect</li>
+          <li>Still has the SEO problem: project names aren't in initial HTML. See slide 05.</li>
+          <li>Count display ("12 tytułów") in header must be rendered at build time — requires passing edition/project counts to catalog template, not the content itself</li>
+          <li>Combining <code>&lt;details&gt;</code> open state + HTMX loading state requires careful CSS: show spinner while loading, hide once loaded</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 05 — The SEO trap                                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="slide-head">
+    <h2><span class="n">05</span> The SEO trap and the only safe pattern</h2>
+    <p class="deck">Both Pattern A and B have a hard problem that must be addressed</p>
+  </div>
+
+  <div class="callout bad">
+    <strong>If project titles, descriptions, and cover URLs are only in HTMX-loaded partials — not in the initial HTML — crawlers that don't execute JavaScript will never see them.</strong> This includes most crawlers other than Googlebot, and even Googlebot doesn't guarantee it will wait for async content.
+  </div>
+
+  <h3>What actually gets indexed without the fix</h3>
+  <div class="wire"><span class="hi">What a crawler sees when it fetches /komiksy/</span>
+<span class="hi">(Pattern A or B without fix)</span>
+
+<span class="warn">&lt;section id="diablaq"&gt;</span>
+  <span class="warn">&lt;div hx-get="/komiksy/partials/diablaq/" ...&gt;&lt;/div&gt;</span>
+<span class="warn">&lt;/section&gt;</span>
+
+Indexable text on /komiksy/: <span class="acc">"Główna linia" "Dobre Licho" "Mecenat" "Studio"</span>
+That's it. No: <span class="warn">Belzebubs, Kodiak, Karmiciel, Mama zabiła mi psa...</span>
+All project names invisible to SEO.</div>
+
+  <h3>The progressive enhancement pattern — the only correct approach</h3>
+  <p>Render the full content in the initial HTML exactly as today. On top of that, add HTMX attributes that replace the content with a freshly loaded partial when triggered. The initial HTML is the fallback; HTMX is the enhancement.</p>
+
+  <div class="wire"><span class="hi">Progressive enhancement pattern</span>
+
+<span class="ok">Initial HTML contains full content (SEO safe, no-JS safe):</span>
+
+<span class="ok">&lt;details class="catalog-group" open&gt;</span>
+  <span class="ok">&lt;summary&gt;Główna linia&lt;/summary&gt;</span>
+  <span class="ok">&lt;div id="tiles-diablaq"</span>
+       <span class="info">hx-get="/komiksy/partials/diablaq/"</span>
+       <span class="info">hx-trigger="intersect once"</span>
+       <span class="info">hx-swap="outerHTML"&gt;</span>
+    <span class="ok">&lt;!-- FULL INITIAL CONTENT: all 10 project cards --&gt;</span>
+    <span class="ok">&lt;div class="tiles"&gt;&lt;article&gt;Belzebubs...&lt;/article&gt;...&lt;/div&gt;</span>
+  <span class="ok">&lt;/div&gt;</span>
+<span class="ok">&lt;/details&gt;</span>
+
+When JS+HTMX available: the div's content is replaced by the partial
+  (same data, just loaded fresh — allows future personalization hooks)
+When no JS: full content visible immediately, no HTMX, no UX change
+When crawler: full content in initial HTML, indexed normally
+
+<span class="pu">Problem with this pattern:</span>
+  The initial HTML is still full-size. HTMX replaces content that was
+  already there. You gain the UX of deferred rendering but NOT a smaller
+  initial payload. The "save bytes on page load" goal is not achieved.
+
+<span class="warn">To get a smaller initial payload, you must NOT render full content initially.</span>
+<span class="warn">That requires accepting the SEO tradeoff.</span></div>
+
+  <h3>The fundamental tension</h3>
+  <p>You cannot simultaneously have: (1) full content indexed by search crawlers, (2) no content in initial HTML, and (3) zero JS dependency. Pick two.</p>
+
+  <table>
+    <tr><th>Goal</th><th>Pattern A/B without full HTML</th><th>Progressive enhancement</th><th>Full HTML (status quo)</th></tr>
+    <tr><td>Smaller initial payload</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No</td></tr>
+    <tr><td>SEO safe</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+    <tr><td>Works without JS</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+    <tr><td>Accordion UX</td><td class="yes">Yes</td><td class="yes">Yes (via JS collapse)</td><td class="no">No</td></tr>
+    <tr><td>Reduced image load</td><td class="yes">Yes (beyond lazy)</td><td class="no">No (lazy already there)</td><td class="no">No (lazy already there)</td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 06 — Builder changes                                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="slide-head">
+    <h2><span class="n">06</span> Builder changes — generating static partials</h2>
+    <p class="deck">What needs to be added to the generator if you do adopt HTMX</p>
+  </div>
+
+  <h3>New template: <code>_partials/catalog_section_fragment.html</code></h3>
+  <p>A bare HTML fragment with no shell — just the grid. No <code>&lt;html&gt;</code>, no <code>&lt;head&gt;</code>, no navigation. Used only for HTMX responses.</p>
+  <pre><code>{# _partials/catalog_section_fragment.html #}
+{# No extends — bare fragment for HTMX consumption #}
+&lt;div class="tiles"&gt;
+  {% for p in projects %}
+    {% include "_partials/project_card.html" with context %}
+  {% endfor %}
+&lt;/div&gt;</code></pre>
+
+  <h3>Builder addition in <code>rendering.py</code></h3>
+  <pre><code>def render_catalog_partials(
+    env, out_dir, site_url, nav_projects, groups, _render_fn, _write_html_fn,
+) -> None:
+    """Generate bare HTML fragments for each catalog line (HTMX targets)."""
+    for group in groups:
+        fragment = env.get_template("_partials/catalog_section_fragment.html").render(
+            projects=group["projects"],
+            abs_url=abs_url(site_url),
+        )
+        _write_html_fn(
+            out_dir / "komiksy" / "partials" / group["id"] / "index.html",
+            fragment,
+        )
+</code></pre>
+
+  <div class="callout info">
+    <strong>Note:</strong> Partial files don't use <code>render_template()</code> — they're bare fragments that deliberately omit <code>nav_projects</code>, site shell, OG tags, etc. They're not pages; they're content chunks. A user who navigates directly to <code>/komiksy/partials/diablaq/</code> will see an unstyled fragment. That's acceptable but worth documenting.
+  </div>
+
+  <h3>Changes to <code>catalog.html</code> (accordion variant)</h3>
+  <pre><code>{% for group in groups %}
+&lt;details class="catalog-group" {% if loop.first %}open{% endif %}&gt;
+  &lt;summary class="catalog-group__head"
+           hx-get="/komiksy/partials/{{ group.id }}/"
+           hx-target="#tiles-{{ group.id }}"
+           hx-trigger="click once"
+           hx-indicator="#spinner-{{ group.id }}"&gt;
+    {{ group.label }}
+    &lt;span class="catalog-group__count"&gt;{{ group.projects | length }}&lt;/span&gt;
+    &lt;span id="spinner-{{ group.id }}" class="htmx-indicator"&gt;…&lt;/span&gt;
+  &lt;/summary&gt;
+
+  &lt;div id="tiles-{{ group.id }}"&gt;
+    {# Progressive enhancement: full content in initial HTML #}
+    &lt;div class="tiles"&gt;
+      {% for p in group.projects %}
+        {% include "_partials/project_card.html" with context %}
+      {% endfor %}
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/details&gt;
+{% endfor %}
+
+&lt;script src="/js/htmx.min.js"&gt;&lt;/script&gt;</code></pre>
+
+  <h3>New static asset</h3>
+  <p>Copy <code>htmx.min.js</code> to <code>js/htmx.min.js</code> and add a <code>_copy_tree(root / "js", out_dir / "js")</code> call in <code>builder.py::_finalize()</code>. Self-hosting avoids a CDN dependency on a site that currently has none.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 07 — Where HTMX actually helps: series pages                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="slide-head">
+    <h2><span class="n">07</span> Where HTMX actually helps: series pages, not catalog</h2>
+    <p class="deck">The catalog problem is already solved by loading="lazy". The series page problem is not.</p>
+  </div>
+
+  <p>Here's the irony: the catalog page's images are already handled. But the <strong>project page for BZIK</strong> has a structurally different problem — it renders a flat grid of 12 editions (8 main + 4 eXXXtra) with no way to distinguish them visually <em>until</em> the subseries grouping from the previous deck is implemented. If HTMX is added anywhere, BZIK's project page is the better candidate.</p>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="ph warn">Catalog page — marginal HTMX benefit</div>
+      <div class="pb">
+        <ul>
+          <li>16 covers, all <code>loading="lazy"</code> — no images load unless user scrolls there</li>
+          <li>13 KB HTML — not large enough to benefit from partial loading</li>
+          <li>4 sections, all visible — reasonable to show all upfront</li>
+          <li>Line groupings are navigation, not content depth — hiding them is artificial friction</li>
+          <li>SEO cost of HTMX pattern > any performance gain at this size</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph good">Series page (BZIK) — real HTMX benefit</div>
+      <div class="pb">
+        <ul>
+          <li>BZIK has 8 + 4 editions today, growing to 20+ over time</li>
+          <li>Two structurally different sub-series (main + eXXXtra) benefit from an accordion</li>
+          <li>User visits <code>/komiksy/bzik/</code> to browse a <em>specific series</em> — they can tolerate clicking to load sub-series</li>
+          <li>The initial page still shows the project description + cover — useful content is above the fold</li>
+          <li>Editions loaded lazily per subseries = meaningful deferred loading for serial with 20+ covers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="wire"><span class="hi">/komiksy/bzik/ — HTMX accordion on project page</span>
+
+<span class="dim">┌───────────────────────────────────────────────────────────┐</span>
+│ <span class="dim">Komiksy ›</span> <span class="hi">BZIK</span>                                               │
+│                                                           │
+│  <span class="dim">[cover]</span>   BZIK – Bielski Zin Komiksowy                    │
+│           Nieregularnik mający na celu...                 │
+│                                                           │
+│ <span class="ok">▼ BZIK  </span>  <span class="mu">8 numerów</span>                    <span class="dim">(loaded immediately)</span>   │
+│ <span class="ok">┌──┐┌──┐┌──┐┌──┐</span>                                          │
+│ <span class="ok">┌──┐┌──┐┌──┐┌──┐</span>                                          │
+│                                                           │
+│ <span class="dim">▶ BZIK eXXXtra  </span><span class="mu">4 numery</span>      <span class="dim">(click to load)</span>             │
+│                                                           │
+└───────────────────────────────────────────────────────────┘
+
+<span class="hi">Partials needed:</span>
+/komiksy/bzik/partials/main/      ← 8 edition tiles (main BZIK)
+/komiksy/bzik/partials/exxxtra/   ← 4 edition tiles (BZIK eXXXtra)
+
+<span class="ok">First section open by default — user sees content immediately.</span>
+<span class="ok">eXXXtra section collapsed — user loads it explicitly.</span>
+<span class="ok">This is meaningful: eXXXtra is a separate product track.</span></div>
+
+  <h3>Builder support for per-project partials</h3>
+  <p>For this to work, <code>render_project_pages()</code> must also generate subseries partials per project. The logic is the same as catalog partials but at a lower level — group editions by <code>e.subseries</code>, emit one fragment per group.</p>
+  <p>This makes subseries grouping (Option E from the previous deck) and HTMX accordion a natural combination: the same grouping logic that produces section headers in the non-HTMX case produces partial URLs in the HTMX case.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 08 — Verdict                                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="slide-head">
+    <h2><span class="n">08</span> Verdict and recommendation</h2>
+  </div>
+
+  <h3>The honest answer</h3>
+
+  <div class="callout good">
+    <strong>Yes, HTMX works beautifully with a static site</strong> — pre-generated partials are a legitimate pattern and it's a genuinely clever use of the tool. The architecture is clean. The builder change is small. It scales.
+  </div>
+
+  <div class="callout warn">
+    <strong>But for the catalog page right now, you don't need it.</strong> <code>loading="lazy"</code> already defers all images. The catalog HTML is 13 KB. Adding HTMX to solve an image loading problem that doesn't exist yet is premature. The real benefit is UX (accordion interaction), not performance.
+  </div>
+
+  <div class="callout bad">
+    <strong>Both HTMX patterns (scroll-triggered and accordion) create an SEO problem</strong> if the initial HTML doesn't contain the full content. The progressive enhancement workaround preserves SEO but doesn't reduce the initial payload — it only adds the accordion UX on top. Be clear about which goal you're actually solving before implementing.
+  </div>
+
+  <h3>Recommendations by use case</h3>
+
+  <div class="flow">
+    <div class="flow-step">
+      <span class="step-n">→</span>
+      <div><strong>Goal: reduce image loading on catalog page.</strong><br>
+      Already solved by <code>loading="lazy"</code>. Do nothing. Revisit if images are not lazy-loaded for some reason in future.</div>
+    </div>
+    <div class="flow-step">
+      <span class="step-n">→</span>
+      <div><strong>Goal: add accordion UX to catalog (lines collapse/expand).</strong><br>
+      Use the progressive enhancement pattern: full content in initial HTML + <code>&lt;details&gt;</code> + HTMX replaces content on expand. Adds HTMX dependency. Accordion UX is gained; initial payload is not reduced. Worth it if the publisher wants that interaction pattern. Implement <em>with</em> filter pills (Option A, previous deck) so pill + accordion work together.</div>
+    </div>
+    <div class="flow-step">
+      <span class="step-n">→</span>
+      <div><strong>Goal: genuinely defer image loading for large series (BZIK, future series).</strong><br>
+      Use HTMX accordion on the <em>project page</em>, per subseries. First subseries preloaded (open), others lazy-loaded. This is the strongest case for HTMX here — real deferred loading where the content is deep and the structure is meaningful.</div>
+    </div>
+    <div class="flow-step">
+      <span class="step-n">→</span>
+      <div><strong>Goal: reduce initial payload on catalog when it grows to 100+ projects.</strong><br>
+      At that scale: implement Pattern B (accordion) <em>without</em> progressive enhancement, accept that sub-line catalog pages won't be indexed from the main <code>/komiksy/</code> URL — but those projects all have their own pages at <code>/komiksy/{slug}/</code> which are always fully rendered. The individual project pages are what gets indexed anyway.</div>
+    </div>
+  </div>
+
+  <h3>Implementation order</h3>
+  <table>
+    <tr><th>Action</th><th>Do when</th><th>Effort</th></tr>
+    <tr>
+      <td>Subseries grouping in <code>project.html</code></td>
+      <td class="yes">Now (no HTMX needed)</td>
+      <td>5 lines Jinja</td>
+    </tr>
+    <tr>
+      <td>Filter pills on <code>/komiksy/</code></td>
+      <td class="yes">Now (no HTMX needed)</td>
+      <td>30 lines JS</td>
+    </tr>
+    <tr class="hl-row">
+      <td>HTMX accordion on project page (subseries, BZIK)</td>
+      <td class="partial">When a series exceeds ~16 editions</td>
+      <td>1 new template + builder partial emit + htmx.min.js</td>
+    </tr>
+    <tr>
+      <td>HTMX accordion on catalog page</td>
+      <td class="partial">When catalog exceeds ~50 projects</td>
+      <td>Same + catalog partial emit</td>
+    </tr>
+    <tr>
+      <td>Scroll-triggered catalog loading (Pattern A)</td>
+      <td class="no">Only if accordion UX is rejected as too explicit</td>
+      <td>Same — but accept SEO tradeoff or use progressive enhancement</td>
+    </tr>
+  </table>
+</section>
+
+<footer style="text-align:center;padding:3rem 1.5rem 4rem;color:var(--muted);font-size:.78rem;border-top:1px solid #1a1a1a;max-width:880px;margin:0 auto">
+  <p>diablaq.com · HTMX lazy loading analysis · kwiecień 2026</p>
+  <p style="margin-top:.4rem"><a href="#top">↑ powrót na górę</a></p>
+</footer>
+
+</body>
+</html>

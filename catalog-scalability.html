@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diablaq /komiksy/ — Scalability Proposals</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--fg:#e0e0e0;--muted:#777;--accent:#ba2d00;--accent2:#e84218;
+  --good:#22c55e;--bad:#ef4444;--warn:#f59e0b;--info:#38bdf8;
+  --s1:#111;--s2:#161616;--s3:#1a1a1a;
+  --border:rgba(255,255,255,.09);
+  --mono:"SF Mono","Fira Code","Consolas",monospace;
+  --body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.82em;background:var(--s3);padding:.1em .35em;border-radius:3px;color:#e0e0e0}
+pre{background:var(--s3);padding:1rem;border-radius:6px;overflow-x:auto;font-size:.78rem;line-height:1.6;border:1px solid var(--border)}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* ─── TOC ─────────────────────────────────────────────────────── */
+.toc{max-width:900px;margin:0 auto;padding:3rem 1.5rem 2rem}
+.toc-title{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.35rem}
+.toc-sub{color:var(--muted);font-size:1rem;margin-bottom:.5rem}
+.toc-context{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0 2rem;font-size:.875rem;line-height:1.65}
+.toc-context strong{color:var(--accent2)}
+.toc-list{display:grid;gap:.4rem}
+.toc-list a{display:flex;align-items:baseline;gap:.75rem;padding:.55rem .85rem;background:var(--s1);border:1px solid var(--border);border-radius:6px;transition:background .12s,border-color .12s}
+.toc-list a:hover{background:var(--s2);border-color:rgba(255,255,255,.16);text-decoration:none}
+.toc-list .n{color:var(--accent);font-weight:700;font-size:.85rem;min-width:2rem;font-family:var(--mono)}
+.toc-list .l{color:var(--fg);font-size:.9rem}
+.toc-list .tag{margin-left:auto;flex-shrink:0}
+
+/* ─── Slides ──────────────────────────────────────────────────── */
+.slide{max-width:900px;margin:0 auto;padding:3.5rem 1.5rem;border-top:1px solid #1e1e1e}
+.slide-head{margin-bottom:2rem}
+.slide-head h2{font-size:1.75rem;font-weight:800;letter-spacing:-.015em;display:flex;align-items:baseline;gap:.6rem}
+.slide-head h2 .n{font-size:.9rem;font-weight:700;color:var(--accent);font-family:var(--mono)}
+.slide-head .deck{margin-top:.3rem;color:var(--muted);font-size:.85rem}
+h3{font-size:1.05rem;font-weight:700;color:var(--accent2);margin:1.75rem 0 .5rem}
+h3:first-child{margin-top:0}
+p{max-width:72ch;margin-bottom:.75rem}
+p:last-child{margin-bottom:0}
+ul,ol{padding-left:1.4rem;max-width:72ch}
+li{margin:.3rem 0}
+
+/* ─── Tags / badges ───────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;gap:.25rem;padding:.15rem .5rem;border-radius:4px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;line-height:1.4}
+.tag-green{background:rgba(34,197,94,.14);color:var(--good)}
+.tag-red{background:rgba(239,68,68,.14);color:var(--bad)}
+.tag-yellow{background:rgba(245,158,11,.14);color:var(--warn)}
+.tag-blue{background:rgba(56,189,248,.14);color:var(--info)}
+.tag-gray{background:rgba(255,255,255,.07);color:var(--muted)}
+
+/* ─── Compare panels ──────────────────────────────────────────── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin:1.5rem 0}
+@media(max-width:660px){.compare{grid-template-columns:1fr}}
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.panel-head{padding:.5rem .9rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.panel-head.bad{color:var(--bad);background:rgba(239,68,68,.07)}
+.panel-head.neutral{color:var(--muted);background:rgba(255,255,255,.03)}
+.panel-head.green{color:var(--good);background:rgba(34,197,94,.07)}
+.panel-head.blue{color:var(--info);background:rgba(56,189,248,.07)}
+.panel-head.yellow{color:var(--warn);background:rgba(245,158,11,.07)}
+.panel-body{padding:.9rem;font-size:.8rem;line-height:1.6}
+
+/* ─── ASCII wireframes ────────────────────────────────────────── */
+.wire{font-family:var(--mono);font-size:.72rem;line-height:1.65;background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:1rem;overflow-x:auto;white-space:pre;color:#aaa}
+.wire .hi{color:#fff}
+.wire .dim{color:#444}
+.wire .acc{color:var(--accent2)}
+.wire .ok{color:var(--good)}
+.wire .warn{color:var(--warn)}
+.wire .info{color:var(--info)}
+
+/* ─── Option cards ────────────────────────────────────────────── */
+.options{display:grid;gap:1.25rem;margin:1.25rem 0}
+.option-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.option-card__head{padding:.65rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border)}
+.option-card__label{font-weight:700;font-size:.95rem;flex:1}
+.option-card__body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:660px){.option-card__body{grid-template-columns:1fr}}
+.option-card__wire{padding:.9rem;border-right:1px solid var(--border)}
+.option-card__wire:last-child{border-right:0}
+.option-card__meta{padding:.9rem;font-size:.8rem;line-height:1.6}
+.option-card__meta ul{padding-left:1.2rem}
+.option-card__meta li{margin:.2rem 0}
+.pros{color:var(--good)}
+.cons{color:var(--bad)}
+
+/* ─── Comparison matrix ───────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:1rem 0}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid #1c1c1c;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;background:#111;position:sticky;top:52px}
+.opt-name{font-weight:700;color:var(--fg);white-space:nowrap}
+.yes{color:var(--good);font-weight:700}
+.no{color:var(--bad)}
+.partial{color:var(--warn)}
+.col-now{background:rgba(34,197,94,.04)}
+.highlight-row td{background:rgba(34,197,94,.06)}
+
+/* ─── Growth model ────────────────────────────────────────────── */
+.growth{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.25rem 0}
+@media(max-width:560px){.growth{grid-template-columns:1fr}}
+.growth-card{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.growth-card__phase{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem}
+.growth-card__stat{font-size:1.6rem;font-weight:800;color:var(--accent2);font-family:var(--mono);line-height:1}
+.growth-card__label{font-size:.75rem;color:var(--muted);margin-top:.25rem}
+.growth-card__rec{font-size:.78rem;margin-top:.75rem;color:var(--fg);line-height:1.55}
+
+/* ─── Recommendation block ────────────────────────────────────── */
+.rec{background:var(--s1);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+.rec-head{font-weight:700;color:var(--good);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.rec-items{display:grid;gap:.5rem}
+.rec-item{display:flex;gap:.75rem;align-items:baseline;font-size:.875rem}
+.rec-item .phase{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--muted);min-width:4.5rem}
+
+/* ─── Divider ─────────────────────────────────────────────────── */
+.section-divider{max-width:900px;margin:0 auto;padding:.5rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.section-divider span{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;white-space:nowrap}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:#1e1e1e}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- TOC                                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="toc" id="top">
+  <p class="toc-title">/komiksy/ — Scalability Proposals</p>
+  <p class="toc-sub">Diablaq.com · kwiecień 2026</p>
+
+  <div class="toc-context">
+    <strong>Problem:</strong> The new <code>/komiksy/</code> catalog page groups all 18 projects under 4 section headers on one scroll.
+    Today that's manageable. The <strong>main line already has 12 projects</strong> in a 4-column grid (3 rows).
+    Adding 10 more makes it a wall. BZIK already has <strong>12 editions</strong> (8 main + 4 eXXXtra) with no end in sight.
+    Two separate clutter problems → two separate solution families.
+  </div>
+
+  <nav class="toc-list">
+    <a href="#s1"><span class="n">01</span><span class="l">Problem anatomy — two distinct clutter axes</span></a>
+    <a href="#s2"><span class="n">02</span><span class="l">Catalog solution A — client-side filter pills</span><span class="tag tag-green">zero pages</span></a>
+    <a href="#s3"><span class="n">03</span><span class="l">Catalog solution B — sub-line pages under /komiksy/</span><span class="tag tag-yellow">+4 pages</span></a>
+    <a href="#s4"><span class="n">04</span><span class="l">Catalog solution C — genre/tag static pages</span><span class="tag tag-blue">+N pages</span></a>
+    <a href="#s5"><span class="n">05</span><span class="l">Catalog solution D — overview + "see all" magazine layout</span><span class="tag tag-yellow">+4 pages</span></a>
+    <a href="#s6"><span class="n">06</span><span class="l">Catalog options — comparison matrix</span></a>
+    <a href="#s7"><span class="n">07</span><span class="l">Series solution E — subseries grouping (BZIK)</span><span class="tag tag-green">zero pages</span></a>
+    <a href="#s8"><span class="n">08</span><span class="l">Series solution F — static pagination</span><span class="tag tag-yellow">+pages</span></a>
+    <a href="#s9"><span class="n">09</span><span class="l">Growth model — when each solution is needed</span></a>
+    <a href="#s10"><span class="n">10</span><span class="l">Recommendation + implementation notes</span></a>
+  </nav>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 01 — Problem anatomy                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s1">
+  <div class="slide-head">
+    <h2><span class="n">01</span> Problem anatomy — two distinct clutter axes</h2>
+    <p class="deck">Understanding the problem before reaching for a solution</p>
+  </div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head bad">Axis 1 · Catalog page — too many projects</div>
+      <div class="panel-body">
+        <div class="wire"><span class="hi">/komiksy/ — today (18 projects)</span>
+
+<span class="ok">── Główna linia ─────────────────</span>
+<span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span>   row 1
+<span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span>   row 2
+<span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span>   row 3  ← ok today
+
+<span class="ok">── Dobre Licho ──────────────────</span>
+<span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span><span class="dim">[  ]</span>   1 row ← ok today
+
+<span class="ok">── Mecenat ──────────────────────</span>
+<span class="dim">[  ]</span>               1 project ← ok today
+
+<span class="ok">── Studio ───────────────────────</span>
+<span class="dim">[  ]</span>               1 project ← ok today
+
+<span class="warn">/komiksy/ — tomorrow (40 projects)</span>
+
+<span class="acc">── Główna linia ─────────────────</span>
+8 rows of 4 covers ← wall of covers
+no way to find anything
+no filtering, no search</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head bad">Axis 2 · Project page — too many editions</div>
+      <div class="panel-body">
+        <div class="wire"><span class="hi">/komiksy/bzik/ — today (12 editions)</span>
+
+<span class="ok">── Wydania ───────────────────────</span>
+<span class="dim">[01]</span><span class="dim">[02]</span><span class="dim">[03]</span><span class="dim">[04]</span>   row 1 (main)
+<span class="dim">[05]</span><span class="dim">[06]</span><span class="dim">[07]</span><span class="dim">[08]</span>   row 2 (main)
+<span class="dim">[x1]</span><span class="dim">[x2]</span><span class="dim">[x3]</span><span class="dim">[x4]</span>   row 3 (eXXXtra)
+← 3 rows, 2 unmarked groups, ok-ish
+
+<span class="warn">/komiksy/bzik/ — year 3 (24 editions)</span>
+
+<span class="acc">── Wydania ───────────────────────</span>
+6 rows of 4 covers
+main + eXXXtra interleaved
+no visible grouping
+no indication which are read
+no sense of structure
+
+<span class="warn">Also affects:</span>
+Spółka ZŁO (2 → likely 12+)
+Kodiak (2 → ongoing)
+MidGuard (1 → series)
+Człowiek-Cieć (2 → ongoing)</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Why these need separate answers</h3>
+  <p>Catalog clutter is a <em>discovery</em> problem — users can't find the series they want in a wall of covers. Series clutter is a <em>comprehension</em> problem — users can't understand the structure of a series when all issues are undifferentiated.</p>
+  <p>Solutions that help catalog clutter (filter by line, sub-pages) don't help series clutter. Solutions that help series clutter (subseries grouping, pagination) don't help catalog clutter. Evaluate each axis independently.</p>
+
+  <h3>What we're <em>not</em> solving here</h3>
+  <p>Mobile scroll length, image loading performance, and per-edition search are real concerns but out of scope. This deck covers <strong>information architecture</strong> only.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 02 — Option A: filter pills                                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <div class="slide-head">
+    <h2><span class="n">02</span> Catalog A — client-side filter pills</h2>
+    <span class="tag tag-green">0 new pages</span>
+    <span class="tag tag-blue">~30 lines of vanilla JS</span>
+    <span class="tag tag-gray">no builder changes</span>
+  </div>
+
+  <p>Add a row of pill buttons above the grid. Clicking a pill hides all projects not matching that line. No page reloads, no new URLs.</p>
+
+  <div class="wire"><span class="hi">/komiksy/</span>
+
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="hi">Komiksy</span>                                                        │
+│ Wszystkie serie i tytuły wydawnictwa Diablaq.                 │
+│                                                               │
+│ <span class="ok">[● Wszystkie]</span>  <span class="dim">[ Główna linia ]</span>  <span class="dim">[ Dobre Licho ]</span>  <span class="dim">[ Mecenat ]</span>  <span class="dim">[ Studio ]</span> │
+│                                                               │
+│ <span class="ok">── Główna linia ───────────────────────────────────────────</span>     │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│ <span class="dim">[  ][  ][  ][  ]</span>  ← shows/hides entire section on pill click   │
+│                                                               │
+│ <span class="ok">── Dobre Licho ─────────────────────────────────────────────</span>    │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│                                                               │
+│ ... etc                                                        │
+└────────────────────────────────────────────────────────────────┘
+
+When "Główna linia" pill active:
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="dim">[ Wszystkie ]</span>  <span class="ok">[● Główna linia]</span>  <span class="dim">[ Dobre Licho ]</span>  ...           │
+│                                                               │
+│ <span class="ok">── Główna linia ───────────────────────────────────────────</span>     │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│ <span class="dim">[  ][  ][  ][  ]</span>  ← still potentially many rows              │
+│ ← Dobre Licho section hidden                                  │
+└────────────────────────────────────────────────────────────────┘</div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Zero new pages → no URL fragmentation</li>
+          <li>No builder changes at all</li>
+          <li>Graceful degradation: without JS, page shows all sections (same as today)</li>
+          <li>State could persist via URL hash: <code>/komiksy/#glowna-linia</code></li>
+          <li>Trivial to add — ~30 lines of vanilla JS</li>
+          <li>Works for a catalog of any size</li>
+          <li>Pill state is visible: user always knows what's filtered</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>Does <em>not</em> reduce the number of items visible — just hides other lines. Main line still shows 12+ projects in a flat grid.</li>
+          <li>Each line still an undifferentiated flat grid. Doesn't help discovery <em>within</em> a line.</li>
+          <li>Requires JS — though graceful degradation mitigates this.</li>
+          <li>Lines don't have "landing page" identity: filtering to Dobre Licho gives no context about what Dobre Licho is.</li>
+          <li>Doesn't scale past ~60 projects on a single page (scroll fatigue).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Implementation</h3>
+  <p>Each project card gets a <code>data-line="diablaq"</code> attribute. Each section gets a matching <code>data-line</code>. The JS filter shows/hides by matching attribute. Active state stored in <code>data-active</code> on the filter bar. No Jinja changes — just a new <code>&lt;script&gt;</code> block in <code>catalog.html</code>.</p>
+  <pre><code>// ~25 lines, zero dependencies
+document.querySelectorAll('.catalog-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const line = btn.dataset.line;
+    document.querySelectorAll('.catalog-section').forEach(section => {
+      section.hidden = line !== 'all' && section.dataset.line !== line;
+    });
+    document.querySelectorAll('.catalog-filter-btn').forEach(b =>
+      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false')
+    );
+    if (line !== 'all') location.hash = line;
+  });
+});</code></pre>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 03 — Option B: sub-line pages                                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s3">
+  <div class="slide-head">
+    <h2><span class="n">03</span> Catalog B — sub-line pages under /komiksy/</h2>
+    <span class="tag tag-yellow">+4 new pages</span>
+    <span class="tag tag-gray">builder change</span>
+    <span class="tag tag-gray">no JS</span>
+  </div>
+
+  <p>Each publication line gets its own full-grid page at a sub-URL. The top-level <code>/komiksy/</code> becomes a lightweight overview linking to each line.</p>
+
+  <div class="wire"><span class="hi">URL structure</span>
+
+/komiksy/                    ← lightweight overview (see below)
+/komiksy/glowna-linia/      ← full grid, line=diablaq projects
+/komiksy/dobre-licho/       ← full grid, line=dobre-licho
+/komiksy/mecenat/           ← full grid, line=mecenat
+/komiksy/studio/            ← full grid, line=studio
+
+<span class="hi">/komiksy/ — overview layout</span>
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="hi">Komiksy</span>                                                        │
+│                                                               │
+│ <span class="ok">Główna linia</span>                                     → <span class="info">Przeglądaj</span>│
+│ Autorskie komiksy dla dorosłych.                              │
+│ <span class="dim">[  ][  ][  ][  ]</span>  ← 4 newest/featured only + "See all 12 →"    │
+│                                                               │
+│ <span class="ok">Dobre Licho</span>                                      → <span class="info">Przeglądaj</span>│
+│ Imprint komiksowy dla dzieci i młodzieży.                     │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│                                                               │
+│ <span class="ok">Mecenat</span>                                          → <span class="info">Przeglądaj</span>│
+│ Publikacje rozwijane w formule mecenatu.                      │
+│ <span class="dim">[  ]</span>                                                           │
+│                                                               │
+│ <span class="ok">Studio</span>                                           → <span class="info">Przeglądaj</span>│
+│ Produkcje komiksowe dla innych wydawców.                      │
+│ <span class="dim">[  ]</span>                                                           │
+└────────────────────────────────────────────────────────────────┘
+
+<span class="hi">/komiksy/glowna-linia/ — full grid</span>
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="dim">Komiksy ›</span> <span class="hi">Główna linia</span>                                          │
+│ Autorskie komiksy dla dorosłych.                              │
+│ <span class="dim">[  ][  ][  ][  ]</span>  ← all 12 (or 30) projects                  │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│ ...                                                            │
+└────────────────────────────────────────────────────────────────┘</div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Each line gets identity: its own URL, heading, description — Dobre Licho can explain what it is for children's audience; Mecenat can explain the crowdfunding model.</li>
+          <li>Header nav links go to line sub-pages directly, replacing the old "Publikacje" dropdown cleanly.</li>
+          <li><code>/komiksy/</code> becomes compact — always short, regardless of catalog size.</li>
+          <li>No JS required. Pure static.</li>
+          <li>Scales to any number of projects — each line page still manageable.</li>
+          <li>Natural landing page for line-specific social/ad campaigns.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>4 new pages to generate and maintain.</li>
+          <li>Builder change: <code>render_catalog_page()</code> must emit both an overview and sub-line pages.</li>
+          <li>Still a flat grid <em>within</em> each line — with 30 main-line projects, the sub-page has the same problem at a smaller scale.</li>
+          <li>Mecenat and Studio sub-pages each have 1 project — almost pointless as pages in their own right.</li>
+          <li>Overview page requires a curated description per line (content work).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Implementation</h3>
+  <p>Add a line description field to the builder config (a <code>dict</code> in <code>rendering.py</code>). <code>render_catalog_page()</code> generates <code>/komiksy/index.html</code> (overview with 4 tiles per line) and <code>/komiksy/{line-slug}/index.html</code> (full grid). One new template: <code>catalog_line.html</code>.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 04 — Option C: genre/tag pages                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s4">
+  <div class="slide-head">
+    <h2><span class="n">04</span> Catalog C — genre/tag static pages</h2>
+    <span class="tag tag-blue">+N new pages</span>
+    <span class="tag tag-gray">model change</span>
+    <span class="tag tag-gray">content tagging work</span>
+  </div>
+
+  <p>Add a <code>tags</code> field to project frontmatter. The builder generates <code>/komiksy/tag/{tag}/</code> pages (same mechanism as blog tags). Tags cut across lines, enabling discovery by genre rather than publisher imprint.</p>
+
+  <div class="wire"><span class="hi">Example tags applied to current catalog</span>
+
+Spółka ZŁO   → tags: [superbohaterski, komedia, zeszytowy]
+Kodiak       → tags: [horror, komedia, superbohaterski]
+Karmiciel    → tags: [horror, noir, superbohaterski]
+BZIK         → tags: [antologia, mecenat, underground]
+Pisto        → tags: [przygoda, dzieci, dobre-licho]
+Mama zabiła  → tags: [obyczajowy, autobiograficzny]
+
+Generated pages:
+/komiksy/tag/horror/           ← Kodiak, Karmiciel
+/komiksy/tag/superbohaterski/  ← Spółka ZŁO, Kodiak, Karmiciel
+/komiksy/tag/dzieci/           ← Pisto, Rodzina Ciekawskich, mksp
+/komiksy/tag/antologia/        ← BZIK
+
+<span class="hi">/komiksy/ — with tag cloud</span>
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="hi">Komiksy</span>                                                        │
+│                                                               │
+│ <span class="ok">Przeglądaj według gatunku:</span>                                     │
+│ [horror] [superbohaterski] [dzieci] [przygoda] [noir]         │
+│ [antologia] [obyczajowy] [sci-fi] ...                         │
+│                                                               │
+│ <span class="ok">── Główna linia ───────────────────────────────────────────</span>     │
+│ <span class="dim">[  ][  ][  ][  ]</span>                                               │
+│ ...                                                            │
+└────────────────────────────────────────────────────────────────┘</div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Richest discovery model — cuts across lines (horror fans get Kodiak + Karmiciel regardless of imprint).</li>
+          <li>SEO value: <code>/komiksy/tag/horror/</code> is a crawlable page with semantic meaning.</li>
+          <li>Reuses the existing blog tag machinery (same builder pattern).</li>
+          <li>Can serve as metadata for future features (filtering, related projects).</li>
+          <li>Enables linking from blog posts: "more horror comics →"</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>Requires someone to tag all 18 (and future) projects — non-trivial content work.</li>
+          <li>Tag taxonomy must be decided upfront and maintained (typos, synonyms, drift).</li>
+          <li>Doesn't reduce the catalog grid itself — tags are a supplement, not a replacement for grid organization.</li>
+          <li>Tag pages with 1–2 projects look thin until catalog grows.</li>
+          <li>Most useful at 30+ projects — overkill now.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Implementation</h3>
+  <p>Add <code>tags: list[str]</code> to <code>Project</code> model in <code>models.py</code>. Parse from frontmatter in <code>parsing.py</code> (same as blog post tags). Add <code>render_project_tag_pages()</code> in <code>rendering.py</code>. Template: reuse or fork <code>listing.html</code> with project cards instead of edition tiles. Estimated: 3–4 hours of code + N hours of tagging content.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 05 — Option D: magazine overview                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s5">
+  <div class="slide-head">
+    <h2><span class="n">05</span> Catalog D — magazine overview + full grids</h2>
+    <span class="tag tag-yellow">+4 new pages</span>
+    <span class="tag tag-gray">template redesign</span>
+    <span class="tag tag-gray">no JS</span>
+  </div>
+
+  <p>This is the Dark Horse model: <code>/komiksy/</code> is a curated magazine-style overview showing each line's <em>featured or newest</em> items with a strong visual header. Full grids live on sub-pages, but <code>/komiksy/</code> is the destination for browsers — not a filing cabinet.</p>
+
+  <div class="wire"><span class="hi">/komiksy/ — magazine layout</span>
+
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│                                                               │
+│  <span class="acc">GŁÓWNA                                                    </span>      │
+│  <span class="acc">LINIA                                         Przeglądaj → </span>  │
+│ ┌─────────────────────────┐  ← big featured cover           │
+│ │                         │  + 3 newest                     │
+│ │   [featured cover]      │  ┌──┐ ┌──┐ ┌──┐                │
+│ │                         │  │  │ │  │ │  │                 │
+│ └─────────────────────────┘  └──┘ └──┘ └──┘                │
+│                                                               │
+│  <span class="info">DOBRE LICHO                                   Przeglądaj → </span>   │
+│  Komiksy dla dzieci i młodzieży.                              │
+│  ┌──┐ ┌──┐ ┌──┐ ┌──┐                                        │
+│  │  │ │  │ │  │ │  │                                        │
+│  └──┘ └──┘ └──┘ └──┘                                        │
+│                                                               │
+│  <span class="warn">MECENAT                                       Przeglądaj → </span>   │
+│  ┌──┐                                                         │
+│  └──┘                                                         │
+└────────────────────────────────────────────────────────────────┘</div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Best-looking option — feels like a publisher's catalog, not a database export.</li>
+          <li><code>/komiksy/</code> is always compact regardless of catalog size: N lines × (1 featured + 3 tiles).</li>
+          <li>Lines have distinct visual identity through header typography.</li>
+          <li>Featured project drives editorial attention ("what should people buy this month").</li>
+          <li>No JS needed. Static sub-pages.</li>
+          <li>Scales to 100 projects: overview stays short, sub-pages are the full grids.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>Most complex to implement — requires "featured project per line" logic, modified layout.</li>
+          <li>Requires the same 4 new sub-pages as Option B.</li>
+          <li>Mecenat and Studio still have 1 project each — their overview rows look anemic.</li>
+          <li>Featured project selection needs editorial attention (either manual <code>featured: true</code> in YAML or auto-select newest).</li>
+          <li>The <code>home.html</code> already shows a similar featured + grid layout — may create redundancy between homepage and catalog page.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>How it differs from Option B</h3>
+  <p>Option B (<em>sub-line pages</em>) makes <code>/komiksy/</code> a navigation hub — a list of links. Option D makes <code>/komiksy/</code> a <em>destination</em> — a browsable magazine front with actual covers. Both generate the same sub-line full-grid pages. The difference is in what <code>/komiksy/index.html</code> renders.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 06 — Comparison matrix                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s6">
+  <div class="slide-head">
+    <h2><span class="n">06</span> Catalog options — comparison matrix</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Option</th>
+        <th>New pages</th>
+        <th>JS required</th>
+        <th>Scales to 40 proj.</th>
+        <th>Line identity</th>
+        <th>Discovery quality</th>
+        <th>Builder effort</th>
+        <th>Content effort</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="opt-name">A — Filter pills</td>
+        <td><span class="yes">0</span></td>
+        <td><span class="partial">Yes (graceful)</span></td>
+        <td><span class="partial">Partial</span></td>
+        <td><span class="no">None</span></td>
+        <td><span class="partial">Medium</span></td>
+        <td><span class="yes">Trivial</span></td>
+        <td><span class="yes">None</span></td>
+      </tr>
+      <tr>
+        <td class="opt-name">B — Sub-line pages</td>
+        <td><span class="partial">4</span></td>
+        <td><span class="yes">No</span></td>
+        <td><span class="yes">Yes</span></td>
+        <td><span class="yes">Strong</span></td>
+        <td><span class="partial">Medium</span></td>
+        <td><span class="partial">Small</span></td>
+        <td><span class="partial">Line descriptions</span></td>
+      </tr>
+      <tr>
+        <td class="opt-name">C — Genre tags</td>
+        <td><span class="partial">+N</span></td>
+        <td><span class="yes">No</span></td>
+        <td><span class="yes">Yes</span></td>
+        <td><span class="no">None</span></td>
+        <td><span class="yes">Highest</span></td>
+        <td><span class="partial">Small</span></td>
+        <td><span class="no">High (tag all)</span></td>
+      </tr>
+      <tr class="highlight-row">
+        <td class="opt-name">D — Magazine overview</td>
+        <td><span class="partial">4</span></td>
+        <td><span class="yes">No</span></td>
+        <td><span class="yes">Yes</span></td>
+        <td><span class="yes">Strongest</span></td>
+        <td><span class="yes">High</span></td>
+        <td><span class="partial">Medium</span></td>
+        <td><span class="partial">Featured per line</span></td>
+      </tr>
+      <tr>
+        <td class="opt-name">A + C (combined)</td>
+        <td><span class="partial">+N</span></td>
+        <td><span class="partial">Yes (graceful)</span></td>
+        <td><span class="yes">Yes</span></td>
+        <td><span class="no">None</span></td>
+        <td><span class="yes">Highest</span></td>
+        <td><span class="partial">Small</span></td>
+        <td><span class="no">High</span></td>
+      </tr>
+      <tr>
+        <td class="opt-name">B + A (combined)</td>
+        <td><span class="partial">4</span></td>
+        <td><span class="partial">Yes (graceful)</span></td>
+        <td><span class="yes">Yes</span></td>
+        <td><span class="yes">Strong</span></td>
+        <td><span class="yes">High</span></td>
+        <td><span class="partial">Small</span></td>
+        <td><span class="partial">Line descriptions</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Key insight</h3>
+  <p>Option A alone does not solve the problem — it only hides non-active lines. If "Główna linia" has 40 projects, filtering to it still shows 40 in an unbroken grid. Option A is a <em>complement</em> to sub-line pages (B or D), not an alternative.</p>
+  <p>Option D (magazine) is strictly better than B for the visitor experience. It costs the same number of pages and slightly more template work. The only reason to choose B over D is if the team won't maintain featured-per-line editorial picks.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DIVIDER                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section-divider"><span>Series clutter — a separate problem</span></div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 07 — Option E: subseries grouping                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s7">
+  <div class="slide-head">
+    <h2><span class="n">07</span> Series E — subseries grouping</h2>
+    <span class="tag tag-green">0 new pages</span>
+    <span class="tag tag-green">model already supports it</span>
+    <span class="tag tag-gray">template change only</span>
+  </div>
+
+  <p>The <code>Edition</code> model already has a <code>subseries</code> field. BZIK already uses it: 8 main issues have <code>subseries: null</code>, 4 eXXXtra issues have <code>subseries: "eXXXtra"</code>. The template simply doesn't use it. Fix the template, get structure for free.</p>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head bad">Current /komiksy/bzik/ — undifferentiated</div>
+      <div class="panel-body">
+        <div class="wire"><span class="hi">── Wydania ──────────────────────</span>
+<span class="dim">[01][02][03][04]</span>
+<span class="dim">[05][06][07][08]</span>
+<span class="dim">[x1][x2][x3][x4]</span>
+← main issues and eXXXtra
+   interleaved by release date
+   no visual distinction
+   user doesn't know what eXXXtra is</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head green">Proposed /komiksy/bzik/ — grouped</div>
+      <div class="panel-body">
+        <div class="wire"><span class="hi">── BZIK ─────────────────────────</span>
+<span class="dim">[01][02][03][04]</span>
+<span class="dim">[05][06][07][08]</span>
+
+<span class="ok">── BZIK eXXXtra ─────────────────</span>
+<span class="dim">[x1][x2][x3][x4]</span>
+
+← clear visual grouping
+   user instantly sees 2 tracks
+   each subseries can grow
+   independently</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Template change</h3>
+  <p>In <code>project.html</code>, instead of a flat <code>{% for e in editions %}</code>, group editions by <code>e.subseries</code>. Render a section header per group. Jinja's <code>groupby</code> filter handles this in ~5 lines. Editions with <code>subseries: null</code> are the "main series" group.</p>
+
+  <pre><code>{# project.html — grouped edition rendering #}
+{% set null_label = project.title %}
+{% for group_key, group_editions in editions | groupby('subseries') %}
+  &lt;h3&gt;{{ group_key or null_label }}&lt;/h3&gt;
+  &lt;div class="tiles"&gt;
+    {% for e in group_editions %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  &lt;/div&gt;
+{% endfor %}</code></pre>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Zero new pages.</li>
+          <li>Model already supports it — data is there, template just ignores it.</li>
+          <li>Works for any series that uses <code>subseries</code> in frontmatter.</li>
+          <li>Scales naturally: each subseries section grows independently.</li>
+          <li>Helps both BZIK and any future anthology/subseries.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>Doesn't help when a single subseries grows beyond ~20 items.</li>
+          <li>Requires tagging all existing BZIK editions with the correct <code>subseries</code> field (BZIK already has it; others need it if they split).</li>
+          <li>Section headers need styling — minor CSS addition.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 08 — Option F: static pagination                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s8">
+  <div class="slide-head">
+    <h2><span class="n">08</span> Series F — static pagination on project pages</h2>
+    <span class="tag tag-yellow">+pages per series</span>
+    <span class="tag tag-gray">builder change</span>
+    <span class="tag tag-gray">no JS</span>
+  </div>
+
+  <p>When a project has more than <code>PAGE_SIZE</code> editions (proposed: 12), the builder generates additional pages: <code>/komiksy/bzik/</code> (first 12), <code>/komiksy/bzik/strona/2/</code> (next 12), etc. Prev/next navigation links at the bottom.</p>
+
+  <div class="wire"><span class="hi">/komiksy/bzik/ — page 1 of 2</span>
+
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="dim">Komiksy ›</span> <span class="hi">BZIK</span>                                                   │
+│                                                               │
+│ <span class="dim">[cover]</span>  <span class="hi">BZIK – Bielski Zin Komiksowy</span>                          │
+│          Nieregularnik mający na celu...                      │
+│                                                               │
+│ ── Wydania ────────────────────────────────────────           │
+│ <span class="dim">[01][02][03][04]</span>                                               │
+│ <span class="dim">[05][06][07][08]</span>                                               │
+│ <span class="dim">[09][10][11][12]</span>                                               │
+│                                                               │
+│ <span class="acc">← Poprzednia</span>  Strona 1 z 2  <span class="acc">Następna →</span>                         │
+└────────────────────────────────────────────────────────────────┘
+
+<span class="hi">/komiksy/bzik/strona/2/</span>
+
+<span class="dim">┌────────────────────────────────────────────────────────────────┐</span>
+│ <span class="dim">Komiksy ›</span> <span class="hi">BZIK</span>  <span class="dim">strona 2</span>                                        │
+│ <span class="dim">[13][14][15][16]</span>  ← page 2                                    │
+│ ...                                                            │
+│ <span class="acc">← Poprzednia</span>  Strona 2 z 2  <span class="dim">Następna →</span>                         │
+└────────────────────────────────────────────────────────────────┘</div>
+
+  <div class="compare">
+    <div class="panel">
+      <div class="panel-head green">Advantages</div>
+      <div class="panel-body">
+        <ul>
+          <li>Prevents any project page from growing unbounded.</li>
+          <li>Clean URLs — no JS, crawlable.</li>
+          <li>Works alongside subseries grouping (pagination applies <em>per subseries</em>).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head bad">Limitations</div>
+      <div class="panel-body">
+        <ul>
+          <li>Pagination is a <em>last resort</em> UX pattern — it means the user must decide to load more. Subseries grouping + "show all" toggle is friendlier.</li>
+          <li>Significant builder complexity: chunking editions, generating multiple pages per project, injecting prev/next links.</li>
+          <li>Only BZIK needs this now. Building it for one project with 12 issues is premature.</li>
+          <li>Canonical URL handling gets complicated — which page is "the" project page for SEO?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Verdict</h3>
+  <p>Static pagination is the right tool for a project with 30+ editions. For a project with 12–20 editions grouped by subseries, subseries section headers (Option E) are sufficient and much simpler. Implement F only if/when a project's subseries itself exceeds 20 items.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 09 — Growth model                                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s9">
+  <div class="slide-head">
+    <h2><span class="n">09</span> Growth model — when each solution is needed</h2>
+  </div>
+
+  <p>Not all solutions are needed now. This maps catalog size to the right intervention — implement each step when the trigger is reached, not before.</p>
+
+  <div class="growth">
+    <div class="growth-card">
+      <div class="growth-card__phase">Now · Phase 1</div>
+      <div class="growth-card__stat">18</div>
+      <div class="growth-card__label">projects total</div>
+      <div class="growth-card__rec">
+        <strong>Do:</strong>
+        <ul style="padding-left:1.1rem;margin-top:.3rem">
+          <li>Option E: subseries grouping in <code>project.html</code></li>
+          <li>Option A: filter pills on <code>/komiksy/</code></li>
+        </ul>
+        <br>
+        <strong>Skip:</strong> sub-pages, tags, pagination
+      </div>
+    </div>
+    <div class="growth-card">
+      <div class="growth-card__phase">Medium · Phase 2</div>
+      <div class="growth-card__stat">30–40</div>
+      <div class="growth-card__label">projects total</div>
+      <div class="growth-card__rec">
+        <strong>Do:</strong>
+        <ul style="padding-left:1.1rem;margin-top:.3rem">
+          <li>Option D: magazine overview + sub-line pages</li>
+          <li>Add <code>line_description</code> to builder config</li>
+          <li>Option C: genre tags (if content team willing)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="growth-card">
+      <div class="growth-card__phase">Later · Phase 3</div>
+      <div class="growth-card__stat">20+</div>
+      <div class="growth-card__label">editions per series</div>
+      <div class="growth-card__rec">
+        <strong>Do:</strong>
+        <ul style="padding-left:1.1rem;margin-top:.3rem">
+          <li>Option F: static pagination (when a subseries hits ~20)</li>
+          <li>Client-side search (lunr.js) when full catalog exceeds ~60 projects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>Why this sequencing</h3>
+  <p><strong>Filter pills (A)</strong> costs near-nothing and immediately improves the page for first-time visitors who know they want "Dobre Licho" books. It degrades gracefully. Do it now.</p>
+  <p><strong>Subseries grouping (E)</strong> is a template fix with data that already exists. BZIK's 12 issues are visually chaotic today. Do it now.</p>
+  <p><strong>Magazine overview (D)</strong> requires editorial commitment to pick featured projects and write line descriptions. Don't implement until the catalog is large enough that the current page actually feels cluttered — currently it's three short sections.</p>
+  <p><strong>Genre tags (C)</strong> require tagging all content. High editorial cost for the current catalog size. Implement when you have enough projects that genre is a meaningful filter (30+).</p>
+  <p><strong>Pagination (F)</strong> is a last resort. BZIK will need it eventually but not for years. Avoid until forced.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- 10 — Recommendation                                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s10">
+  <div class="slide-head">
+    <h2><span class="n">10</span> Recommendation + implementation notes</h2>
+  </div>
+
+  <div class="rec">
+    <div class="rec-head">Recommended plan</div>
+    <div class="rec-items">
+      <div class="rec-item">
+        <span class="phase">Now</span>
+        <span><strong>Option E:</strong> subseries grouping in <code>project.html</code> — 5 lines of Jinja, zero builder changes, fixes BZIK today.</span>
+      </div>
+      <div class="rec-item">
+        <span class="phase">Now</span>
+        <span><strong>Option A:</strong> filter pills in <code>catalog.html</code> — ~30 lines of JS, zero builder changes, helps navigation immediately.</span>
+      </div>
+      <div class="rec-item">
+        <span class="phase">When catalog reaches ~30 projects</span>
+        <span><strong>Option D:</strong> magazine overview + sub-line pages — converts <code>/komiksy/</code> into a proper publisher front page with line identities.</span>
+      </div>
+      <div class="rec-item">
+        <span class="phase">When catalog reaches ~50 projects</span>
+        <span><strong>Option C:</strong> genre tags — add <code>tags</code> to <code>Project</code> model and emit tag pages using the blog tag machinery.</span>
+      </div>
+      <div class="rec-item">
+        <span class="phase">When a series exceeds ~20 editions</span>
+        <span><strong>Option F:</strong> static pagination — add pagination support to <code>render_project_pages()</code>.</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Phase 1 implementation: Option E (subseries grouping)</h3>
+  <p>File: <code>templates/project.html</code>. Replace the flat edition loop with a grouped render. Jinja's <code>groupby</code> filter groups an iterable by attribute; <code>None</code> values sort to a configurable position.</p>
+  <pre><code>{% set grouped = editions | groupby('subseries') %}
+{% for subseries, group_editions in grouped %}
+  {% if grouped | length > 1 %}
+    {# Only render header if there actually are multiple groups #}
+    &lt;header class="section-header"&gt;
+      &lt;h3&gt;{{ subseries or project.title }}&lt;/h3&gt;
+    &lt;/header&gt;
+  {% endif %}
+  &lt;div class="tiles"&gt;
+    {% for e in group_editions %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  &lt;/div&gt;
+{% endfor %}</code></pre>
+  <p><strong>Caveat:</strong> Jinja's <code>groupby</code> sorts groups by key, placing <code>None</code> (no subseries) first alphabetically as an empty string. Verify sort order matches desired display order (main series first, eXXXtra second). If not, pre-sort in Python before passing to template.</p>
+
+  <h3>Phase 1 implementation: Option A (filter pills)</h3>
+  <p>File: <code>templates/catalog.html</code>. Add a filter bar above the first section, emit <code>data-line</code> attributes on each <code>.catalog-section</code>, add inline JS (or a small <code>catalog.js</code> file).</p>
+  <p>The filter bar must be rendered from the same <code>groups</code> list the template already has — no new builder data needed. The "Wszystkie" pill resets to showing all sections.</p>
+
+  <h3>What not to do</h3>
+  <ul>
+    <li><strong>Don't add pagination now.</strong> BZIK has 12 issues. That's 3 rows in a 4-column grid. This is not a UX emergency.</li>
+    <li><strong>Don't build sub-line pages now.</strong> "Mecenat" is 1 project. A sub-page for 1 project is not a sub-page, it's a redirect with extra steps.</li>
+    <li><strong>Don't add genre tags now.</strong> Tagging 18 projects consistently requires a stable taxonomy. Settle the vocabulary when you have enough projects to reveal patterns.</li>
+    <li><strong>Don't use infinite scroll.</strong> It's incompatible with static site generation without JS, breaks browser history, and is hostile to accessibility.</li>
+  </ul>
+</section>
+
+<footer style="text-align:center;padding:3rem 1.5rem 4rem;color:var(--muted);font-size:.78rem;border-top:1px solid #1a1a1a;max-width:900px;margin:0 auto">
+  <p>diablaq.com · /komiksy/ scalability proposals · kwiecień 2026</p>
+  <p style="margin-top:.4rem"><a href="#top">↑ powrót na górę</a></p>
+</footer>
+
+</body>
+</html>

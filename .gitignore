@@ -13,3 +13,4 @@ dist/
 .venv/
 .ruff_cache/
 build/
+project-page-workbook.md
