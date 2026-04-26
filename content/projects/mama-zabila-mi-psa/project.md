@@ -1,9 +1,13 @@
 ---
-cover_image: /img/mama.jpg
-legacy_path: /mama/
-line: diablaq
-summary: Komiks Kasi Mazur.
 title: Mama zabiła mi psa
+line: diablaq # dobre-licho | mecenat | studio
+# kind: title | universe
+# universe_slug:
+summary: Komiks Kasi Mazur.
+legacy_path: /mama/
+cover_image: /img/mama.jpg
+# draft: true | false
+# legacy_landing: true | false
 ---
 
 Komiks o byciu niezrozumianą i strachu przed odrzuceniem. O nieodpowiedzialnych rodzicach, stracie, ale i o tym, że prawdziwa miłość może przetrwać wszystko. Nawet śmierć.

@@ -1,10 +1,13 @@
 ---
-title: "BZIK – Bielski Zin Komiksowy"
-line: mecenat
-summary: "Nieregularnik mający na celu rozwój lokalnej sceny komiksowej."
+title: BZIK – Bielski Zin Komiksowy
+line: mecenat # diablaq | dobre-licho | studio
+# kind: title | universe
+# universe_slug:
+summary: Nieregularnik mający na celu rozwój lokalnej sceny komiksowej.
 legacy_path: /bzik/
-legacy_landing: true
-cover_image: "/img/bzik1.jpg"
+cover_image: /img/bzik1.jpg
+# draft: true | false
+legacy_landing: true # false
 ---
 
 BZIK to zin wydawany w formule mecenatu. Jego celem jest pobudzanie lokalnych (i nie tylko!) twórców komiksów do
