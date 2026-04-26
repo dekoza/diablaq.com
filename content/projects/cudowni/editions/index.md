@@ -15,13 +15,13 @@ cover_alt: Cudowni – okładka standardowa
 creators:
   - role: Scenariusz
     name: Marcin Bałczewski
-    # person_slug:
+    person_slug: marcin-balczewski
   - role: Rysunki
     name: Błażej Kurowski
-    # person_slug:
+    person_slug: qrjusz
   - role: Okładka standardowa
     name: Błażej Kurowski
-    # person_slug:
+    person_slug: qrjusz
   - role: Okładka limitowana
     name: Dawid Malik
     # person_slug:
