@@ -51,7 +51,7 @@ Każda sekcja zawiera już:
 - ścieżkę do właściwego pliku,
 - informację, czego w nim brakuje,
 - gotowy szkielet pól z zakomentowanymi opcjami,
-- podpowiedzi przy polach z krótką listą możliwych wartości (`line`, `kind`, `binding`, `true | false` itd.),
+- podpowiedzi przy polach z krótką listą możliwych wartości (`line`, `kind`, `format`, `true | false` itd.),
 - pomocnicze notatki z istniejących plików wydań.
 
 Dzięki temu da się szybko uzupełnić opis projektu, opis konkretnego wydania albo oba naraz.
@@ -156,16 +156,18 @@ To znaczy: dane są takie jak w serii, ale **strona projektu** w serwisie jest w
 - jeśli projekt ma dokładnie **1 wydanie**, strona projektu pokaże od razu szczegóły (okładka, metryczka, opis),
 - jeśli projekt ma **2+ wydań**, strona projektu pokaże listę wydań.
 
-Jeśli w przyszłości pojawi się np. wznowienie, dodajemy nowe wydanie (np. `02.md`) **albo** (jeśli treść się nie zmienia) dokładamy nową okładkę w polu `covers` w istniejącym wydaniu.
+Jeśli w przyszłości pojawi się np. wznowienie, dodajemy nowe wydanie (np. `02.md`) **albo** (jeśli treść się nie zmienia) dokładamy nową okładkę w polu `alternate_covers` w istniejącym wydaniu.
 
 ---
 
 ## Przykład: uzupełnienie brakującej okładki
 Jeśli w pliku wydania widzisz uwagę w stylu: „Okładka do uzupełnienia…”, zrób to tak:
 1. Dodaj plik do `img/` (np. `img/paatrzcie.jpg`).
-2. W pliku wydania dodaj pole:
-   - `cover_image: "/img/paatrzcie.jpg"`
-3. Zapisz i wyślij Pull Request.
+2. W pliku wydania uzupełnij `primary_cover.image`, np.:
+   - `primary_cover:`
+   - `  image: "/img/paatrzcie.jpg"`
+3. Opcjonalnie dopisz `alt`, `artist_name` i `person_slug`.
+4. Zapisz i wyślij Pull Request.
 
 ---
 
@@ -199,37 +201,43 @@ Jeżeli chcesz wymusić obecność na liście niezależnie od daty, użyj:
 Ważne:
 - Pozycja **nie może** mieć jednocześnie `is_new: true` i `is_announcement: true`.
 
-### Okładki i podglądy
-Możesz użyć dwóch sposobów:
+### Okładki, podglądy i produkty
+Wydanie ma teraz jeden spójny układ:
 
-1) Pojedyncza okładka (najprostsze)
-- `cover_image: "/img/..."`
-- `cover_alt: "..."` (opis alternatywny, opcjonalny)
-
-2) Wiele okładek (gdy są warianty)
-- `covers:` — lista okładek (pierwsza z listy jest traktowana jako główna do skrótów, jeśli nie ma `cover_image`)
-
-Przykład:
+#### 1) Główna okładka
 ```yaml
-cover_image: "/img/spz1.jpg"
-cover_alt: "Spółka ZŁO #1 – okładka"
+primary_cover:
+  label: "Standardowa"          # opcjonalne
+  image: "/img/spz1.jpg"
+  alt: "Spółka ZŁO #1 – okładka standardowa"
+  artist_name: "Piotr Burzyński" # opcjonalne
+  person_slug: "piotr-burzynski" # opcjonalne
+```
 
-covers:
-  - image: "/img/spz1.jpg"
-    alt: "Spółka ZŁO #1 – okładka standard"
-    caption: "Standard"
-  - image: "/img/spz1-blank.jpg"
-    alt: "Spółka ZŁO #1 – okładka blank"
-    caption: "Blank"
+#### 2) Okładki alternatywne
+Każda alternatywna okładka ma własne `id`, bo produkty mogą się do niej odwoływać przez `cover_id`.
 
+```yaml
+alternate_covers:
+  - id: limitowana
+    label: "Limitowana"
+    image: "/img/spz1-limitowana.jpg"
+    alt: "Spółka ZŁO #1 – okładka limitowana"
+    artist_name: "Kacper Wilk"
+    person_slug: "kacper-wilk"
+```
+
+#### 3) Podglądy wnętrza
+```yaml
 previews:
   - image: "/img/spz1-page1.jpg"
     alt: "Spółka ZŁO #1 – strona 1"
     caption: "Strona 1"
 ```
 
-### Twórcy
-Pole `creators` jest listą. Najczęściej używamy formatu obiektowego:
+#### 4) Twórcy
+`creators` służy do scenariusza, rysunków, tłumaczenia itd. **Nie duplikujemy tutaj ról okładkowych** — autorów okładek wpisujemy w `primary_cover` albo `alternate_covers`.
+
 ```yaml
 creators:
   - role: "Scenariusz"
@@ -245,28 +253,43 @@ Jeśli dana osoba ma profil w `content/people/`, można dodać linkowanie:
     person_slug: "zvyrke"
 ```
 
-### Parametry wydania (metryczka)
-- `specs:` — słownik (klucz → wartość), np. liczba stron, format, cena, ISBN.
+#### 5) Wspólne parametry wydania
+- `edition_specs:` — słownik dla faktów wspólnych dla całego wydania (np. liczba stron, wymiary).
 
-Przykład:
 ```yaml
-specs:
+edition_specs:
   "Liczba stron": "24"
-  "Oprawa": "zeszytowa"
   "Wymiary": "170 x 240 mm"
-  "Cena": "19,99 zł"
-  "ISBN-13": "978..."
 ```
 
-### Linki do zakupu
-- `buy_links:` — lista linków, każdy ma `label` i `url`.
+#### 6) Produkty / warianty sprzedażowe
+Zamiast dawnych `buy_links` + `variants` używamy jednego pola `products:`.
+Każdy produkt to konkretna oferta sprzedażowa: format, opcjonalna okładka, cena, ISBN, limitacja i linki do sklepów.
 
-Przykład:
 ```yaml
-buy_links:
-  - label: "Kup w naszym sklepie"
-    url: "https://..."
+products:
+  - format: zeszyt               # zeszyt | miekka | twarda | ebook
+    cover_id: primary            # opcjonalne; domyślnie główna okładka
+    label: "Standardowa"         # opcjonalne
+    isbn13: "978..."
+    ean2: "02"                   # opcjonalne, np. dla alternatywnej okładki
+    price: "19,99 zł"
+    limited: true                # opcjonalne
+    numbered_copies: 333         # opcjonalne; tylko gdy limited=true
+    specs:
+      "Oprawa": "miękka ze skrzydełkami"
+    buy_links:
+      - label: "Strefa Komiksu"
+        url: "https://..."
+      - label: "Gildia"
+        url: "https://..."
 ```
+
+Ważne:
+- `label` i `cover_id` są opcjonalne, ale pomagają przy kilku okładkach tego samego formatu.
+- `numbered_copies` wpisujemy tylko wtedy, gdy egzemplarze są numerowane.
+- `limited: true` można ustawić także bez `numbered_copies`.
+- Nazwy sklepów w `buy_links[*].label` powinny być krótkie: `Strefa Komiksu`, `Gildia`, `Gov.pl` itd.
 
 ### Pola legacy (zgodność ze starymi linkami)
 - `legacy_anchor` — jeśli stara strona miała linki w stylu `/bzik/#bzik3`.
@@ -287,7 +310,8 @@ Przykład (`content/projects/mama/editions/index.md`):
 title: "Mama zabiła mi psa"
 release_date: 2024-08-12
 standalone: true
-cover_image: "/img/mama.jpg"
+primary_cover:
+  image: "/img/mama.jpg"
 ---
 ```
 
@@ -372,7 +396,8 @@ Zmień nazwę `content/projects/pisto/editions/index.md` → `01.md` i edytuj:
 title: "Pisto #1"
 release_date: 2025-02-01
 # standalone: true  ← USUŃ tę linię
-cover_image: "/img/pisto1.jpg"
+primary_cover:
+  image: "/img/pisto1.jpg"
 ---
 ```
 
@@ -382,7 +407,8 @@ Utwórz `content/projects/pisto/editions/02.md`:
 ---
 title: "Pisto #2"
 release_date: 2025-08-01
-cover_image: "/img/pisto2.jpg"
+primary_cover:
+  image: "/img/pisto2.jpg"
 ---
 ```
 

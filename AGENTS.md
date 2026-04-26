@@ -189,63 +189,69 @@ title: "Edition Title"             # required
 release_date: YYYY-MM-DD           # required for published work; omit for truly TBA
 release: "First Edition 2024"      # optional; shown as subtitle — omit if it duplicates release_date
 
-# Cover
-cover_image: /img/<file>.jpg       # preferred; use if single cover
-cover_alt: "Alt text"
-covers:                            # use instead of cover_image for multiple covers
-  - image: /img/<file>.jpg
+# Covers
+primary_cover:
+  label: "Standardowa"             # optional
+  image: /img/<file>.jpg           # required when the main cover is known
+  alt: "Alt text"
+  artist_name: "Full Name"         # optional
+  person_slug: slug-in-ludzie      # optional; link to /ludzie/
+
+alternate_covers:
+  - id: limitowana                 # stable identifier used by products.cover_id
+    label: "Limitowana"
+    image: /img/<file>.jpg
     alt: "Alt text"
-    caption: "Optional caption"
+    artist_name: "Full Name"
+    person_slug: slug-in-ludzie
 
-# Creators
+previews:
+  - image: /img/<file>.jpg
+    alt: "Podgląd strony 1"
+    caption: "Strona 1"
+
+# Creators (story / art / translation etc. — no cover-role duplication here)
 creators:
-  - role: "Scenariusz"             # omit role if not applicable
+  - role: "Scenariusz"
     name: "Full Name"
-    person_slug: slug-in-ludzie    # omit if person has no /ludzie/ page
+    person_slug: slug-in-ludzie
 
-# Simple editions (no variants)
-specs:
+# Edition-level shared facts
+edition_specs:
   "Liczba stron": "128"
-  "Oprawa": "miękka"
   "Wymiary": "165 x 235 mm"
-  "Cena": "49,90 zł"
-  "ISBN-13": "978XXXXXXXXXX"       # also accepted at top level; prefer inside specs
-buy_links:
-  - label: "Kup w naszym sklepie"
-    url: "https://strefakomiksu.pl/..."
 
-# Variant editions (multiple bindings / digital)
-variants:
-  - binding: miekka               # or: twarda
-    isbn13: "978XXXXXXXXXX"        # validated with ISBN-13 checksum
-    limited_print_run: 333         # optional
-    numbered: true                 # requires limited_print_run
+# Sellable products / offers
+products:
+  - format: zeszyt                # one of: zeszyt | miekka | twarda | ebook
+    cover_id: primary             # optional; defaults to the primary cover
+    label: "Standardowa"          # optional UI label when useful
+    isbn13: "978XXXXXXXXXXXX"
+    ean2: "02"                    # optional 2-digit addon for alt covers
+    price: "49,90 zł"
+    limited: true                 # optional; omit or false for regular products
+    numbered_copies: 333          # optional; requires limited=true
     specs:
-      "Cena": "66,60 zł"
+      "Oprawa": "miękka ze skrzydełkami"
     buy_links:
       - label: "Strefa Komiksu"
         url: "https://..."
-  - version: elektroniczna
-    isbn13: "978XXXXXXXXXX"
-    specs:
-      "Cena": "29,90 zł"
-    buy_links: []
+      - label: "Gildia"
+        url: "https://..."
 
 # Status flags (auto-derived from release_date unless overridden)
-# is_new: auto (release_date <= today <= release_date + 6 weeks)
-# is_announcement: auto (release_date > today)
-force_new: true                    # override: force is_new regardless of date
-force_announcement: true           # override: force is_announcement
+force_new: true
+force_announcement: true
 # Cannot set both at once.
 
 # Presale
-presale_url: "https://..."         # shown as CTA if is_announcement is true
+presale_url: "https://..."
 
 # Editorial
 featured: true                     # makes this edition the homepage hero
 standalone: true                   # suppresses issue numbering; use for non-serial volumes
 
-# Legacy
+# Legacy / numbering
 legacy_anchor: kodiak1             # old in-page anchor; preserved for _redirects compatibility
 subseries: "eXXXtra"               # groups editions within a project for issue numbering
 issue_number: 5                    # explicit issue number override
@@ -254,7 +260,9 @@ issue_number: 5                    # explicit issue number override
 Body text. Rendered below the edition metadata panel.
 ```
 
-**Build-time warning** if a published (non-announcement, non-TBA) edition has no buy links.
+**Hard cut:** edition files must not use legacy `cover_image`, `cover_alt`, `covers`, `specs`,
+`buy_links`, or `variants` fields anymore. Published (non-announcement, non-TBA) editions still
+emit a build-time warning when none of their `products[*].buy_links` entries are present.
 
 ### `content/people/<slug>.md`
 
@@ -369,7 +377,8 @@ Body in Markdown. Rendered at /<slug>/.
    Its URL will be `/komiksy/<project>/` — no separate project index page is generated.
 4. For a series, use numbered slugs (`01`, `02`, …) or descriptive slugs. Each gets its own
    URL `/komiksy/<project>/<edition>/`.
-5. Add `buy_links` to every published edition. A build warning fires if they are missing.
+5. Add at least one `products:` entry to every published edition whenever the commercial data is known.
+   A build warning fires if a published edition ends up with no `products[*].buy_links`.
 6. Run `uv run diablaq-build` and inspect `dist/`.
 
 ### New person
@@ -393,8 +402,8 @@ Set `draft: true` in the project or blog post frontmatter. The builder skips it 
 ## Homepage hero
 
 The hero image on the homepage is editorially controlled via `featured: true` in an edition's
-frontmatter. The builder picks the first edition with `featured: true` and `cover_image` as the
-hero. If none is flagged, it falls back to the first announcement with a cover image.
+frontmatter. The builder picks the first edition with `featured: true` and a `primary_cover.image`
+as the hero. If none is flagged, it falls back to the first announcement with a primary cover.
 
 ---
 

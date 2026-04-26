@@ -70,11 +70,14 @@ def _build_fixture_site(tmp_path: Path) -> Path:
             "release_date: 2024-11-01\n"
             "standalone: true\n"
             "featured: true\n"
-            "cover_image: /img/mg_cudowni_1.jpg\n"
-            'cover_alt: "Cudowni – okładka"\n'
-            "buy_links:\n"
-            '  - label: "Kup"\n'
-            '    url: "https://example.com/cudowni"\n'
+            "primary_cover:\n"
+            "  image: /img/mg_cudowni_1.jpg\n"
+            '  alt: "Cudowni – okładka"\n'
+            "products:\n"
+            "  - format: zeszyt\n"
+            "    buy_links:\n"
+            '      - label: "Kup"\n'
+            '        url: "https://example.com/cudowni"\n'
             "---\n"
             "\n"
             "Pierwszy tom Cudownych.\n"

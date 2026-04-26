@@ -15,16 +15,14 @@ from diablaq_site.models import (
     BuyLink,
     Creator,
     Edition,
-    EditionVariant,
+    EditionCover,
+    EditionProduct,
     ImageRef,
     Person,
     Project,
 )
 from diablaq_site.text import _fix_orphans
-from diablaq_site.validation import (
-    _ALLOWED_VARIANT_KINDS,
-    _is_valid_isbn13,
-)
+from diablaq_site.validation import _is_valid_isbn13
 
 
 def read_markdown_file(path: Path) -> tuple[dict, str]:
@@ -97,25 +95,14 @@ def coerce_str_list(value) -> list[str]:
 
 
 def pick_cover(meta: dict) -> tuple[str | None, str | None]:
-    """Wybiera okładkę do skrótu (listing/home).
+    """Pick the primary cover image used for cards, OG tags, and hero slots."""
+    primary_cover = meta.get("primary_cover")
+    if not isinstance(primary_cover, dict):
+        return None, None
 
-    Obsługiwane formaty:
-    - `cover_image` / `cover_alt`
-    - `covers: [{image, alt, caption}, ...]`
-    """
-
-    cover_image = meta.get("cover_image")
-    cover_alt = meta.get("cover_alt")
-    if cover_image:
-        return str(cover_image), str(cover_alt) if cover_alt else None
-
-    covers = meta.get("covers")
-    if isinstance(covers, list) and covers:
-        first = covers[0]
-        if isinstance(first, dict) and first.get("image"):
-            return str(first.get("image")), str(first.get("alt") or "") or None
-
-    return None, None
+    image = str(primary_cover.get("image") or "").strip() or None
+    alt = str(primary_cover.get("alt") or "").strip() or None
+    return image, alt
 
 
 def parse_image_list(meta: dict, key: str, *, source_path: Path) -> list[ImageRef]:
@@ -171,130 +158,211 @@ def parse_buy_links(meta: dict, *, source_path: Path) -> list[BuyLink]:
 
 def _normalize_isbn13(value: str) -> str:
     """Normalize ISBN-13 by removing hyphens and spaces."""
-    # Akceptujemy zapis z myślnikami/spacjami, ale przechodzimy na ciąg cyfr.
     return "".join(ch for ch in value if ch.isdigit())
 
 
-# These constants must be available locally for parse_variants
-_ALLOWED_BINDINGS = {"miekka", "twarda"}
-_ALLOWED_VERSIONS = {"elektroniczna"}
 _ALLOWED_PROJECT_KINDS = {"title", "universe"}
+_ALLOWED_PRODUCT_FORMATS = {"zeszyt", "miekka", "twarda", "ebook"}
+_LEGACY_EDITION_FIELDS = {"cover_image", "cover_alt", "covers", "specs", "buy_links", "variants"}
 
 
-def parse_variants(meta: dict, *, source_path: Path) -> list[EditionVariant]:
-    """Parse edition variants from metadata with keyword-only source_path.
+def _parse_optional_bool(value: object, *, default: bool, field_name: str, source_path: Path) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    text = str(value).strip().lower()
+    if text in {"true", "1", "yes", "on"}:
+        return True
+    if text in {"false", "0", "no", "off", ""}:
+        return False
+    raise ValueError(f"{field_name} musi być wartością bool w {source_path}")
 
-    CRITICAL: Calls parse_buy_links with synthetic dict wrapper exactly as-is.
-    """
-    raw = meta.get("variants")
+
+def _parse_optional_positive_int(value: object, *, field_name: str, source_path: Path) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        parsed = int(str(value).strip())
+    except Exception as exc:  # noqa: BLE001
+        raise ValueError(f"{field_name} musi być liczbą całkowitą w {source_path}") from exc
+    if parsed <= 0:
+        raise ValueError(f"{field_name} musi być > 0 w {source_path}")
+    return parsed
+
+
+def _parse_optional_ean2(value: object, *, field_name: str, source_path: Path) -> str | None:
+    if value is None or value == "":
+        return None
+    text = str(value).strip()
+    if not text.isdigit() or len(text) not in {1, 2}:
+        raise ValueError(f"{field_name} musi być 1- lub 2-cyfrowym dodatkiem EAN-2 w {source_path}")
+    return text.zfill(2)
+
+
+def ensure_no_legacy_edition_fields(meta: dict, *, source_path: Path) -> None:
+    legacy_keys = sorted(key for key in _LEGACY_EDITION_FIELDS if key in meta)
+    if legacy_keys:
+        raise ValueError(
+            "Wydanie używa legacy fields "
+            f"({', '.join(legacy_keys)}) w {source_path}. "
+            "Użyj primary_cover, alternate_covers, edition_specs i products."
+        )
+
+
+def _parse_cover_entry(
+    item: object,
+    *,
+    source_path: Path,
+    field_name: str,
+    default_id: str | None = None,
+    require_id: bool = False,
+) -> EditionCover:
+    if not isinstance(item, dict):
+        raise ValueError(f"{field_name} musi być dict w {source_path}")
+
+    cover_id = as_str(item.get("id") or "") or default_id
+    if require_id and not cover_id:
+        raise ValueError(f"{field_name}.id jest wymagane w {source_path}")
+    if not cover_id:
+        raise ValueError(f"{field_name}.id jest wymagane w {source_path}")
+
+    image = as_str(item.get("image") or "")
+    if not image:
+        raise ValueError(f"{field_name}.image jest wymagane w {source_path}")
+
+    label = as_str(item.get("label") or "") or None
+    alt = as_str(item.get("alt") or "") or None
+    artist_name = as_str(item.get("artist_name") or "") or None
+    person_slug = as_str(item.get("person_slug") or "") or None
+    return EditionCover(
+        id=cover_id,
+        label=label,
+        image=image,
+        alt=alt,
+        artist_name=artist_name,
+        person_slug=person_slug,
+    )
+
+
+def parse_primary_cover(meta: dict, *, source_path: Path) -> EditionCover | None:
+    raw = meta.get("primary_cover")
+    if raw is None:
+        return None
+    return _parse_cover_entry(
+        raw,
+        source_path=source_path,
+        field_name="primary_cover",
+        default_id="primary",
+    )
+
+
+def parse_cover_list(meta: dict, key: str, *, source_path: Path) -> list[EditionCover]:
+    raw = meta.get(key)
     if raw is None:
         return []
-
     if not isinstance(raw, list):
-        raise ValueError(f"variants musi być listą w {source_path}")
+        raise ValueError(f"{key} musi być listą w {source_path}")
 
-    # Fallback migracyjny: jeśli ktoś jeszcze trzyma specs na poziomie wydania,
-    # a ma już variants, to dopniemy je do wariantów, o ile wariant nie ma własnych specs.
-    edition_specs_fallback = parse_specs(meta)
+    covers: list[EditionCover] = []
+    seen_ids: set[str] = set()
+    for i, item in enumerate(raw):
+        cover = _parse_cover_entry(
+            item,
+            source_path=source_path,
+            field_name=f"{key}[{i}]",
+            require_id=True,
+        )
+        if cover.id == "primary":
+            raise ValueError(f"{key}[{i}].id nie może mieć wartości 'primary' w {source_path}")
+        if cover.id in seen_ids:
+            raise ValueError(f"duplicate id={cover.id!r} in {key} w {source_path}")
+        seen_ids.add(cover.id)
+        covers.append(cover)
 
-    out: list[EditionVariant] = []
+    return covers
+
+
+def parse_products(
+    meta: dict,
+    *,
+    source_path: Path,
+    primary_cover: EditionCover | None,
+    alternate_covers: list[EditionCover],
+) -> list[EditionProduct]:
+    raw = meta.get("products")
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ValueError(f"products musi być listą w {source_path}")
+
+    available_cover_ids = {cover.id for cover in alternate_covers}
+    if primary_cover is not None:
+        available_cover_ids.add("primary")
+
+    products: list[EditionProduct] = []
     for i, item in enumerate(raw):
         if not isinstance(item, dict):
-            raise ValueError(f"variants[{i}] musi być dict w {source_path}")
+            raise ValueError(f"products[{i}] musi być dict w {source_path}")
 
-        # Nowy format: binding/version; fallback: legacy kind
-        binding = as_str(item.get("binding") or "") or None
-        version = as_str(item.get("version") or "") or None
-
-        legacy_kind = as_str(item.get("kind") or "") or None
-        if legacy_kind and (binding or version):
+        format_name = as_str(item.get("format") or "")
+        if format_name not in _ALLOWED_PRODUCT_FORMATS:
             raise ValueError(
-                f"variants[{i}] nie może mieć jednocześnie (binding/version) i kind w {source_path}"
+                f"products[{i}].format musi być jednym z {sorted(_ALLOWED_PRODUCT_FORMATS)} w {source_path}"
             )
 
-        if legacy_kind:
-            if legacy_kind not in _ALLOWED_VARIANT_KINDS:
-                raise ValueError(
-                    f"variants[{i}].kind musi być jednym z {_ALLOWED_VARIANT_KINDS} w {source_path}"
-                )
-            if legacy_kind in _ALLOWED_BINDINGS:
-                binding = legacy_kind
-                version = None
-            else:
-                binding = None
-                version = legacy_kind
+        cover_id = as_str(item.get("cover_id") or "") or None
+        if cover_id is None and primary_cover is not None:
+            cover_id = "primary"
+        if cover_id is not None and cover_id not in available_cover_ids:
+            raise ValueError(f"products[{i}].cover_id={cover_id!r} nie istnieje w {source_path}")
 
-        # Walidacja osi: dokładnie jedno z (binding, version)
-        if not binding and not version:
+        raw_isbn13 = as_str(item.get("isbn13") or "")
+        isbn13 = _normalize_isbn13(raw_isbn13) or None
+        if isbn13 and not _is_valid_isbn13(isbn13):
             raise ValueError(
-                f"variants[{i}] musi mieć binding albo version (lub legacy kind) w {source_path}"
-            )
-        if binding and version:
-            raise ValueError(
-                f"variants[{i}] nie może mieć jednocześnie binding i version w {source_path}"
-            )
-        if binding and binding not in _ALLOWED_BINDINGS:
-            raise ValueError(
-                f"variants[{i}].binding musi być jednym z {_ALLOWED_BINDINGS} w {source_path}"
-            )
-        if version and version not in _ALLOWED_VERSIONS:
-            raise ValueError(
-                f"variants[{i}].version musi być jednym z {_ALLOWED_VERSIONS} w {source_path}"
+                f"products[{i}].isbn13={item.get('isbn13')!r} nie wygląda jak poprawny ISBN-13 w {source_path}"
             )
 
-        isbn13 = _normalize_isbn13(as_str(item.get("isbn13") or ""))
-        if not isbn13:
-            raise ValueError(f"variants[{i}].isbn13 jest wymagane w {source_path}")
-        if not _is_valid_isbn13(isbn13):
+        limited = _parse_optional_bool(
+            item.get("limited"),
+            default=False,
+            field_name=f"products[{i}].limited",
+            source_path=source_path,
+        )
+        numbered_copies = _parse_optional_positive_int(
+            item.get("numbered_copies"),
+            field_name=f"products[{i}].numbered_copies",
+            source_path=source_path,
+        )
+        if numbered_copies is not None and not limited:
             raise ValueError(
-                f"variants[{i}].isbn13={item.get('isbn13')!r} nie wygląda jak poprawny ISBN-13 w {source_path}"
+                f"products[{i}].numbered_copies wymaga limited=true w {source_path}"
             )
 
-        limited_print_run_raw = item.get("limited_print_run")
-        limited_print_run: int | None
-        if limited_print_run_raw is None or limited_print_run_raw == "":
-            limited_print_run = None
-        else:
-            try:
-                limited_print_run = int(limited_print_run_raw)
-            except Exception as exc:  # noqa: BLE001
-                raise ValueError(
-                    f"variants[{i}].limited_print_run musi być liczbą całkowitą w {source_path}"
-                ) from exc
-            if limited_print_run <= 0:
-                raise ValueError(f"variants[{i}].limited_print_run musi być > 0 w {source_path}")
-
-        numbered_raw = item.get("numbered")
-        numbered = bool(numbered_raw) if numbered_raw is not None else False
-        if numbered and limited_print_run is None:
-            raise ValueError(
-                f"variants[{i}].numbered=true wymaga podania limited_print_run w {source_path}"
-            )
-
-        # CRITICAL: Preserve synthetic dict wrapper exactly as-is (per plan line 768)
-        buy_links = parse_buy_links({"buy_links": item.get("buy_links")}, source_path=source_path)
-        # if not buy_links:
-        #     raise ValueError(
-        #         f"variants[{i}].buy_links jest wymagane (lista linków zakupowych per wariant) w {source_path}"
-        #     )
-
-        specs = parse_specs(item)
-        if not specs and edition_specs_fallback:
-            specs = dict(edition_specs_fallback)
-
-        out.append(
-            EditionVariant(
-                binding=binding,
-                version=version,
+        products.append(
+            EditionProduct(
+                format=format_name,
+                cover_id=cover_id,
+                label=as_str(item.get("label") or "") or None,
                 isbn13=isbn13,
-                limited_print_run=limited_print_run,
-                numbered=numbered,
-                buy_links=buy_links,
-                specs=specs,
+                ean2=_parse_optional_ean2(
+                    item.get("ean2"),
+                    field_name=f"products[{i}].ean2",
+                    source_path=source_path,
+                ),
+                price=as_str(item.get("price") or "") or None,
+                limited=limited,
+                numbered_copies=numbered_copies,
+                buy_links=parse_buy_links(
+                    {"buy_links": item.get("buy_links")},
+                    source_path=source_path,
+                ),
+                specs=parse_specs(item),
             )
         )
 
-    return out
+    return products
 
 
 def parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], list[str]]:
@@ -338,22 +406,25 @@ def parse_creators(meta: dict, *, source_path: Path) -> tuple[list[Creator], lis
     return creators, names
 
 
-def parse_specs(meta: dict) -> dict[str, str]:
-    """Parse specs dictionary from metadata — NO source_path parameter."""
-    raw = meta.get("specs")
+def parse_specs(meta: dict, key: str = "specs") -> dict[str, str]:
+    """Parse a specs dictionary from metadata.
+
+    Invalid or missing values are treated as an empty mapping to keep authoring forgiving.
+    """
+    raw = meta.get(key)
     if raw is None:
         return {}
     if not isinstance(raw, dict):
         return {}
 
     out: dict[str, str] = {}
-    for k, v in raw.items():
-        if v is None:
+    for item_key, item_value in raw.items():
+        if item_value is None:
             continue
-        key = as_str(k)
-        val = as_str(v)
-        if key and val:
-            out[key] = val
+        normalized_key = as_str(item_key)
+        normalized_value = as_str(item_value)
+        if normalized_key and normalized_value:
+            out[normalized_key] = normalized_value
     return out
 
 
@@ -372,7 +443,7 @@ def load_pages(pages_dir: Path) -> list:
 def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, list]:
     """Load all projects and their editions, skipping those with draft: true."""
     from collections import defaultdict
-    from diablaq_site.models import Edition, Project
+
     from diablaq_site.images import get_cover_aspect_class
     from diablaq_site.urls import canonical_edition_url, canonical_project_url
 
@@ -385,7 +456,6 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             continue
         meta, body_html = read_markdown_file(project_md)
 
-        # Skip draft projects
         if bool(meta.get("draft", False)):
             continue
 
@@ -395,26 +465,18 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             raise ValueError(
                 f"Nieprawidłowe kind={kind!r} w {project_md}. Dozwolone: title, universe."
             )
+
         universe_slug = (
             str(meta["universe_slug"]).strip() if meta.get("universe_slug") is not None else None
         )
         if kind == "universe" and universe_slug:
-            raise ValueError(
-                f"Projekt ma universe_slug, ale kind=universe w {project_md}."
-            )
+            raise ValueError(f"Projekt ma universe_slug, ale kind=universe w {project_md}.")
         if universe_slug == slug:
             raise ValueError(f"Projekt nie może wskazywać samego siebie jako universe_slug: {project_md}")
+
         cover_image = str(meta.get("cover_image") or "").strip() or None
         summary = str(meta["summary"]) if meta.get("summary") is not None else None
         legacy_path = str(meta["legacy_path"]) if meta.get("legacy_path") is not None else None
-
-        # Validation warnings
-        if not cover_image:
-            print(f"WARNING: {project_md} has no cover_image", file=sys.stderr)
-        elif not (root / cover_image.lstrip("/")).exists():
-            print(f"WARNING: {project_md} cover_image not found: {cover_image}", file=sys.stderr)
-        if not summary:
-            print(f"WARNING: {project_md} has no summary", file=sys.stderr)
 
         projects.append(
             Project(
@@ -440,9 +502,7 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
             release_date = parse_optional_date(emeta.get("release_date"), source_path=edition_md)
             drafts.append((emeta, ebody_html, release_date or date(9999, 12, 31), edition_md.stem))
 
-        grouped: dict[str | None, list[tuple[dict[str, object], str, date, str]]] = defaultdict(
-            list
-        )
+        grouped: dict[str | None, list[tuple[dict[str, object], str, date, str]]] = defaultdict(list)
         for emeta, ebody_html, sort_date, ed_slug in drafts:
             if not emeta.get("standalone", False):
                 subseries = str(emeta["subseries"]).strip() if emeta.get("subseries") else None
@@ -461,6 +521,8 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
 
         for emeta, ebody_html, sort_date, ed_slug in drafts:
             source = project_dir / "editions" / f"{ed_slug}.md"
+            ensure_no_legacy_edition_fields(emeta, source_path=source)
+
             release_date = parse_optional_date(emeta.get("release_date"), source_path=source)
             force_new = bool(emeta.get("force_new", False) or emeta.get("is_new", False))
             force_announcement = bool(
@@ -470,10 +532,14 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 raise ValueError(
                     f"Pozycja nie może mieć jednocześnie force_new i force_announcement: {source}"
                 )
+
             auto_is_new, auto_is_announcement = derive_flags(
-                release_date=release_date, today=date.today()
+                release_date=release_date,
+                today=date.today(),
             )
-            cover_image, cover_alt = pick_cover(emeta)
+            cover_image, _cover_alt = pick_cover(emeta)
+            primary_cover = parse_primary_cover(emeta, source_path=source)
+            alternate_covers = parse_cover_list(emeta, "alternate_covers", source_path=source)
             creators, creator_names = parse_creators(emeta, source_path=source)
             standalone = bool(emeta.get("standalone", False))
             issue_number = None if standalone else issue_numbers.get(ed_slug)
@@ -487,6 +553,12 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 str(emeta["legacy_path"]) if emeta.get("legacy_path") is not None else None
             )
             featured = bool(emeta.get("featured", False))
+            products = parse_products(
+                emeta,
+                source_path=source,
+                primary_cover=primary_cover,
+                alternate_covers=alternate_covers,
+            )
 
             edition = Edition(
                 url=canonical_edition_url(line=line, project_slug=slug, edition_slug=ed_slug),
@@ -498,38 +570,68 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 is_announcement=force_announcement or (auto_is_announcement and not force_new),
                 presale_url=presale_url,
                 legacy_anchor=legacy_anchor,
-                cover_image=cover_image,
-                cover_alt=cover_alt,
+                primary_cover=primary_cover,
                 cover_aspect_class=get_cover_aspect_class(cover_image, root),
-                covers=parse_image_list(emeta, "covers", source_path=source),
+                alternate_covers=alternate_covers,
                 previews=parse_image_list(emeta, "previews", source_path=source),
                 creators=creators,
                 creator_names=creator_names,
-                specs=parse_specs(emeta),
-                buy_links=parse_buy_links(emeta, source_path=source),
-                variants=parse_variants(emeta, source_path=source),
+                edition_specs=parse_specs(emeta, key="edition_specs"),
+                products=products,
                 html_body=ebody_html,
                 standalone=standalone,
                 subseries=str(emeta.get("subseries") or "").strip() or None,
                 issue_number=issue_number,
-                issue_number_display=f"{issue_number:02d}"
-                if issue_number is not None
-                else None,
+                issue_number_display=f"{issue_number:02d}" if issue_number is not None else None,
                 featured=featured,
                 legacy_path=edition_legacy_path,
             )
 
-            # Warn if published edition has no buy links
-            if not edition.is_announcement and not edition.buy_links and not any(
-                v.buy_links for v in edition.variants
-            ) and edition.release_date.year < 9999:
-                print(
-                    f"WARNING: {source} has no buy_links",
-                    file=sys.stderr,
-                )
+            if (
+                not edition.is_announcement
+                and edition.release_date.year < 9999
+                and not any(product.buy_links for product in edition.products)
+            ):
+                print(f"WARNING: {source} has no buy_links", file=sys.stderr)
 
             editions.append(edition)
 
+    projects_with_fallbacks: list[Project] = []
+    for project in projects:
+        cover_image = project.cover_image
+        if not cover_image:
+            fallback_cover = next(
+                (
+                    edition.cover_image
+                    for edition in sorted(
+                        [item for item in editions if item.project_slug == project.slug and item.cover_image],
+                        key=lambda item: (item.release_date, item.url),
+                    )
+                ),
+                None,
+            )
+            cover_image = fallback_cover
+
+        if not cover_image:
+            project_md = projects_dir / project.slug / "project.md"
+            print(f"WARNING: {project_md} has no cover_image", file=sys.stderr)
+        elif not (root / cover_image.lstrip("/")).exists():
+            project_md = projects_dir / project.slug / "project.md"
+            print(f"WARNING: {project_md} cover_image not found: {cover_image}", file=sys.stderr)
+
+        if not project.summary:
+            project_md = projects_dir / project.slug / "project.md"
+            print(f"WARNING: {project_md} has no summary", file=sys.stderr)
+
+        projects_with_fallbacks.append(
+            replace(
+                project,
+                cover_image=cover_image,
+                cover_aspect_class=get_cover_aspect_class(cover_image, root),
+            )
+        )
+
+    projects = projects_with_fallbacks
     projects_by_slug = {project.slug: project for project in projects}
     for project in projects:
         if not project.universe_slug:
@@ -606,7 +708,7 @@ def load_blog_posts(blog_dir: Path) -> list:
 
 
 def apply_person_credit_names(editions: list[Edition], people: list[Person]) -> list[Edition]:
-    """Replace linked creator names with the person's publication credit."""
+    """Replace linked contributor names with the person's publication credit."""
     people_by_slug = {person.slug: person for person in people}
     resolved_editions: list[Edition] = []
 
@@ -626,9 +728,25 @@ def apply_person_credit_names(editions: list[Edition], people: list[Person]) -> 
                     continue
             resolved_creators.append(creator)
 
+        def _resolve_cover(cover: EditionCover | None) -> EditionCover | None:
+            if cover is None or not cover.person_slug:
+                return cover
+            person = people_by_slug.get(cover.person_slug)
+            if person is None:
+                return cover
+            return replace(cover, artist_name=person.publication_name)
+
+        resolved_alternate_covers = [
+            resolved_cover
+            for resolved_cover in (_resolve_cover(cover) for cover in edition.alternate_covers)
+            if resolved_cover is not None
+        ]
+
         resolved_editions.append(
             replace(
                 edition,
+                primary_cover=_resolve_cover(edition.primary_cover),
+                alternate_covers=resolved_alternate_covers,
                 creators=resolved_creators,
                 creator_names=[creator.name for creator in resolved_creators],
             )
@@ -642,12 +760,15 @@ def build_people_index(people: list[Person], editions: list[Edition]) -> list[Pe
     out: list[Person] = []
     for person in people:
         related = [
-            e
-            for e in editions
+            edition
+            for edition in editions
             if any(
-                (c.person_slug and c.person_slug == person.slug)
-                or (not c.person_slug and c.name.strip().lower() in person.match_names)
-                for c in e.creators
+                (contributor.person_slug and contributor.person_slug == person.slug)
+                or (
+                    not contributor.person_slug
+                    and contributor.name.strip().lower() in person.match_names
+                )
+                for contributor in edition.all_contributors
             )
         ]
         out.append(
@@ -657,7 +778,7 @@ def build_people_index(people: list[Person], editions: list[Edition]) -> list[Pe
                 photo=person.photo,
                 photo_thumb=person.photo_thumb,
                 html_bio=person.html_bio,
-                related_editions=sorted(related, key=lambda e: e.release_date, reverse=True),
+                related_editions=sorted(related, key=lambda edition: edition.release_date, reverse=True),
                 credit_name=person.credit_name,
             )
         )

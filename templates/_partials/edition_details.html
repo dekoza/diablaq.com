@@ -2,26 +2,45 @@
   Partial: szczegóły wydania.
   Context: `edition`, `project`.
 #}
-{% set binding_labels = {'miekka': 'Miękka', 'twarda': 'Twarda'} %}
-{% set version_labels = {'elektroniczna': 'Elektroniczna'} %}
 
 <section class="edition-details">
   <div class="edition-details__grid">
-    {# ── Media column ─────────────────────────────────────────── #}
     <div class="edition-details__media">
-      {% if edition.cover_image %}
+      {% if edition.primary_cover %}
         <figure class="edition-details__cover">
-          <img src="{{ edition.cover_image }}" alt="{{ edition.cover_alt or edition.title }}">
+          <img src="{{ edition.primary_cover.image }}" alt="{{ edition.primary_cover.alt or edition.title }}">
+          {% if edition.primary_cover.label or edition.primary_cover.artist_name %}
+            <figcaption>
+              {% if edition.primary_cover.label %}<strong>{{ edition.primary_cover.label }}</strong>{% endif %}
+              {% if edition.primary_cover.artist_name %}
+                {% if edition.primary_cover.label %} · {% endif %}
+                okładka:
+                {% if edition.primary_cover.person_slug %}
+                  <a href="/ludzie/{{ edition.primary_cover.person_slug }}/">{{ edition.primary_cover.artist_name }}</a>
+                {% else %}
+                  {{ edition.primary_cover.artist_name }}
+                {% endif %}
+              {% endif %}
+            </figcaption>
+          {% endif %}
         </figure>
       {% endif %}
 
-      {% if edition.covers %}
+      {% if edition.alternate_covers %}
         <h3 class="edition-details__subhead">Alternatywne okładki</h3>
         <div class="thumb-grid">
-          {% for img in edition.covers %}
-            <a class="thumb" href="{{ img.image }}" target="_blank" rel="noopener">
-              <img src="{{ img.image }}" alt="{{ img.alt or edition.title }}" loading="lazy">
-              {% if img.caption %}<small>{{ img.caption }}</small>{% endif %}
+          {% for cover in edition.alternate_covers %}
+            <a class="thumb" href="{{ cover.image }}" target="_blank" rel="noopener">
+              <img src="{{ cover.image }}" alt="{{ cover.alt or edition.title }}" loading="lazy">
+              {% if cover.label or cover.artist_name %}
+                <small>
+                  {% if cover.label %}{{ cover.label }}{% endif %}
+                  {% if cover.artist_name %}
+                    {% if cover.label %} · {% endif %}
+                    okładka: {{ cover.artist_name }}
+                  {% endif %}
+                </small>
+              {% endif %}
             </a>
           {% endfor %}
         </div>
@@ -40,7 +59,6 @@
       {% endif %}
     </div>
 
-    {# ── Meta column ──────────────────────────────────────────── #}
     <div class="edition-details__meta">
       {% if universe %}
         <p class="project-meta-link">Z uniwersum: <a href="{{ universe.url }}">{{ universe.title }}</a></p>
@@ -69,77 +87,94 @@
         <time datetime="{{ edition.release_date.isoformat() }}">{{ edition.release_date | format_date_pl }}</time>
       </p>
 
-      {# ── Variants ─────────────────────────────────────────── #}
-      {% if edition.variants %}
-        {% if edition.variants | length == 1 %}
-          {% set v = edition.variants[0] %}
-          {% if v.specs %}
+      {% if edition.products %}
+        {% if edition.products | length == 1 %}
+          {% set product = edition.products[0] %}
+          {% if edition.edition_specs or product.specs or product.price or product.isbn13 or product.ean2 or product.limited %}
             <h3 class="edition-details__subhead">Parametry</h3>
             <dl class="edition-details__specs">
-              {% for k, val in v.specs.items() %}
+              {% for k, val in edition.edition_specs.items() %}
                 <dt>{{ k }}</dt><dd>{{ val }}</dd>
               {% endfor %}
-              <dt>ISBN-13</dt><dd>{{ v.isbn13 }}</dd>
-              {% if v.limited_print_run %}
-                <dt>Nakład</dt>
-                <dd>{{ v.limited_print_run }}{% if v.numbered %} <small>(numerowany)</small>{% endif %}</dd>
+              {% for k, val in product.specs.items() %}
+                <dt>{{ k }}</dt><dd>{{ val }}</dd>
+              {% endfor %}
+              {% if product.price %}
+                <dt>Cena</dt><dd>{{ product.price }}</dd>
+              {% endif %}
+              {% if product.isbn13 %}
+                <dt>ISBN-13</dt><dd>{{ product.isbn13 }}</dd>
+              {% endif %}
+              {% if product.ean2 %}
+                <dt>EAN-2</dt><dd>{{ product.ean2 }}</dd>
+              {% endif %}
+              {% if product.limited %}
+                <dt>Edycja limitowana</dt>
+                <dd>
+                  {% if product.numbered_copies %}
+                    Tak, {{ product.numbered_copies }} numerowanych egzemplarzy
+                  {% else %}
+                    Tak
+                  {% endif %}
+                </dd>
               {% endif %}
             </dl>
           {% endif %}
-          {% if v.buy_links %}
+          {% if product.buy_links %}
             <h3 class="edition-details__subhead">Gdzie kupić</h3>
             <div class="edition-details__buy">
-              {% for link in v.buy_links %}
+              {% for link in product.buy_links %}
                 <a href="{{ link.url }}" class="btn btn-primary">{{ link.label }}</a>
               {% endfor %}
             </div>
           {% endif %}
         {% else %}
-          <h3 class="edition-details__subhead">Warianty</h3>
-          {% for v in edition.variants %}
+          <h3 class="edition-details__subhead">Wydania</h3>
+          {% for product in edition.products %}
+            <h4 class="edition-details__subhead">{{ edition.product_title(product) }}</h4>
             <dl class="edition-details__specs">
-              {% if v.binding %}
-                <dt>Oprawa</dt><dd>{{ binding_labels.get(v.binding, v.binding) }}</dd>
-              {% endif %}
-              {% if v.version %}
-                <dt>Wersja</dt><dd>{{ version_labels.get(v.version, v.version) }}</dd>
-              {% endif %}
-              {% for k, val in v.specs.items() %}
+              {% for k, val in edition.edition_specs.items() %}
                 <dt>{{ k }}</dt><dd>{{ val }}</dd>
               {% endfor %}
-              <dt>ISBN-13</dt><dd>{{ v.isbn13 }}</dd>
-              {% if v.limited_print_run %}
-                <dt>Nakład</dt>
-                <dd>{{ v.limited_print_run }}{% if v.numbered %} <small>(numerowany)</small>{% endif %}</dd>
+              {% for k, val in product.specs.items() %}
+                <dt>{{ k }}</dt><dd>{{ val }}</dd>
+              {% endfor %}
+              {% if product.price %}
+                <dt>Cena</dt><dd>{{ product.price }}</dd>
+              {% endif %}
+              {% if product.isbn13 %}
+                <dt>ISBN-13</dt><dd>{{ product.isbn13 }}</dd>
+              {% endif %}
+              {% if product.ean2 %}
+                <dt>EAN-2</dt><dd>{{ product.ean2 }}</dd>
+              {% endif %}
+              {% if product.limited %}
+                <dt>Edycja limitowana</dt>
+                <dd>
+                  {% if product.numbered_copies %}
+                    Tak, {{ product.numbered_copies }} numerowanych egzemplarzy
+                  {% else %}
+                    Tak
+                  {% endif %}
+                </dd>
               {% endif %}
             </dl>
-            {% if v.buy_links %}
+            {% if product.buy_links %}
               <div class="edition-details__buy" style="margin-top:.5rem;margin-bottom:.75rem">
-                {% for link in v.buy_links %}
+                {% for link in product.buy_links %}
                   <a href="{{ link.url }}" class="btn btn-secondary">{{ link.label }}</a>
                 {% endfor %}
               </div>
             {% endif %}
           {% endfor %}
         {% endif %}
-      {% elif edition.specs %}
-        {# Legacy: top-level specs without variants #}
+      {% elif edition.edition_specs %}
         <h3 class="edition-details__subhead">Parametry</h3>
         <dl class="edition-details__specs">
-          {% for k, val in edition.specs.items() %}
+          {% for k, val in edition.edition_specs.items() %}
             <dt>{{ k }}</dt><dd>{{ val }}</dd>
           {% endfor %}
         </dl>
-      {% endif %}
-
-      {# Top-level buy_links (legacy, no variants) #}
-      {% if edition.buy_links %}
-        <h3 class="edition-details__subhead">Gdzie kupić</h3>
-        <div class="edition-details__buy">
-          {% for link in edition.buy_links %}
-            <a href="{{ link.url }}" class="btn btn-primary">{{ link.label }}</a>
-          {% endfor %}
-        </div>
       {% endif %}
 
       {% if edition.is_announcement and edition.presale_url %}

@@ -31,7 +31,8 @@ Otwórz `project-page-workbook.md` i edytuj tylko bloki między markerami:
 
 Każda sekcja jest już wypełniona szkieletem pól:
 - pola opcjonalne są zakomentowane,
-- przy polach z krótką listą dozwolonych wartości pojawiają się podpowiedzi (`line`, `kind`, `binding`, `true | false` itd.),
+- przy polach z krótką listą dozwolonych wartości pojawiają się podpowiedzi (`line`, `kind`, `format`, `true | false` itd.),
+- frontmatter wydania używa nowego układu `primary_cover` / `alternate_covers` / `edition_specs` / `products`,
 - sekcja projektu zawiera też pomocnicze informacje z istniejących plików wydań.
 
 Aby dodać nowe wydanie:

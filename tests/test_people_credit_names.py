@@ -37,15 +37,18 @@ def _write_one_shot(
             "release_date: 2024-11-01\n"
             "standalone: true\n"
             f"featured: {'true' if featured else 'false'}\n"
-            "cover_image: /img/mg_cudowni_1.jpg\n"
-            f'cover_alt: "{title} – okładka"\n'
+            "primary_cover:\n"
+            "  image: /img/mg_cudowni_1.jpg\n"
+            f'  alt: "{title} – okładka"\n'
             "creators:\n"
             "  - role: Rysunki\n"
             f'    name: "{creator_name}"\n'
             f'    person_slug: "{person_slug}"\n'
-            "buy_links:\n"
-            '  - label: "Kup"\n'
-            '    url: "https://example.com/kup"\n'
+            "products:\n"
+            "  - format: zeszyt\n"
+            "    buy_links:\n"
+            '      - label: "Kup"\n'
+            '        url: "https://example.com/kup"\n'
             "---\n"
             "\n"
             f"Opis wydania {title}.\n"

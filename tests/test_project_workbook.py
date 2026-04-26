@@ -98,7 +98,8 @@ Trzeci akapit.
     assert "<!-- EDITION BODY START: alpha/01 -->" in workbook
     assert "Jan Kowalski" in workbook
     assert "# draft: true | false" in workbook
-    assert "#   - binding: miekka | twarda" in workbook
+    assert "# products:" in workbook
+    assert "#   - format: zeszyt | miekka | twarda | ebook" in workbook
     assert "alpha/__new_edition__" in workbook
 
 

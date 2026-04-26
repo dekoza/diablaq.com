@@ -1,17 +1,9 @@
 ---
 title: Drzazga
 release_date: 2025-10-17
-# release:
-cover_image: /img/drzazga1.jpg
-cover_alt: Drzazga – okładka
-# covers:
-#   - image:
-#     alt:
-#     caption:
-# previews:
-#   - image:
-#     alt:
-#     caption:
+primary_cover:
+  image: /img/drzazga1.jpg
+  alt: Drzazga – okładka
 creators:
   - role: Rysunki
     name: Zvyrke
@@ -19,29 +11,7 @@ creators:
   - role: Scenariusz
     name: Damian 'Pickador' Zajko
     person_slug: pickador
-# specs:
-# buy_links:
-#   - label:
-#     url:
-# variants:
-#   - binding: miekka | twarda
-#     version: elektroniczna
-#     isbn13:
-#     limited_print_run:
-#     numbered: true | false
-#     specs:
-#     buy_links:
-#       - label:
-#         url:
-# force_new: true | false
-# force_announcement: true | false
-# presale_url:
-# featured: true | false
-standalone: true # false
-# subseries:
-# issue_number:
-# legacy_anchor:
-# legacy_path:
+standalone: true
 ---
 
 Pobudka w szpitalu. Mgliste wspomnienia o przerwanym bluźnierczym rytuale. Coś swędzi pod skórą…

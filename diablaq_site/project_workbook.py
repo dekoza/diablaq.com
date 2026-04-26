@@ -17,8 +17,7 @@ DEFAULT_WORKBOOK_NAME = "project-page-workbook.md"
 _NEW_EDITION_PLACEHOLDER = "__new_edition__"
 _LINE_OPTIONS = ("diablaq", "dobre-licho", "mecenat", "studio")
 _PROJECT_KIND_OPTIONS = ("title", "universe")
-_BINDING_OPTIONS = ("miekka", "twarda")
-_VERSION_OPTIONS = ("elektroniczna",)
+_PRODUCT_FORMAT_OPTIONS = ("zeszyt", "miekka", "twarda", "ebook")
 _BOOL_OPTIONS = ("true", "false")
 _PROJECT_STATUS_ORDER = {
     "missing-project-file": 0,
@@ -287,6 +286,13 @@ def _creator_labels(raw_creators: object) -> tuple[str, ...]:
     return tuple(creators)
 
 
+def _primary_cover_image(meta: dict[str, object]) -> str | None:
+    primary_cover = meta.get("primary_cover")
+    if not isinstance(primary_cover, dict):
+        return None
+    return _string_value(primary_cover.get("image"))
+
+
 def _render_image_list_field(name: str, raw_value: object, *, indent: str = "") -> list[str]:
     if not isinstance(raw_value, list) or not raw_value:
         return _commented_block(
@@ -321,6 +327,66 @@ def _render_image_list_field(name: str, raw_value: object, *, indent: str = "") 
             lines.extend(_commented_block(["caption:"], indent=f"{indent}    "))
         else:
             lines.append(f"{indent}    caption: {_yaml_scalar(caption)}")
+
+    return lines
+
+
+def _render_cover_field(name: str, raw_value: object, *, indent: str = "") -> list[str]:
+    template_lines = [
+        f"{name}:",
+        "  label:",
+        "  image:",
+        "  alt:",
+        "  artist_name:",
+        "  person_slug:",
+    ]
+    if not isinstance(raw_value, dict) or not raw_value:
+        return _commented_block(template_lines, indent=indent)
+
+    lines = [f"{indent}{name}:"]
+    for field_name in ("label", "image", "alt", "artist_name", "person_slug"):
+        value = _string_value(raw_value.get(field_name))
+        if value is None:
+            lines.extend(_commented_block([f"{field_name}:"], indent=f"{indent}  "))
+        else:
+            lines.append(f"{indent}  {field_name}: {_yaml_scalar(value)}")
+    return lines
+
+
+def _render_cover_list_field(name: str, raw_value: object, *, indent: str = "") -> list[str]:
+    template_lines = [
+        f"{name}:",
+        "  - id:",
+        "    label:",
+        "    image:",
+        "    alt:",
+        "    artist_name:",
+        "    person_slug:",
+    ]
+    if not isinstance(raw_value, list) or not raw_value:
+        return _commented_block(template_lines, indent=indent)
+
+    lines = [f"{indent}{name}:"]
+    for item in raw_value:
+        if not isinstance(item, dict):
+            lines.extend(_commented_block(template_lines[1:], indent=indent))
+            continue
+
+        item_indent = f"{indent}  "
+        nested_indent = f"{indent}    "
+        identifier = _string_value(item.get("id"))
+        if identifier is None:
+            lines.append(f"{item_indent}-")
+            lines.extend(_commented_block(["id:"], indent=nested_indent))
+        else:
+            lines.append(f"{item_indent}- id: {_yaml_scalar(identifier)}")
+
+        for field_name in ("label", "image", "alt", "artist_name", "person_slug"):
+            value = _string_value(item.get(field_name))
+            if value is None:
+                lines.extend(_commented_block([f"{field_name}:"], indent=nested_indent))
+            else:
+                lines.append(f"{nested_indent}{field_name}: {_yaml_scalar(value)}")
 
     return lines
 
@@ -367,19 +433,17 @@ def _render_creators_field(raw_value: object, *, indent: str = "") -> list[str]:
     return lines
 
 
-def _render_specs_field(raw_value: object, *, indent: str = "") -> list[str]:
+def _render_specs_field(name: str, raw_value: object, *, indent: str = "") -> list[str]:
     template_lines = [
-        "specs:",
+        f"{name}:",
         '  "Liczba stron":',
         '  "Oprawa":',
         '  "Wymiary":',
-        '  "Cena":',
-        '  "ISBN-13":',
     ]
     if not isinstance(raw_value, dict) or not raw_value:
         return _commented_block(template_lines, indent=indent)
 
-    lines = [f"{indent}specs:"]
+    lines = [f"{indent}{name}:"]
     for key, value in raw_value.items():
         key_text = _string_value(key)
         value_text = _string_value(value)
@@ -419,30 +483,19 @@ def _render_buy_links_field(raw_value: object, *, indent: str = "") -> list[str]
     return lines
 
 
-def _variant_axes(item: dict[str, object]) -> tuple[str | None, str | None]:
-    binding = _string_value(item.get("binding"))
-    version = _string_value(item.get("version"))
-    if binding or version:
-        return binding, version
-
-    legacy_kind = _string_value(item.get("kind"))
-    if legacy_kind in _BINDING_OPTIONS:
-        return legacy_kind, None
-    if legacy_kind in _VERSION_OPTIONS:
-        return None, legacy_kind
-    return None, None
-
-
-def _render_variants_field(raw_value: object, *, indent: str = "") -> list[str]:
+def _render_products_field(raw_value: object, *, indent: str = "") -> list[str]:
     template_lines = [
-        "variants:",
-        "  - binding: miekka | twarda",
-        "    version: elektroniczna",
+        "products:",
+        f"  - format: {' | '.join(_PRODUCT_FORMAT_OPTIONS)}",
+        "    cover_id:",
+        "    label:",
         "    isbn13:",
-        "    limited_print_run:",
-        "    numbered: true | false",
+        "    ean2:",
+        "    price:",
+        "    limited: true | false",
+        "    numbered_copies:",
         "    specs:",
-        '      "Cena":',
+        '      "Oprawa":',
         "    buy_links:",
         "      - label:",
         "        url:",
@@ -450,76 +503,50 @@ def _render_variants_field(raw_value: object, *, indent: str = "") -> list[str]:
     if not isinstance(raw_value, list) or not raw_value:
         return _commented_block(template_lines, indent=indent)
 
-    lines = [f"{indent}variants:"]
+    lines = [f"{indent}products:"]
     for item in raw_value:
         if not isinstance(item, dict):
             lines.extend(_commented_block(template_lines[1:], indent=indent))
             continue
 
-        binding, version = _variant_axes(item)
         item_indent = f"{indent}  "
         nested_indent = f"{indent}    "
-        if binding:
-            lines.append(
-                f"{item_indent}- binding: {_yaml_scalar(binding)}"
-                f"{_options_suffix(_BINDING_OPTIONS, current=binding)}"
-            )
-            lines.extend(
-                _commented_block(["version: elektroniczna"], indent=nested_indent)
-            )
-        elif version:
-            lines.append(f"{item_indent}- version: {_yaml_scalar(version)}")
-            lines.extend(
-                _commented_block(
-                    [f"binding: {' | '.join(_BINDING_OPTIONS)}"],
-                    indent=nested_indent,
-                )
-            )
-        else:
+        format_name = _string_value(item.get("format"))
+        if format_name is None:
             lines.append(f"{item_indent}-")
             lines.extend(
-                _commented_block(
-                    [f"binding: {' | '.join(_BINDING_OPTIONS)}", "version: elektroniczna"],
-                    indent=nested_indent,
-                )
+                _commented_block([f"format: {' | '.join(_PRODUCT_FORMAT_OPTIONS)}"], indent=nested_indent)
             )
-
-        isbn13 = _string_value(item.get("isbn13"))
-        if isbn13 is None:
-            lines.extend(_commented_block(["isbn13:"], indent=nested_indent))
-        else:
-            lines.append(f"{nested_indent}isbn13: {_yaml_scalar(isbn13)}")
-
-        limited_print_run = _string_value(item.get("limited_print_run"))
-        if limited_print_run is None:
-            lines.extend(_commented_block(["limited_print_run:"], indent=nested_indent))
-        else:
-            lines.append(f"{nested_indent}limited_print_run: {_yaml_scalar(limited_print_run)}")
-
-        numbered = _bool_text(item.get("numbered"))
-        if numbered is None:
-            lines.extend(_commented_block(["numbered: true | false"], indent=nested_indent))
         else:
             lines.append(
-                f"{nested_indent}numbered: {numbered}"
-                f"{_options_suffix(_BOOL_OPTIONS, current=numbered)}"
+                f"{item_indent}- format: {_yaml_scalar(format_name)}"
+                f"{_options_suffix(_PRODUCT_FORMAT_OPTIONS, current=format_name)}"
             )
 
-        specs_value = item.get("specs")
-        if isinstance(specs_value, dict) and any(_string_value(value) for value in specs_value.values()):
-            lines.extend(_render_specs_field(specs_value, indent=nested_indent))
+        for field_name in ("cover_id", "label", "isbn13", "ean2", "price"):
+            value = _string_value(item.get(field_name))
+            if value is None:
+                lines.extend(_commented_block([f"{field_name}:"], indent=nested_indent))
+            else:
+                lines.append(f"{nested_indent}{field_name}: {_yaml_scalar(value)}")
+
+        limited = _bool_text(item.get("limited"))
+        if limited is None:
+            lines.extend(_commented_block(["limited: true | false"], indent=nested_indent))
         else:
-            lines.extend(
-                _commented_block(["specs:", '  "Cena":'], indent=nested_indent)
+            lines.append(
+                f"{nested_indent}limited: {limited}"
+                f"{_options_suffix(_BOOL_OPTIONS, current=limited)}"
             )
 
-        buy_links_value = item.get("buy_links")
-        if isinstance(buy_links_value, list) and buy_links_value:
-            lines.extend(_render_buy_links_field(buy_links_value, indent=nested_indent))
+        numbered_copies = _string_value(item.get("numbered_copies"))
+        if numbered_copies is None:
+            lines.extend(_commented_block(["numbered_copies:"], indent=nested_indent))
         else:
-            lines.extend(
-                _commented_block(["buy_links:", "  - label:", "    url:"], indent=nested_indent)
-            )
+            lines.append(f"{nested_indent}numbered_copies: {_yaml_scalar(numbered_copies)}")
+
+        lines.extend(_render_specs_field("specs", item.get("specs"), indent=nested_indent))
+        lines.extend(_render_buy_links_field(item.get("buy_links"), indent=nested_indent))
 
     return lines
 
@@ -572,16 +599,12 @@ def _render_edition_frontmatter(
         lines.append(f"release_date: {_yaml_scalar(release_date)}")
 
     lines.append(_render_text_field("release", meta.get("release"), comment_out_if_missing=True))
-    lines.append(
-        _render_text_field("cover_image", meta.get("cover_image"), comment_out_if_missing=True)
-    )
-    lines.append(_render_text_field("cover_alt", meta.get("cover_alt"), comment_out_if_missing=True))
-    lines.extend(_render_image_list_field("covers", meta.get("covers")))
+    lines.extend(_render_cover_field("primary_cover", meta.get("primary_cover")))
+    lines.extend(_render_cover_list_field("alternate_covers", meta.get("alternate_covers")))
     lines.extend(_render_image_list_field("previews", meta.get("previews")))
     lines.extend(_render_creators_field(meta.get("creators")))
-    lines.extend(_render_specs_field(meta.get("specs")))
-    lines.extend(_render_buy_links_field(meta.get("buy_links")))
-    lines.extend(_render_variants_field(meta.get("variants")))
+    lines.extend(_render_specs_field("edition_specs", meta.get("edition_specs")))
+    lines.extend(_render_products_field(meta.get("products")))
     lines.append(_render_bool_field("force_new", meta.get("force_new"), comment_out_if_missing=True))
     lines.append(
         _render_bool_field(
@@ -712,7 +735,7 @@ def _collect_editions(
                 title=_string_value(meta.get("title")) or _guess_edition_title(project_title, slug),
                 release_label=_string_value(meta.get("release_date")) or _string_value(meta.get("release")),
                 creators=_creator_labels(meta.get("creators")),
-                cover_image=_string_value(meta.get("cover_image")),
+                cover_image=_primary_cover_image(meta),
                 teaser=_teaser(body),
                 parse_error=parse_error,
             )

@@ -9,7 +9,7 @@ import pytest
 
 
 def test_module_imports():
-    """Verify all 14 parsing functions can be imported from parsing module."""
+    """Verify core parsing functions can be imported from parsing module."""
     from diablaq_site.parsing import (
         read_markdown_file,
         parse_date,
@@ -17,10 +17,11 @@ def test_module_imports():
         derive_flags,
         coerce_str_list,
         pick_cover,
+        parse_cover_list,
         parse_image_list,
         as_str,
         parse_buy_links,
-        parse_variants,
+        parse_products,
         parse_creators,
         parse_specs,
     )
@@ -31,10 +32,11 @@ def test_module_imports():
     assert callable(derive_flags)
     assert callable(coerce_str_list)
     assert callable(pick_cover)
+    assert callable(parse_cover_list)
     assert callable(parse_image_list)
     assert callable(as_str)
     assert callable(parse_buy_links)
-    assert callable(parse_variants)
+    assert callable(parse_products)
     assert callable(parse_creators)
     assert callable(parse_specs)
 
@@ -318,11 +320,11 @@ def test_coerce_str_list_empty_items():
 # --- pick_cover tests ---
 
 
-def test_pick_cover_explicit_fields():
-    """Test picking cover from explicit cover_image/cover_alt fields."""
+def test_pick_cover_primary_cover():
+    """Test picking cover from primary_cover fields."""
     from diablaq_site.parsing import pick_cover
 
-    meta = {"cover_image": "/img/cover.jpg", "cover_alt": "Cover description"}
+    meta = {"primary_cover": {"image": "/img/cover.jpg", "alt": "Cover description"}}
 
     image, alt = pick_cover(meta)
 
@@ -331,39 +333,10 @@ def test_pick_cover_explicit_fields():
 
 
 def test_pick_cover_no_alt():
-    """Test that missing cover_alt returns None for alt."""
+    """Test that missing primary_cover.alt returns None for alt."""
     from diablaq_site.parsing import pick_cover
 
-    meta = {"cover_image": "/img/cover.jpg"}
-
-    image, alt = pick_cover(meta)
-
-    assert image == "/img/cover.jpg"
-    assert alt is None
-
-
-def test_pick_cover_from_covers_list():
-    """Test picking first cover from covers list."""
-    from diablaq_site.parsing import pick_cover
-
-    meta = {
-        "covers": [
-            {"image": "/img/first.jpg", "alt": "First cover"},
-            {"image": "/img/second.jpg", "alt": "Second cover"},
-        ]
-    }
-
-    image, alt = pick_cover(meta)
-
-    assert image == "/img/first.jpg"
-    assert alt == "First cover"
-
-
-def test_pick_cover_from_covers_no_alt():
-    """Test picking cover from covers list when alt is missing."""
-    from diablaq_site.parsing import pick_cover
-
-    meta = {"covers": [{"image": "/img/cover.jpg"}]}
+    meta = {"primary_cover": {"image": "/img/cover.jpg"}}
 
     image, alt = pick_cover(meta)
 
@@ -543,190 +516,104 @@ def test_parse_buy_links_missing_url():
         parse_buy_links(meta, source_path=Path("test.md"))
 
 
-# --- parse_variants tests ---
+# --- parse_cover_list / parse_products tests ---
 
 
-def test_parse_variants_valid_binding():
-    """Test parsing variant with binding field."""
-    from diablaq_site.parsing import parse_variants
+def test_parse_cover_list_valid():
+    from diablaq_site.parsing import parse_cover_list
 
     meta = {
-        "variants": [
-            {
-                "binding": "miekka",
-                "isbn13": "9780306406157",
-                "specs": {"Cena": "69,90 zł"},
-            }
+        "alternate_covers": [
+            {"id": "limitowana", "image": "/img/limitowana.jpg", "alt": "Limited"},
+            {"id": "blank", "image": "/img/blank.jpg"},
         ]
     }
 
-    result = parse_variants(meta, source_path=Path("test.md"))
+    result = parse_cover_list(meta, "alternate_covers", source_path=Path("test.md"))
 
-    assert len(result) == 1
-    assert result[0].binding == "miekka"
-    assert result[0].version is None
-    assert result[0].isbn13 == "9780306406157"
-    assert result[0].numbered is False
-    assert result[0].specs == {"Cena": "69,90 zł"}
+    assert [cover.id for cover in result] == ["limitowana", "blank"]
+    assert result[0].alt == "Limited"
 
 
-def test_parse_variants_valid_version():
-    """Test parsing variant with version field."""
-    from diablaq_site.parsing import parse_variants
+def test_parse_cover_list_duplicate_ids_raise_value_error():
+    from diablaq_site.parsing import parse_cover_list
 
     meta = {
-        "variants": [
-            {
-                "version": "elektroniczna",
-                "isbn13": "9780140328721",
-                "specs": {"Cena": "29,90 zł"},
-            }
+        "alternate_covers": [
+            {"id": "limitowana", "image": "/img/one.jpg"},
+            {"id": "limitowana", "image": "/img/two.jpg"},
         ]
     }
 
-    result = parse_variants(meta, source_path=Path("test.md"))
-
-    assert len(result) == 1
-    assert result[0].binding is None
-    assert result[0].version == "elektroniczna"
-    assert result[0].isbn13 == "9780140328721"
+    with pytest.raises(ValueError, match=r"duplicate id"):
+        parse_cover_list(meta, "alternate_covers", source_path=Path("test.md"))
 
 
-def test_parse_variants_legacy_kind():
-    """Test parsing variant with legacy kind field."""
-    from diablaq_site.parsing import parse_variants
+def test_parse_products_valid():
+    from diablaq_site.models import EditionCover
+    from diablaq_site.parsing import parse_products
 
-    meta = {"variants": [{"kind": "twarda", "isbn13": "9780010350616"}]}
-
-    result = parse_variants(meta, source_path=Path("test.md"))
-
-    assert len(result) == 1
-    assert result[0].binding == "twarda"
-    assert result[0].version is None
-
-
-def test_parse_variants_legacy_kind_electronic():
-    """Test parsing variant with legacy kind=elektroniczna."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {"variants": [{"kind": "elektroniczna", "isbn13": "9780306406157"}]}
-
-    result = parse_variants(meta, source_path=Path("test.md"))
-
-    assert len(result) == 1
-    assert result[0].binding is None
-    assert result[0].version == "elektroniczna"
-
-
-def test_parse_variants_invalid_isbn():
-    """Test that invalid ISBN-13 checksum raises ValueError."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {"variants": [{"binding": "miekka", "isbn13": "9780306406150"}]}  # Wrong checksum
-
-    with pytest.raises(ValueError, match=r"nie wygląda jak poprawny ISBN-13"):
-        parse_variants(meta, source_path=Path("test.md"))
-
-
-def test_parse_variants_missing_isbn():
-    """Test that missing ISBN-13 raises ValueError."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {"variants": [{"binding": "miekka"}]}
-
-    with pytest.raises(ValueError, match=r"isbn13 jest wymagane"):
-        parse_variants(meta, source_path=Path("test.md"))
-
-
-def test_parse_variants_both_binding_and_version():
-    """Test that having both binding and version raises ValueError."""
-    from diablaq_site.parsing import parse_variants
-
+    primary_cover = EditionCover(
+        id="primary",
+        label="Standardowa",
+        image="/img/cover.jpg",
+        alt="Cover",
+        artist_name="Artist",
+        person_slug="artist",
+    )
     meta = {
-        "variants": [
+        "products": [
             {
-                "binding": "miekka",
-                "version": "elektroniczna",
-                "isbn13": "9780306406157",
-            }
-        ]
-    }
-
-    with pytest.raises(ValueError, match=r"nie może mieć jednocześnie binding i version"):
-        parse_variants(meta, source_path=Path("test.md"))
-
-
-def test_parse_variants_neither_binding_nor_version():
-    """Test that missing both binding and version raises ValueError."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {"variants": [{"isbn13": "9780306406157"}]}
-
-    with pytest.raises(ValueError, match=r"musi mieć binding albo version"):
-        parse_variants(meta, source_path=Path("test.md"))
-
-
-def test_parse_variants_limited_print_run():
-    """Test parsing variant with limited_print_run."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {
-        "variants": [
-            {
-                "binding": "twarda",
-                "isbn13": "9780306406157",
-                "limited_print_run": 500,
-            }
-        ]
-    }
-
-    result = parse_variants(meta, source_path=Path("test.md"))
-
-    assert result[0].limited_print_run == 500
-
-
-def test_parse_variants_numbered_requires_limited_print_run():
-    """Test that numbered=true requires limited_print_run."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {"variants": [{"binding": "twarda", "isbn13": "9780306406157", "numbered": True}]}
-
-    with pytest.raises(ValueError, match=r"numbered=true wymaga podania limited_print_run"):
-        parse_variants(meta, source_path=Path("test.md"))
-
-
-def test_parse_variants_with_buy_links():
-    """Test parsing variant with buy_links."""
-    from diablaq_site.parsing import parse_variants
-
-    meta = {
-        "variants": [
-            {
-                "binding": "miekka",
+                "format": "miekka",
                 "isbn13": "9780306406157",
                 "buy_links": [{"label": "Store", "url": "https://example.com"}],
-            }
+            },
+            {
+                "format": "twarda",
+                "cover_id": "primary",
+                "isbn13": "9780140328721",
+                "ean2": 2,
+                "limited": True,
+                "numbered_copies": 333,
+                "specs": {"Oprawa": "ze skrzydełkami"},
+            },
         ]
     }
 
-    result = parse_variants(meta, source_path=Path("test.md"))
+    result = parse_products(
+        meta,
+        source_path=Path("test.md"),
+        primary_cover=primary_cover,
+        alternate_covers=[],
+    )
 
-    assert len(result[0].buy_links) == 1
-    assert result[0].buy_links[0].label == "Store"
+    assert result[0].cover_id == "primary"
+    assert result[1].ean2 == "02"
+    assert result[1].numbered_copies == 333
+    assert result[1].specs == {"Oprawa": "ze skrzydełkami"}
 
 
-def test_parse_variants_fallback_specs():
-    """Test that edition-level specs are used as fallback for variants without specs."""
-    from diablaq_site.parsing import parse_variants
+def test_parse_products_rejects_unknown_cover_id():
+    from diablaq_site.models import EditionCover
+    from diablaq_site.parsing import parse_products
 
-    meta = {
-        "specs": {"Cena": "69,90 zł"},
-        "variants": [{"binding": "miekka", "isbn13": "9780306406157"}],
-    }
+    primary_cover = EditionCover(
+        id="primary",
+        label=None,
+        image="/img/cover.jpg",
+        alt=None,
+        artist_name=None,
+        person_slug=None,
+    )
+    meta = {"products": [{"format": "zeszyt", "cover_id": "missing"}]}
 
-    result = parse_variants(meta, source_path=Path("test.md"))
-
-    assert result[0].specs == {"Cena": "69,90 zł"}
+    with pytest.raises(ValueError, match=r"cover_id"):
+        parse_products(
+            meta,
+            source_path=Path("test.md"),
+            primary_cover=primary_cover,
+            alternate_covers=[],
+        )
 
 
 # --- parse_creators tests ---
@@ -1107,10 +994,9 @@ def test_apply_person_credit_names_prefers_credit_name_for_linked_creators():
             is_announcement=False,
             presale_url=None,
             legacy_anchor=None,
-            cover_image=None,
-            cover_alt=None,
+            primary_cover=None,
             cover_aspect_class="cover--standard",
-            covers=[],
+            alternate_covers=[],
             previews=[],
             creators=[
                 Creator(
@@ -1120,9 +1006,8 @@ def test_apply_person_credit_names_prefers_credit_name_for_linked_creators():
                 )
             ],
             creator_names=["Weronika Dobrowolska"],
-            specs={},
-            buy_links=[],
-            variants=[],
+            edition_specs={},
+            products=[],
             html_body="",
             standalone=True,
             subseries=None,
@@ -1172,16 +1057,14 @@ def test_build_people_index_matches_credit_name_when_person_slug_is_missing():
         is_announcement=False,
         presale_url=None,
         legacy_anchor=None,
-        cover_image=None,
-        cover_alt=None,
+        primary_cover=None,
         cover_aspect_class="cover--standard",
-        covers=[],
+        alternate_covers=[],
         previews=[],
         creators=[Creator(role="Rysunki", name="Zvyrke", person_slug=None)],
         creator_names=["Zvyrke"],
-        specs={},
-        buy_links=[],
-        variants=[],
+        edition_specs={},
+        products=[],
         html_body="",
         standalone=True,
         subseries=None,
