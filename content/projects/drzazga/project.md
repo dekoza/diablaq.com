@@ -3,7 +3,7 @@ title: "Drzazga"
 line: diablaq
 kind: title
 universe_slug: herosi-vs-horrory
-summary: "Jednotomowy thriller o bohaterach i potworach, w którym każda decyzja zostawia ślad."
+summary: "Liv Helgren — niedoszła ofiara kultystów — budzi się w szpitalu i odkrywa, że po przerwanym rytuale nie została sama."
 legacy_path: /komiksy/herosi-vs-horrory/drzazga/
 cover_image: /img/drzazga1.jpg
 ---

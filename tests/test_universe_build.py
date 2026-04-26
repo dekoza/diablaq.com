@@ -157,9 +157,12 @@ def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: P
     assert "Cudowni" in catalog_html
     assert "Fantastyczna opowieść o Larsie i legendach o Huskarlach" in catalog_html
     assert "Drzazga" in catalog_html
+    assert "Liv Helgren — niedoszła ofiara kultystów — budzi się w szpitalu" in catalog_html
     assert "Herosi vs Horrory" not in catalog_html
     assert "MidGuard™" not in catalog_html
     assert "Z uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html
+    assert "Liv Helgren" in drzazga_html
+    assert "przerwanym bluźnierczym rytuale" in drzazga_html
     assert "stare historie przestają być tylko opowieściami" in cudowni_html
     assert "legend, Huskarlów i zagrożeń z innych światów" in midguard_html
 
