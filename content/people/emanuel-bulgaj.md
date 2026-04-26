@@ -1,5 +1,5 @@
 ---
-name: Emanuel Bulgaj
+name: Emanuel Bułgaj
 photo: /img/people/emanuel-bulgaj.jpg
 ---
 

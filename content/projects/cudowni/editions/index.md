@@ -24,7 +24,7 @@ creators:
     person_slug: qrjusz
   - role: Okładka limitowana
     name: Dawid Malik
-    # person_slug:
+    person_slug: dawid-malik
 specs:
   Liczba stron: '28'
   Oprawa: zeszytowa
