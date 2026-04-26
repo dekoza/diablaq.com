@@ -25,7 +25,6 @@ buy_links:
     url: "https://strefakomiksu.pl/sci-fi/24978-68-cudowni-9788397237261.html"
 ---
 
-Witajcie w świecie MidGuard™! Oto Lars - młody chłopak zafascynowany legendami o Huskarlach, elitarnej grupie wojowników, która broni Midgardu przed niebezpieczeństwami z innego świata.
+Lars od dawna fascynuje się legendami o Huskarlach — elitarnej grupie wojowników, która ma chronić Midgard przed zagrożeniami z innego świata. Kiedy opowieści zaczynają zderzać się z rzeczywistością, chłopak zostaje wciągnięty w historię większą i groźniejszą, niż się spodziewał.
 
-Przygotujcie się na niezwykłą podróż w świecie MidGuard™!
-
+**Cudowni** to jednostrzałowa opowieść z uniwersum **MidGuard™** o zachwycie legendą, pierwszym zetknięciu z nieznanym i chwili, w której stare historie przestają być tylko opowieściami.
