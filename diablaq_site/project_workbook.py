@@ -909,6 +909,8 @@ def render_workbook(entries: list[ProjectEntry], *, root: Path, include_complete
     edition_sections = sum(len(entry.editable_editions) for entry in entries)
 
     lines = [
+        "<!-- markdownlint-disable-file -->",
+        "",
         "# Project page workbook",
         "",
         "Jeden plik do szybkiego uzupełniania `content/projects/*/project.md` i `content/projects/*/editions/*.md`.",

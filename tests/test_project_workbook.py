@@ -90,6 +90,7 @@ Trzeci akapit.
     entries = export_workbook(root, workbook_path)
     workbook = workbook_path.read_text(encoding="utf-8")
 
+    assert workbook.startswith("<!-- markdownlint-disable-file -->\n")
     assert {entry.slug for entry in entries} == {"alpha", "gamma"}
     assert "## alpha" in workbook
     assert "## gamma" in workbook
