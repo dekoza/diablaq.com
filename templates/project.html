@@ -32,7 +32,7 @@
     <h1 class="project-hero__title">{{ project.title }}</h1>
     {% if project.summary %}<p class="project-hero__summary">{{ project.summary }}</p>{% endif %}
     {% if project.html_body and project.html_body.strip() %}
-      <div class="project-hero__desc">{{ project.html_body | safe }}</div>
+      <div class="project-hero__desc rich-text">{{ project.html_body | safe }}</div>
     {% endif %}
   </div>
 </div>

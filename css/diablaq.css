@@ -18,6 +18,13 @@
   --text-muted:       #888;
   --text-inv:         #fff;
 
+  /* Links */
+  --link-text:        #f56f44;
+  --link-visited:     #d2664a;
+  --link-hover:       #ff815a;
+  --link-underline:   rgba(245, 111, 68, 0.45);
+  --link-visited-underline: rgba(210, 102, 74, 0.45);
+
   /* Layout */
   --content-max:      960px;
   --topbar-h:         52px;
@@ -891,8 +898,32 @@ li { margin: .25rem 0; }
 /* ── Main area ──────────────────────────────────────────────────── */
 main.container { padding-top: 0; }
 
-main a, main a:visited { color: var(--brand-dark); }
-main a:hover, main a:focus-visible { color: var(--brand); }
+.rich-text a {
+  color: var(--link-text);
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: .08em;
+  text-underline-offset: .18em;
+  transition: color .15s ease, text-decoration-color .15s ease;
+}
+
+.rich-text a:visited {
+  color: var(--link-visited);
+  text-decoration-color: var(--link-visited-underline);
+}
+
+.rich-text a:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+
+.rich-text a:focus-visible {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+  outline: 2px solid var(--link-hover);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
 
 /* ── Project page layout ────────────────────────────────────────── */
 .project-hero {
