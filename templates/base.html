@@ -41,9 +41,9 @@
         <img alt="Diablaq" src="/img/logo.png">
       </a>
       <ul class="nav-links">
-        <li><a href="/komiksy/"{% if canonical_url and canonical_url.startswith(abs_url('/komiksy/')) %} aria-current="page"{% endif %}>Komiksy</a></li>
-        <li><a href="/komiksy/#dobre-licho"{% if canonical_url and '#dobre-licho' in canonical_url %} aria-current="page"{% endif %}>Dobre Licho</a></li>
-        <li><a href="/komiksy/#mecenat"{% if canonical_url and '#mecenat' in canonical_url %} aria-current="page"{% endif %}>Mecenat</a></li>
+        <li><a href="/komiksy/"{% if canonical_url == abs_url('/komiksy/') %} aria-current="page"{% endif %}>Komiksy</a></li>
+        <li><a href="/komiksy/dobre-licho/"{% if canonical_url and canonical_url.startswith(abs_url('/komiksy/dobre-licho/')) %} aria-current="page"{% endif %}>Dobre Licho</a></li>
+        <li><a href="/komiksy/mecenat/"{% if canonical_url and canonical_url.startswith(abs_url('/komiksy/mecenat/')) %} aria-current="page"{% endif %}>Mecenat</a></li>
         <li><a href="/blog/"{% if canonical_url and '/blog/' in canonical_url %} aria-current="page"{% endif %}>Blog</a></li>
         <li><a href="/ludzie/"{% if canonical_url and '/ludzie/' in canonical_url %} aria-current="page"{% endif %}>Ludzie</a></li>
         <li><a href="https://strefakomiksu.pl/" target="_blank" rel="noopener noreferrer">Sklep</a></li>
@@ -73,8 +73,8 @@
     </div>
     <nav class="nav-mobile__links" aria-label="Menu">
       <a href="/komiksy/">Komiksy</a>
-      <a href="/komiksy/#dobre-licho">Dobre Licho</a>
-      <a href="/komiksy/#mecenat">Mecenat</a>
+      <a href="/komiksy/dobre-licho/">Dobre Licho</a>
+      <a href="/komiksy/mecenat/">Mecenat</a>
       <a href="/blog/">Blog</a>
       <a href="/ludzie/">Ludzie</a>
       <a href="https://strefakomiksu.pl/">Sklep</a>
@@ -116,9 +116,9 @@
       <div class="site-footer__col">
         <h3 class="site-footer__head">Komiksy</h3>
         <a href="/komiksy/">Katalog</a>
-        <a href="/komiksy/#dobre-licho">Dobre Licho</a>
-        <a href="/komiksy/#mecenat">Mecenat</a>
-        <a href="/komiksy/#studio">Studio</a>
+        <a href="/komiksy/dobre-licho/">Dobre Licho</a>
+        <a href="/komiksy/mecenat/">Mecenat</a>
+        <a href="/komiksy/studio/">Studio</a>
       </div>
       <div class="site-footer__col">
         <h3 class="site-footer__head">Diablaq</h3>

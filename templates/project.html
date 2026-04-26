@@ -38,15 +38,32 @@
 </div>
 
 {% if editions %}
-<section>
-  <header class="section-header">
-    <h2>Wydania</h2>
-  </header>
-  <div class="tiles">
-    {% for e in editions %}
-      {% include "_partials/edition_tile.html" with context %}
-    {% endfor %}
-  </div>
-</section>
+{% if edition_groups | length > 1 %}
+  {# Multiple subseries — render each with its own section header #}
+  {% for subseries_label, group_editions in edition_groups %}
+  <section>
+    <header class="section-header">
+      <h3>{{ subseries_label or project.title }}</h3>
+    </header>
+    <div class="tiles">
+      {% for e in group_editions %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+{% else %}
+  {# Single group (or no subseries) — flat grid under generic heading #}
+  <section>
+    <header class="section-header">
+      <h2>Wydania</h2>
+    </header>
+    <div class="tiles">
+      {% for e in editions %}
+        {% include "_partials/edition_tile.html" with context %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
 {% endif %}
 {% endblock %}

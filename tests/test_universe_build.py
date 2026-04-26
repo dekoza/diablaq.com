@@ -145,24 +145,38 @@ def test_repo_build_moves_universe_titles_to_top_level_urls(tmp_path: Path) -> N
 
 
 def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: Path) -> None:
-    """Real catalog should list titles, while title pages link back to their universe."""
+    """Real catalog should list titles, while title pages link back to their universe.
+
+    The /komiksy/ overview now shows at most 4 titles per line (Option B).
+    All titles appear on the full sub-line page (/komiksy/diablaq/).
+    Universe nodes (MidGuard™, Herosi vs Horrory) must not appear as project cards.
+    """
     repo_root = Path(__file__).resolve().parents[1]
     out_dir = tmp_path / "dist"
 
     build_site(root=repo_root, out_dir=out_dir)
 
     catalog_html = (out_dir / "komiksy" / "index.html").read_text(encoding="utf-8")
+    subline_html = (out_dir / "komiksy" / "diablaq" / "index.html").read_text(encoding="utf-8")
     cudowni_html = (out_dir / "komiksy" / "cudowni" / "index.html").read_text(encoding="utf-8")
     drzazga_html = (out_dir / "komiksy" / "drzazga" / "index.html").read_text(encoding="utf-8")
     midguard_html = (out_dir / "komiksy" / "midguard" / "index.html").read_text(encoding="utf-8")
 
+    # Overview structural checks
     assert "Wszystkie komiksy wydawnictwa Diablaq." in catalog_html
-    assert "Cudowni" in catalog_html
-    assert "Fantastyczna opowieść o Larsie i legendach o Huskarlach" in catalog_html
-    assert "Drzazga" in catalog_html
-    assert "Liv Helgren — niedoszła ofiara kultystów — budzi się w szpitalu" in catalog_html
+    # Universe cards must NOT appear on any catalog page
     assert "Herosi vs Horrory" not in catalog_html
     assert "MidGuard™" not in catalog_html
+    assert "Herosi vs Horrory" not in subline_html
+    assert "MidGuard™" not in subline_html
+
+    # Full sub-line page must contain all titles including those beyond preview cutoff
+    assert "Cudowni" in subline_html
+    assert "Drzazga" in subline_html
+    assert "Fantastyczna opowieść o Larsie i legendach o Huskarlach" in subline_html
+    assert "Liv Helgren — niedoszła ofiara kultystów — budzi się w szpitalu" in subline_html
+
+    # Title pages must link back to their universe
     assert "Z uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html
     assert "Liv Helgren" in drzazga_html
     assert "przerwanym bluźnierczym rytuale" in drzazga_html

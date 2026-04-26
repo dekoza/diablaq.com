@@ -13,7 +13,11 @@
   <section class="catalog-section" id="{{ group.id }}">
     <header class="catalog-section__head">
       <h2>{{ group.label }}</h2>
+      <a class="section-header__more" href="{{ group.url }}">Przeglądaj wszystkie ({{ group.total }}) →</a>
     </header>
+    {% if group.description %}
+      <p class="catalog-section__desc">{{ group.description }}</p>
+    {% endif %}
     <div class="tiles">
       {% for p in group.projects %}
         {% include "_partials/project_card.html" with context %}

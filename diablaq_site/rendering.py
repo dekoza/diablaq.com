@@ -30,6 +30,53 @@ def _render(env: Environment, template_name: str, **ctx):
     return template.render(**ctx)
 
 
+_LINE_META: dict[str, dict[str, str]] = {
+    "diablaq": {
+        "label": "Główna linia",
+        "url_slug": "diablaq",
+        "description": "Autorskie komiksy dla dorosłych.",
+    },
+    "dobre-licho": {
+        "label": "Dobre Licho",
+        "url_slug": "dobre-licho",
+        "description": "Komiksy dla dzieci i młodzieży.",
+    },
+    "mecenat": {
+        "label": "Mecenat",
+        "url_slug": "mecenat",
+        "description": "Publikacje rozwijane w formule mecenatu.",
+    },
+    "studio": {
+        "label": "Studio",
+        "url_slug": "studio",
+        "description": "Produkcje komiksowe dla innych wydawców.",
+    },
+}
+
+_CATALOG_PREVIEW_LIMIT = 4
+
+
+def _group_editions_by_subseries(editions) -> list[tuple[str | None, list]]:
+    """Group editions by subseries, preserving within-group order.
+
+    The None-subseries group (main series) always comes first.
+    Named subseries groups follow in alphabetical order.
+    """
+    if not editions:
+        return []
+
+    groups: dict[str | None, list] = {}
+    for edition in editions:
+        groups.setdefault(edition.subseries, []).append(edition)
+
+    ordered: list[tuple[str | None, list]] = []
+    if None in groups:
+        ordered.append((None, groups[None]))
+    for key in sorted(k for k in groups if k is not None):
+        ordered.append((key, groups[key]))
+    return ordered
+
+
 def abs_url(site_url: str):
     """Return a function that constructs absolute URLs from site_url."""
     def _abs_url_fn(path: str) -> str:
@@ -90,35 +137,44 @@ def render_catalog_page(
     _render_fn,
     _write_html_fn,
 ) -> None:
-    """Render the unified catalog page (/komiksy/) with projects grouped by line."""
+    """Render the /komiksy/ overview and one sub-line page per publication line.
+
+    Overview (/komiksy/): each line shows up to _CATALOG_PREVIEW_LIMIT projects
+    and a link to the full sub-line page.
+    Sub-line pages (/komiksy/{slug}/): full grids for a single line.
+    """
     lines_order = ["diablaq", "dobre-licho", "mecenat", "studio"]
-    lines_labels = {
-        "diablaq": "Główna linia",
-        "dobre-licho": "Dobre Licho",
-        "mecenat": "Mecenat",
-        "studio": "Studio",
-    }
-    display_projects = [project for project in projects if project.kind == "title"]
-    groups = []
-    for line in lines_order:
-        line_projects = [p for p in display_projects if p.line == line]
-        if line_projects:
-            groups.append({
-                "id": line,
-                "label": lines_labels.get(line, line),
-                "projects": line_projects,
-            })
-    # Any unlisted lines
+    display_projects = [p for p in projects if p.kind == "title"]
+
+    # Build a full group list (known lines first, then any unlisted lines)
+    all_line_ids: list[str] = list(lines_order)
     used = set(lines_order)
     for p in display_projects:
         if p.line not in used:
             used.add(p.line)
-            groups.append({
-                "id": p.line,
-                "label": p.line,
-                "projects": [pp for pp in display_projects if pp.line == p.line],
-            })
+            all_line_ids.append(p.line)
 
+    full_groups: list[dict] = []
+    for line in all_line_ids:
+        line_projects = [p for p in display_projects if p.line == line]
+        if not line_projects:
+            continue
+        meta = _LINE_META.get(line, {"label": line, "url_slug": line, "description": ""})
+        url_slug = meta["url_slug"]
+        full_groups.append({
+            "id": line,
+            "label": meta["label"],
+            "description": meta["description"],
+            "url": f"/komiksy/{url_slug}/",
+            "projects": line_projects,
+            "total": len(line_projects),
+        })
+
+    # Overview: each group gets at most _CATALOG_PREVIEW_LIMIT projects
+    overview_groups = [
+        {**g, "projects": g["projects"][:_CATALOG_PREVIEW_LIMIT]}
+        for g in full_groups
+    ]
     _write_html_fn(
         out_dir / "komiksy" / "index.html",
         _render_fn(
@@ -127,9 +183,25 @@ def render_catalog_page(
             nav_projects=nav_projects,
             site_url=site_url,
             canonical_url=(site_url + "/komiksy/"),
-            groups=groups,
+            groups=overview_groups,
         ),
     )
+
+    # Sub-line pages: full grids
+    for group in full_groups:
+        url_slug = _LINE_META.get(group["id"], {"url_slug": group["id"]})["url_slug"]
+        _write_html_fn(
+            out_dir / "komiksy" / url_slug / "index.html",
+            _render_fn(
+                env,
+                "catalog_line.html",
+                nav_projects=nav_projects,
+                site_url=site_url,
+                canonical_url=(site_url + f"/komiksy/{url_slug}/"),
+                group=group,
+                breadcrumb=[{"label": "Komiksy", "url": "/komiksy/"}],
+            ),
+        )
 
 
 def render_content_pages(env, out_dir, site_url, nav_projects, pages, _render_fn, _write_html_fn) -> None:
@@ -294,6 +366,7 @@ def render_project_pages(
             )
         else:
             # Multi-edition project page
+            edition_groups = _group_editions_by_subseries(pr_editions)
             _write_html_fn(
                 out_dir / pr.url.strip("/") / "index.html",
                 _render_fn(
@@ -303,6 +376,7 @@ def render_project_pages(
                     project=pr,
                     universe=universe,
                     editions=pr_editions,
+                    edition_groups=edition_groups,
                     breadcrumb=breadcrumb,
                 ),
             )
