@@ -20,8 +20,11 @@
     </a>
   {% else %}
     <div class="home-hero__empty">
-      <h1>Wydawnictwo Diablaq</h1>
-      <p style="margin-top:.75rem;color:#888">Piekielnie dobre komiksy!</p>
+      <a class="home-hero__brand" href="/komiksy/">
+        <h1>Wydawnictwo Diablaq</h1>
+        <p>Piekielnie dobre komiksy!</p>
+        <span class="home-hero__cta">Przeglądaj katalog</span>
+      </a>
     </div>
   {% endif %}
 </section>
@@ -29,35 +32,25 @@
 
 {% block content %}
 
+{# ── Zapowiedzi — all announcements, hidden when none ── #}
 {% if announcements %}
 <section>
   <header class="section-header">
     <h2>Zapowiedzi</h2>
   </header>
   <div class="tiles">
-    {% for e in announcements[:8] %}
+    {% for e in announcements %}
       {% include "_partials/edition_tile.html" with context %}
     {% endfor %}
   </div>
 </section>
 {% endif %}
 
-{% if new_editions %}
-<section>
-  <header class="section-header">
-    <h2>Nowości</h2>
-  </header>
-  <div class="tiles">
-    {% for e in new_editions[:8] %}
-      {% include "_partials/edition_tile.html" with context %}
-    {% endfor %}
-  </div>
-</section>
-{% elif newest_anytime %}
+{# ── Ostatnio wydane — 8 latest releases, no hero, no announcements ── #}
+{% if newest_anytime %}
 <section>
   <header class="section-header">
     <h2>Ostatnio wydane</h2>
-    <a class="section-header__more" href="/komiksy/">Cały katalog</a>
   </header>
   <div class="tiles">
     {% for e in newest_anytime %}
@@ -67,22 +60,21 @@
 </section>
 {% endif %}
 
-{# Full catalog grouped by line #}
-{% set lines_order = [('diablaq','Główna linia'), ('dobre-licho','Dobre Licho'), ('mecenat','Mecenat'), ('studio','Studio')] %}
-{% for line_id, line_label in lines_order %}
-  {% set line_projects = projects | selectattr('line', 'equalto', line_id) | list %}
-  {% if line_projects %}
-    <section class="catalog-section" id="{{ line_id }}">
-      <header class="catalog-section__head">
-        <h2>{{ line_label }}</h2>
-      </header>
-      <div class="tiles">
-        {% for p in line_projects %}
-          {% include "_partials/project_card.html" with context %}
-        {% endfor %}
-      </div>
-    </section>
-  {% endif %}
+{# ── Per-line mini-catalog — excludes hero and Ostatnio wydane ── #}
+{% for section in per_line_sections %}
+<section class="catalog-section" id="home-{{ section.id }}">
+  <header class="catalog-section__head">
+    <h2>{{ section.label }}</h2>
+    {% if section.has_more %}
+      <a class="section-header__more" href="{{ section.url }}">Zobacz wszystkie</a>
+    {% endif %}
+  </header>
+  <div class="tiles">
+    {% for e in section.editions %}
+      {% include "_partials/edition_tile.html" with context %}
+    {% endfor %}
+  </div>
+</section>
 {% endfor %}
 
 {% endblock %}

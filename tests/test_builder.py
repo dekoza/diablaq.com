@@ -50,14 +50,14 @@ def test_process_content_newest_anytime_excludes_future_dates() -> None:
     assert newest_anytime[0].title == "Past Edition"
 
 
-def test_process_content_newest_anytime_limits_to_5() -> None:
+def test_process_content_newest_anytime_limits_to_8() -> None:
     editions = [
         _make_edition(
             title=f"Edition {i}",
             release_date=date(2024, 1, i + 1),
             is_new=i < 2,
         )
-        for i in range(7)
+        for i in range(10)
     ]
 
     _, _, newest_anytime, _, _, _ = _process_content(
@@ -68,13 +68,13 @@ def test_process_content_newest_anytime_limits_to_5() -> None:
         today=date(2025, 6, 1),
     )
 
-    assert len(newest_anytime) == 5
+    assert len(newest_anytime) == 8
 
 
 def test_process_content_newest_anytime_sorted_descending() -> None:
     editions = [
         _make_edition(title=f"Edition {i}", release_date=date(2024, 1, i + 1))
-        for i in range(7)
+        for i in range(10)
     ]
 
     _, _, newest_anytime, _, _, _ = _process_content(
@@ -85,6 +85,6 @@ def test_process_content_newest_anytime_sorted_descending() -> None:
         today=date(2025, 6, 1),
     )
 
-    assert len(newest_anytime) == 5
+    assert len(newest_anytime) == 8
     for i in range(len(newest_anytime) - 1):
         assert newest_anytime[i].release_date >= newest_anytime[i + 1].release_date

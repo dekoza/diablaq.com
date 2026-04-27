@@ -32,6 +32,7 @@ from diablaq_site.rendering import (
     render_project_pages,
     render_template,
     format_date_pl,
+    _build_home_per_line_sections,
 )
 from diablaq_site.urls import canonical_edition_url, canonical_project_url, slugify_tag
 
@@ -77,10 +78,10 @@ def _process_content(
         [e for e in editions if e.is_announcement], key=lambda e: e.release_date, reverse=True
     )
     newest_anytime = sorted(
-        [e for e in editions if e.release_date.year < 9999 and e.release_date <= today],
+        [e for e in editions if not e.is_announcement and e.release_date.year < 9999 and e.release_date <= today],
         key=lambda e: e.release_date,
         reverse=True,
-    )[:5]
+    )[:8]
     return (
         new_editions,
         announcements,
@@ -113,11 +114,22 @@ def _render_all(
         **ctx,
     )
 
-    # Pick featured edition for hero (first with featured=True, or first announcement with cover)
+    # Hero: featured edition first, then latest past release with cover.
+    # Announcements never auto-promote to hero — they have their own section.
     hero_edition = next(
         (e for e in editions if e.featured and e.cover_image), None
-    ) or next(
-        (e for e in (announcements + new_editions) if e.cover_image), None
+    )
+    if hero_edition is None:
+        past_with_cover = sorted(
+            [e for e in editions
+             if not e.is_announcement and e.release_date.year < 9999 and e.cover_image],
+            key=lambda e: e.release_date,
+            reverse=True,
+        )
+        hero_edition = past_with_cover[0] if past_with_cover else None
+
+    per_line_sections = _build_home_per_line_sections(
+        projects, editions, hero_edition, newest_anytime
     )
 
     render_home_page(
@@ -130,6 +142,7 @@ def _render_all(
         announcements,
         newest_anytime,
         hero_edition,
+        per_line_sections,
         _render,
         _write_html,
     )

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage redesign — 4 proposals</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0a;--fg:#e0e0e0;--muted:#666;--border:rgba(255,255,255,.08);
+  --acc:#ba2d00;--acc2:#e84218;--good:#22c55e;--warn:#f59e0b;--info:#38bdf8;
+  --s1:#111;--s2:#161616;--s3:#1c1c1c;
+  --mono:"SF Mono","Fira Code","Consolas",monospace;
+  --body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6}
+a{color:var(--acc2)}
+
+/* ── layout ── */
+.wrap{max-width:880px;margin:0 auto;padding:0 1.5rem}
+.slide{padding:3.5rem 0;border-top:1px solid #1a1a1a}
+.slide:first-of-type{border-top:0}
+
+/* ── typography ── */
+h1{font-size:2rem;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800;letter-spacing:-.015em;margin-bottom:.35rem}
+h3{font-size:.95rem;font-weight:700;color:var(--acc2);margin:1.5rem 0 .4rem}
+h3:first-child{margin-top:0}
+p{max-width:68ch;margin-bottom:.65rem}
+p:last-child{margin-bottom:0}
+ul,ol{padding-left:1.35rem;max-width:68ch}
+li{margin:.3rem 0}
+code{font-family:var(--mono);font-size:.8em;background:var(--s3);padding:.1em .35em;border-radius:3px}
+.label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem}
+
+/* ── tag pills ── */
+.tag{display:inline-flex;align-items:center;padding:.15rem .5rem;border-radius:4px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.tg{background:rgba(34,197,94,.12);color:var(--good)}
+.ty{background:rgba(245,158,11,.12);color:var(--warn)}
+.tb{background:rgba(56,189,248,.12);color:var(--info)}
+.tr{background:rgba(186,45,0,.15);color:var(--acc2)}
+
+/* ── context box ── */
+.context{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.25rem;margin:1.5rem 0;font-size:.875rem}
+.context strong{color:var(--acc2)}
+
+/* ── proposal cards ── */
+.proposals{display:grid;gap:1.5rem;margin:1.5rem 0}
+.prop{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.prop-head{padding:.7rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.prop-name{font-weight:800;font-size:1rem;flex:1}
+.prop-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:640px){.prop-body{grid-template-columns:1fr}}
+.prop-wire{padding:1rem;border-right:1px solid var(--border);font-family:var(--mono);font-size:.7rem;line-height:1.7;white-space:pre;overflow-x:auto;color:#999}
+.prop-wire .hi{color:#fff}
+.prop-wire .acc{color:var(--acc2)}
+.prop-wire .ok{color:var(--good)}
+.prop-wire .dim{color:#444}
+.prop-wire .inf{color:var(--info)}
+.prop-wire .warn{color:var(--warn)}
+.prop-notes{padding:1rem;font-size:.8rem;line-height:1.6}
+.prop-notes h4{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:.9rem 0 .3rem}
+.prop-notes h4:first-child{margin-top:0}
+.prop-notes ul{padding-left:1.1rem}
+.prop-notes li{margin:.2rem 0}
+.ok-li{color:var(--good)}
+.bad-li{color:var(--acc2)}
+
+/* ── comparison table ── */
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:1.25rem 0}
+th,td{text-align:left;padding:.5rem .65rem;border-bottom:1px solid #1a1a1a;vertical-align:middle}
+th{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--s1)}
+.pname{font-weight:700}
+.yes{color:var(--good);font-weight:700}
+.no{color:var(--acc2)}
+.partial{color:var(--warn)}
+.rec-row td{background:rgba(34,197,94,.05)}
+
+/* ── fallback block ── */
+.fallback{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.25rem;margin:1.5rem 0}
+.fallback-chain{display:grid;gap:.5rem;margin-top:.75rem;font-size:.85rem}
+.fallback-step{display:flex;gap:.75rem;align-items:baseline}
+.fallback-step .n{font-family:var(--mono);font-size:.75rem;font-weight:700;color:var(--acc);min-width:1.5rem}
+.fallback-step .cond{color:var(--muted);font-size:.75rem;min-width:12rem}
+
+/* ── footer ── */
+footer{text-align:center;padding:3rem 1.5rem;color:var(--muted);font-size:.75rem;border-top:1px solid #1a1a1a}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- ═══ INTRO ══════════════════════════════════════════════════ -->
+<section class="slide">
+  <p class="label">Diablaq.com · homepage redesign · kwiecień 2026</p>
+  <h1>Strona główna — 4 propozycje</h1>
+
+  <div class="context">
+    <strong>Stan obecny:</strong> hero + zapowiedzi (0) + nowości (0) → "Ostatnio wydane" (5 kafelków) + <strong>pełny katalog wszystkich 30 projektów</strong> w 4 sekcjach według linii. Katalog na głównej rośnie z każdym nowym projektem i jest już za długi.<br><br>
+    <strong>Cel:</strong> Strona główna podkreśla <em>przyszłość</em> (zapowiedzi) i <em>teraźniejszość</em> (ostatnie premiery). Katalog należy do <code>/komiksy/</code>.
+  </div>
+
+  <p>Cztery propozycje różnią się odpowiedzią na jedno pytanie: <strong>co widzi użytkownik gdy nie ma ani zapowiedzi, ani świeżych premier?</strong> W każdej propozycji usuwam pełny katalog z głównej.</p>
+
+  <!-- hero fallback — wspólny dla wszystkich -->
+  <div class="fallback">
+    <strong>Fallback hero (wspólny dla wszystkich propozycji)</strong>
+    <div class="fallback-chain">
+      <div class="fallback-step"><span class="n">1→</span><span class="cond">wydanie z <code>featured: true</code></span><span>pierwsze wydanie z ustawioną flagą i okładką — tryb edytorski</span></div>
+      <div class="fallback-step"><span class="n">2→</span><span class="cond">brak featured</span><span>najnowsza <em>zapowiedź</em> z okładką — promuje nadchodzące tytuły automatycznie</span></div>
+      <div class="fallback-step"><span class="n">3→</span><span class="cond">brak zapowiedzi z okładką</span><span>najnowsza <em>premiera</em> z okładką — zawsze jest coś do pokazania</span></div>
+      <div class="fallback-step"><span class="n">4→</span><span class="cond">zupełny brak okładek</span><span>karta brandowa: logo + tagline + link do <code>/komiksy/</code> — nie ma wtedy czego promować obrazem</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4 PROPOSALS ═══════════════════════════════════════════ -->
+<section class="slide">
+  <h2>Propozycje</h2>
+
+  <div class="proposals">
+
+    <!-- ── P1 ───────────────────────────────────────────────── -->
+    <div class="prop">
+      <div class="prop-head">
+        <span class="prop-name">P1 — Dwie sekcje, obie opcjonalne</span>
+        <span class="tag tg">najprostsze</span>
+      </div>
+      <div class="prop-body">
+        <div class="prop-wire"><span class="hi">┌─ HERO ─────────────────────────────┐</span>
+<span class="hi">│  [featured / zapowiedź / premiera] │</span>
+<span class="hi">└────────────────────────────────────┘</span>
+
+<span class="ok">┌─ Zapowiedzi ────────────── (jeśli są)</span>
+<span class="ok">│  max 6 kafelków, bez hero</span>
+<span class="ok">└────────────────────────────────────</span>
+
+<span class="inf">┌─ Ostatnio wydane ────────── (jeśli są)</span>
+<span class="inf">│  max 8 kafelków, bez hero,</span>
+<span class="inf">│  bez zapowiedzi</span>
+<span class="inf">└────────────────────────────────────</span>
+
+<span class="dim">┌─ [→ Cały katalog] ─────────────────┐</span>
+<span class="dim">└────────────────────────────────────┘</span>
+
+<span class="dim">LULL (brak zapowiedzi i premier):</span>
+<span class="warn">┌─ HERO ─────────────────────────────┐</span>
+<span class="warn">│  [najnowsza premiera z okładką]    │</span>
+<span class="warn">└────────────────────────────────────┘</span>
+<span class="warn">┌─ Ostatnio wydane ──────────────────</span>
+<span class="warn">│  4–8 ostatnich premier (bez hero)  </span>
+<span class="warn">└────────────────────────────────────</span>
+<span class="dim">→ Cały katalog</span></div>
+
+        <div class="prop-notes">
+          <h4>Jak działa</h4>
+          <ul>
+            <li>Obie sekcje są warunkowe: renderują się tylko gdy mają co pokazać.</li>
+            <li>Hero wydanie jest <strong>wykluczone</strong> z obu sekcji — żaden kafelek nie powtarza bohatera.</li>
+            <li>Sekcja "Ostatnio wydane" wyklucza też zapowiedzi (nie duplikuje pierwszej sekcji).</li>
+          </ul>
+          <h4>Zalety</h4>
+          <ul>
+            <li class="ok-li">Strona zawsze ma sensowną treść nawet w lullu.</li>
+            <li class="ok-li">Minimalna zmiana w stosunku do obecnego układu — usunięcie katalogu.</li>
+            <li class="ok-li">Intuicyjny podział: przyszłość / przeszłość.</li>
+          </ul>
+          <h4>Wady</h4>
+          <ul>
+            <li class="bad-li">W lullu sekcja "Ostatnio wydane" może zawierać stare premiery (sprzed miesięcy).</li>
+            <li class="bad-li">Dwie sekcje o podobnej wizualnej wadze — hierarchia niezbyt wyraźna.</li>
+          </ul>
+          <h4>Zmiana w builder</h4>
+          <p>Tylko <code>home.html</code> — usunięcie pętli katalogowej + warunkowe wyjście z hero. Bez zmian w Pythonie.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── P2 ───────────────────────────────────────────────── -->
+    <div class="prop">
+      <div class="prop-head">
+        <span class="prop-name">P2 — Jeden strumień "Co nowego"</span>
+        <span class="tag tb">najczystsze</span>
+      </div>
+      <div class="prop-body">
+        <div class="prop-wire"><span class="hi">┌─ HERO ─────────────────────────────┐</span>
+<span class="hi">│  [featured / zapowiedź / premiera] │</span>
+<span class="hi">└────────────────────────────────────┘</span>
+
+<span class="ok">┌─ Co nowego ────────────────────────</span>
+<span class="ok">│  zapowiedzi ORAZ premiery w jednej</span>
+<span class="ok">│  siatce, max 8, bez hero</span>
+<span class="ok">│</span>
+<span class="ok">│  [ZAPP][ZAPP][PREM][PREM]</span>
+<span class="ok">│  [PREM][PREM][PREM][PREM]</span>
+<span class="ok">└────────────────────────────────────</span>
+
+<span class="dim">┌─ [→ Cały katalog] ─────────────────┐</span>
+<span class="dim">└────────────────────────────────────┘</span>
+
+<span class="dim">LULL:</span>
+<span class="warn">│  8 ostatnich premier (bez hero)</span>
+<span class="dim">sekcja zawsze widoczna, nie "zapada"</span>
+
+<span class="dim">Odróżnienie zapowiedź/premiera:</span>
+<span class="acc">badge "Zapowiedź" na kafelku</span>
+<span class="dim">lub inne oznaczenie w tile partial</span></div>
+
+        <div class="prop-notes">
+          <h4>Jak działa</h4>
+          <ul>
+            <li>Zapowiedzi i premiery w jednej siatce, zapowiedzi na pierwszych miejscach, potem premiery — razem max 8.</li>
+            <li>Sekcja zawsze istnieje (jest zawsze coś do pokazania), nigdy "zapada".</li>
+            <li>Kafelki zapowiedzi dostają badge "Zapowiedź" (już jest <code>is_announcement</code> w modelu).</li>
+          </ul>
+          <h4>Zalety</h4>
+          <ul>
+            <li class="ok-li">Jeden nagłówek sekcji zamiast dwóch — strona jest krótsza i bardziej skupiona.</li>
+            <li class="ok-li">Eliminuje pytanie "czy sekcja Zapowiedzi powinna się pokazać?" — zawsze jest grid.</li>
+            <li class="ok-li">Użytkownik nie musi rozróżniać "zapowiedź vs nowość" — widzi "co się dzieje".</li>
+          </ul>
+          <h4>Wady</h4>
+          <ul>
+            <li class="bad-li">Mieszanie przyszłości z przeszłością może dezorientować: "czy to już można kupić?"</li>
+            <li class="bad-li">Wymaga badge'a na kafelku zapowiedzi — drobna zmiana w <code>edition_tile.html</code>.</li>
+          </ul>
+          <h4>Zmiana w builder</h4>
+          <p>Tylko <code>home.html</code> + <code>edition_tile.html</code> (badge). Bez zmian w Pythonie.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── P3 ───────────────────────────────────────────────── -->
+    <div class="prop">
+      <div class="prop-head">
+        <span class="prop-name">P3 — Hero zawsze promuje przyszłość</span>
+        <span class="tag ty">edytorskie</span>
+      </div>
+      <div class="prop-body">
+        <div class="prop-wire"><span class="hi">┌─ HERO ─────────────────────────────┐</span>
+<span class="hi">│  [featured] → [zapowiedź z okładką]│</span>
+<span class="hi">│  → [premiera] → [karta brandowa]   │</span>
+<span class="hi">└────────────────────────────────────┘</span>
+
+<span class="acc">┌─ Zapowiedzi ────────── (jeśli są)</span>
+<span class="acc">│  grid, max 6, bez hero</span>
+<span class="acc">└────────────────────────────────────</span>
+
+<span class="inf">┌─ Ostatnio wydane ──────────────────</span>
+<span class="inf">│  max 4, tylko premiery,</span>
+<span class="inf">│  bez hero, bez zapowiedzi</span>
+<span class="inf">└────────────────────────────────────</span>
+
+<span class="dim">┌─ [→ Cały katalog] ─────────────────┐</span>
+<span class="dim">└────────────────────────────────────┘</span>
+
+<span class="dim">LULL (brak zapowiedzi):</span>
+<span class="warn">HERO = najnowsza premiera z okładką</span>
+<span class="warn">sekcja Zapowiedzi schowana</span>
+<span class="warn">Ostatnio wydane: 4 ostatnie (bez hero)</span>
+
+<span class="dim">Wyraźna hierarchia wizualna:</span>
+<span class="acc">Zapowiedzi</span> <span class="dim">›</span> <span class="inf">Premiery</span></div>
+
+        <div class="prop-notes">
+          <h4>Jak działa</h4>
+          <ul>
+            <li>Kiedy są zapowiedzi, hero promuje pierwszą z nich (lub <code>featured</code>). Wyraźny komunikat: "to nadchodzi".</li>
+            <li>Zapowiedzi mają sekcję na górze, z większą wizualną wagą.</li>
+            <li>Premiery w osobnej, mniejszej sekcji poniżej (max 4, nie 8).</li>
+          </ul>
+          <h4>Zalety</h4>
+          <ul>
+            <li class="ok-li">Najlepsza hierarchia priorytetów: zapowiedzi &gt; premiery. Wspiera przedsprzedaż.</li>
+            <li class="ok-li">Wyraźna struktura strony: duże (hero) → ważne (zapowiedzi) → archiwum (ostatnie).</li>
+            <li class="ok-li">Sekcja "Ostatnio wydane" jest celowo skromna (4 kafelki) — nie konkuruje z zapowiedziami.</li>
+          </ul>
+          <h4>Wady</h4>
+          <ul>
+            <li class="bad-li">Wymaga aktywnego utrzymywania okładek w zapowiedziach — hero bez okładki odpada.</li>
+            <li class="bad-li">W lullu (0 zapowiedzi) strona jest skromna: hero + 4 kafelki + link. Może wyglądać pusto.</li>
+          </ul>
+          <h4>Zmiana w builder</h4>
+          <p><code>home.html</code> + zmiana fallback w <code>builder.py</code>: hero_edition wybiera zapowiedź przed premierą (odwrócona kolejność względem obecnej).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── P4 ───────────────────────────────────────────────── -->
+    <div class="prop">
+      <div class="prop-head">
+        <span class="prop-name">P4 — Miniaturowy przekrój, jeden rząd</span>
+        <span class="tag tr">minimalistyczne</span>
+      </div>
+      <div class="prop-body">
+        <div class="prop-wire"><span class="hi">┌─ HERO ─────────────────────────────┐</span>
+<span class="hi">│  [featured / zapowiedź / premiera] │</span>
+<span class="hi">└────────────────────────────────────┘</span>
+
+<span class="ok">┌─ [ZAPP] [ZAPP] [PREM] [PREM] ──────</span>
+<span class="ok">│  4 kafelki total, bez nagłówka sekcji</span>
+<span class="ok">│  zapowiedzi pierwsze, potem premiery</span>
+<span class="ok">└────────────────────────────────────</span>
+
+<span class="dim">┌─ [→ Cały katalog] ─────────────────┐</span>
+<span class="dim">└────────────────────────────────────┘</span>
+
+<span class="dim">LULL:</span>
+<span class="warn">4 ostatnie premiery, bez nagłówka</span>
+
+<span class="dim">Strona = hero + 1 rząd + 1 link</span>
+<span class="dim">Scroll: zero na mobile</span>
+
+<span class="dim">Na desktop: 4-kolumnowa siatka</span>
+<span class="dim">Na mobile: 2×2 grid</span></div>
+
+        <div class="prop-notes">
+          <h4>Jak działa</h4>
+          <ul>
+            <li>Po hero — jeden rząd: 4 kafelki bez nagłówka sekcji. Zapowiedzi na pierwszych pozycjach, uzupełnione premierami do 4 łącznie.</li>
+            <li>Brak nagłówka "Zapowiedzi" / "Ostatnio wydane" — użytkownik widzi co jest co przez badge lub datę.</li>
+            <li>Po rzędzie — jeden wyraźny CTA: "Cały katalog →".</li>
+          </ul>
+          <h4>Zalety</h4>
+          <ul>
+            <li class="ok-li">Najkrótsza strona możliwa: hero + 1 rząd kafelków + link. Na mobile zero scrollu.</li>
+            <li class="ok-li">Nie trzeba decydować "ile jest wystarczająco" — zawsze dokładnie 4.</li>
+            <li class="ok-li">Silnie kieruje użytkownika do <code>/komiksy/</code> — homepage pełni funkcję billboardu.</li>
+          </ul>
+          <h4>Wady</h4>
+          <ul>
+            <li class="bad-li">Może wyglądać ubogo dla odwiedzającego, który jeszcze nie zna wydawnictwa — 4 kafelki bez kontekstu.</li>
+            <li class="bad-li">Brak nagłówków sekcji wymaga rozróżnienia zapowiedzi/premier innym sposobem (badge, kolor daty).</li>
+            <li class="bad-li">Nie obsługuje dobrze sytuacji "4 zapowiedzi bez okładek" — grid będzie pusty wizualnie.</li>
+          </ul>
+          <h4>Zmiana w builder</h4>
+          <p>Tylko <code>home.html</code>. Bez zmian w Pythonie.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ COMPARISON ════════════════════════════════════════════ -->
+<section class="slide">
+  <h2>Porównanie</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Propozycja</th>
+        <th>Sekcje na str. głównej</th>
+        <th>Lull wygląda sensownie</th>
+        <th>Zero overlap z hero</th>
+        <th>Kieruje do /komiksy/</th>
+        <th>Zmiana w Pythonie</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="pname">P1 · Dwie sekcje</td>
+        <td>hero + 0–2 sekcje + CTA</td>
+        <td class="yes">✓</td>
+        <td class="yes">✓</td>
+        <td class="partial">CTA na dole</td>
+        <td class="yes">nie</td>
+      </tr>
+      <tr class="rec-row">
+        <td class="pname">P2 · Jeden strumień</td>
+        <td>hero + 1 sekcja + CTA</td>
+        <td class="yes">✓</td>
+        <td class="yes">✓</td>
+        <td class="partial">CTA na dole</td>
+        <td class="yes">nie</td>
+      </tr>
+      <tr>
+        <td class="pname">P3 · Hero = przyszłość</td>
+        <td>hero + 0–2 sekcje + CTA</td>
+        <td class="partial">skromnie</td>
+        <td class="yes">✓</td>
+        <td class="partial">CTA na dole</td>
+        <td class="partial">builder.py (hero order)</td>
+      </tr>
+      <tr>
+        <td class="pname">P4 · Jeden rząd</td>
+        <td>hero + 1 rząd (4 kafelki) + CTA</td>
+        <td class="partial">skromnie</td>
+        <td class="yes">✓</td>
+        <td class="yes">silnie</td>
+        <td class="yes">nie</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Jedna uwaga dotycząca wszystkich propozycji</h3>
+  <p>Obecny cap <code>newest_anytime[:5]</code> w builderze to niedobra liczba — 5 kafelków w 4-kolumnowym gridzie daje nierówny ostatni rząd (4+1). Proponuję zmienić na <code>[:8]</code> niezależnie od wybranej propozycji.</p>
+</section>
+
+</div>
+
+<footer>diablaq.com · homepage proposals · kwiecień 2026</footer>
+</body>
+</html>
