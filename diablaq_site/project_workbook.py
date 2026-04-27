@@ -19,6 +19,11 @@ _NEW_EDITION_PLACEHOLDER = "__new_edition__"
 _LINE_OPTIONS = ("diablaq", "dobre-licho", "mecenat", "studio")
 _PROJECT_KIND_OPTIONS = ("title", "universe")
 _PRODUCT_FORMAT_OPTIONS = ("zeszyt", "miekka", "twarda", "ebook")
+_PRODUCT_COVER_ID_HINT = (
+    "cover_id: primary "
+    "# opcjonalne; pomiń albo użyj primary dla primary_cover, "
+    "w innym razie alternate_covers[*].id"
+)
 _BOOL_OPTIONS = ("true", "false")
 _PROJECT_STATUS_ORDER = {
     "missing-project-file": 0,
@@ -494,7 +499,7 @@ def _render_products_field(raw_value: object, *, indent: str = "") -> list[str]:
     template_lines = [
         "products:",
         f"  - format: {' | '.join(_PRODUCT_FORMAT_OPTIONS)}",
-        "    cover_id:",
+        f"    {_PRODUCT_COVER_ID_HINT}",
         "    label:",
         "    isbn13:",
         "    ean2:",
@@ -533,7 +538,10 @@ def _render_products_field(raw_value: object, *, indent: str = "") -> list[str]:
         for field_name in ("cover_id", "label", "isbn13", "ean2", "price"):
             value = _string_value(item.get(field_name))
             if value is None:
-                lines.extend(_commented_block([f"{field_name}:"], indent=nested_indent))
+                if field_name == "cover_id":
+                    lines.extend(_commented_block([_PRODUCT_COVER_ID_HINT], indent=nested_indent))
+                else:
+                    lines.extend(_commented_block([f"{field_name}:"], indent=nested_indent))
             else:
                 lines.append(f"{nested_indent}{field_name}: {_yaml_scalar(value)}")
 

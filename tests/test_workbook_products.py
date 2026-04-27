@@ -49,7 +49,8 @@ Edition body.
     assert "primary_cover:" in workbook
     assert "alternate_covers:" in workbook
     assert "products:" in workbook
-    assert "cover_id:" in workbook
+    assert "cover_id: primary" in workbook
+    assert "alternate_covers[*].id" in workbook
     assert "numbered_copies:" in workbook
     assert "edition_specs:" in workbook
 

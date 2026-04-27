@@ -33,6 +33,7 @@ Każda sekcja jest już wypełniona szkieletem pól:
 - pola opcjonalne są zakomentowane,
 - przy polach z krótką listą dozwolonych wartości pojawiają się podpowiedzi (`line`, `kind`, `format`, `true | false` itd.),
 - frontmatter wydania używa nowego układu `primary_cover` / `alternate_covers` / `edition_specs` / `products`,
+- `products[*].cover_id` odwołuje się do `primary_cover` przez stały identyfikator `primary`; okładki alternatywne używają własnych `alternate_covers[*].id`,
 - sekcja projektu zawiera też pomocnicze informacje z istniejących plików wydań.
 
 Aby dodać nowe wydanie:

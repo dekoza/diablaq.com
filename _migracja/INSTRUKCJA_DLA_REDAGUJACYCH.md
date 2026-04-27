@@ -214,6 +214,9 @@ primary_cover:
   person_slug: "piotr-burzynski" # opcjonalne
 ```
 
+Główna okładka ma zarezerwowany identyfikator `primary`.
+Jeśli produkt ma wskazywać właśnie ją, użyj `cover_id: primary` albo po prostu pomiń `cover_id`.
+
 #### 2) Okładki alternatywne
 Każda alternatywna okładka ma własne `id`, bo produkty mogą się do niej odwoływać przez `cover_id`.
 
@@ -287,6 +290,7 @@ products:
 
 Ważne:
 - `label` i `cover_id` są opcjonalne, ale pomagają przy kilku okładkach tego samego formatu.
+- `cover_id: primary` oznacza `primary_cover`; inne wartości muszą dokładnie odpowiadać `alternate_covers[*].id`.
 - `numbered_copies` wpisujemy tylko wtedy, gdy egzemplarze są numerowane.
 - `limited: true` można ustawić także bez `numbered_copies`.
 - Nazwy sklepów w `buy_links[*].label` powinny być krótkie: `Strefa Komiksu`, `Gildia`, `Gov.pl` itd.
