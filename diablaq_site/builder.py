@@ -114,22 +114,28 @@ def _render_all(
         **ctx,
     )
 
-    # Hero: featured edition first, then latest past release with cover.
-    # Announcements never auto-promote to hero — they have their own section.
-    hero_edition = next(
-        (e for e in editions if e.featured and e.cover_image), None
+    # Hero carousel: all featured editions (sorted by featured_order), or
+    # fallback to the single latest past release with a cover image.
+    # Announcements never auto-promote — they have their own section.
+    featured_slides = sorted(
+        [e for e in editions if e.featured and e.cover_image],
+        key=lambda e: e.featured_order,
     )
-    if hero_edition is None:
+    if featured_slides:
+        hero_slides = featured_slides
+    else:
         past_with_cover = sorted(
             [e for e in editions
              if not e.is_announcement and e.release_date.year < 9999 and e.cover_image],
             key=lambda e: e.release_date,
             reverse=True,
         )
-        hero_edition = past_with_cover[0] if past_with_cover else None
+        hero_slides = past_with_cover[:1]
+
+    hero_edition = hero_slides[0] if hero_slides else None
 
     per_line_sections = _build_home_per_line_sections(
-        projects, editions, hero_edition, newest_anytime
+        projects, editions, hero_slides, newest_anytime
     )
 
     render_home_page(
@@ -141,7 +147,7 @@ def _render_all(
         new_editions,
         announcements,
         newest_anytime,
-        hero_edition,
+        hero_slides,
         per_line_sections,
         _render,
         _write_html,

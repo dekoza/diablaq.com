@@ -560,6 +560,15 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 str(emeta["legacy_path"]) if emeta.get("legacy_path") is not None else None
             )
             featured = bool(emeta.get("featured", False))
+            featured_img = str(emeta["featured_img"]).strip() if emeta.get("featured_img") else None
+            featured_img_alt = (
+                str(emeta["featured_img_alt"]).strip() if emeta.get("featured_img_alt") else None
+            )
+            featured_order = int(emeta.get("featured_order") or 0)
+            featured_duration = max(6, min(20, int(emeta.get("featured_duration") or 10)))
+            edition_summary = (
+                str(emeta["summary"]).strip() if emeta.get("summary") else None
+            )
             products = parse_products(
                 emeta,
                 source_path=source,
@@ -592,6 +601,11 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 issue_number_display=f"{issue_number:02d}" if issue_number is not None else None,
                 featured=featured,
                 legacy_path=edition_legacy_path,
+                featured_img=featured_img,
+                featured_img_alt=featured_img_alt,
+                featured_order=featured_order,
+                featured_duration=featured_duration,
+                summary=edition_summary,
             )
 
             if (

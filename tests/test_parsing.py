@@ -1081,3 +1081,116 @@ def test_build_people_index_matches_credit_name_when_person_slug_is_missing():
     indexed_people = build_people_index([person], [edition])
 
     assert indexed_people[0].related_editions == [edition]
+
+
+# ── Hero carousel fields ──────────────────────────────────────────────────
+
+
+def test_parse_edition_reads_hero_carousel_fields(tmp_path):
+    """featured_img, featured_img_alt, featured_order, featured_duration, summary parsed."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="cudowni",
+        project_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "line: diablaq\n"
+            'summary: "Projekt."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "featured: true\n"
+            'featured_img: "/img/hero-cudowni.jpg"\n'
+            'featured_img_alt: "Bohaterowie komiksu"\n'
+            "featured_order: 2\n"
+            "featured_duration: 14\n"
+            'summary: "Piękna historia o miłości i stracie."\n'
+            "---\n"
+        ),
+    )
+
+    _, editions = load_projects_and_editions(projects_dir, tmp_path)
+
+    assert len(editions) == 1
+    e = editions[0]
+    assert e.featured_img == "/img/hero-cudowni.jpg"
+    assert e.featured_img_alt == "Bohaterowie komiksu"
+    assert e.featured_order == 2
+    assert e.featured_duration == 14
+    assert e.summary == "Piękna historia o miłości i stracie."
+
+
+def test_parse_edition_hero_fields_default_when_absent(tmp_path):
+    """Hero carousel fields default correctly when not present in YAML."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="cudowni",
+        project_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "line: diablaq\n"
+            'summary: "Projekt."\n'
+            "---\n"
+        ),
+        edition_frontmatter=(
+            "---\n"
+            'title: "Cudowni"\n'
+            "release_date: 2024-11-01\n"
+            "standalone: true\n"
+            "---\n"
+        ),
+    )
+
+    _, editions = load_projects_and_editions(projects_dir, tmp_path)
+
+    e = editions[0]
+    assert e.featured_img is None
+    assert e.featured_img_alt is None
+    assert e.featured_order == 0
+    assert e.featured_duration == 10
+    assert e.summary is None
+
+
+def test_parse_edition_featured_duration_clamped_to_valid_range(tmp_path):
+    """featured_duration is clamped to [6, 20]."""
+    from diablaq_site.parsing import load_projects_and_editions
+
+    projects_dir = tmp_path / "content" / "projects"
+    _write_project_fixture(
+        projects_dir,
+        slug="too-short",
+        project_frontmatter=(
+            "---\ntitle: X\nline: diablaq\nsummary: X\n---\n"
+        ),
+        edition_frontmatter=(
+            "---\ntitle: X\nrelease_date: 2024-01-01\nstandalone: true\n"
+            "featured_duration: 2\n---\n"
+        ),
+    )
+    _write_project_fixture(
+        projects_dir,
+        slug="too-long",
+        project_frontmatter=(
+            "---\ntitle: Y\nline: diablaq\nsummary: Y\n---\n"
+        ),
+        edition_frontmatter=(
+            "---\ntitle: Y\nrelease_date: 2024-01-01\nstandalone: true\n"
+            "featured_duration: 999\n---\n"
+        ),
+    )
+
+    _, editions = load_projects_and_editions(projects_dir, tmp_path)
+
+    by_slug = {e.project_slug: e for e in editions}
+    assert by_slug["too-short"].featured_duration == 6
+    assert by_slug["too-long"].featured_duration == 20

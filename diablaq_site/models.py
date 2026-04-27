@@ -88,6 +88,27 @@ class Edition:
     issue_number_display: str | None
     featured: bool = False
     legacy_path: str | None = None
+    featured_img: str | None = None
+    featured_img_alt: str | None = None
+    featured_order: int = 0
+    featured_duration: int = 10
+    summary: str | None = None
+
+    @property
+    def hero_image(self) -> str | None:
+        return self.featured_img or self.cover_image
+
+    @property
+    def hero_image_alt(self) -> str | None:
+        return self.featured_img_alt or self.cover_alt
+
+    @property
+    def hero_slide_class(self) -> str:
+        if self.featured_img:
+            return "hero-slide--wide"
+        if self.cover_aspect_class == "cover--tall":
+            return "hero-slide--poster"
+        return "hero-slide--wide"
 
     @property
     def cover_image(self) -> str | None:

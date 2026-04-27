@@ -2,32 +2,191 @@
 
 {% block title %}Wydawnictwo Diablaq – Piekielnie dobre komiksy{% endblock %}
 {% block og_description %}Wydawnictwo Diablaq – piekielnie dobre komiksy polskich i zagranicznych twórców.{% endblock %}
-{% block og_image %}{% if hero_edition and hero_edition.cover_image %}{{ abs_url(hero_edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
-{% block tw_image %}{% if hero_edition and hero_edition.cover_image %}{{ abs_url(hero_edition.cover_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block og_image %}{% if hero_edition and hero_edition.hero_image %}{{ abs_url(hero_edition.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if hero_edition and hero_edition.hero_image %}{{ abs_url(hero_edition.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block hero %}
-<section class="home-hero" aria-label="Wyróżnione wydanie">
-  {% if hero_edition %}
-    <a class="home-hero__main" href="{{ hero_edition.url }}" aria-label="{{ hero_edition.title }}">
-      <img src="{{ hero_edition.cover_image }}" alt="{{ hero_edition.cover_alt or hero_edition.title }}">
-      <div class="home-hero__overlay">
-        <h1 class="home-hero__title">{{ hero_edition.title }}</h1>
-        {% if hero_edition.creator_names %}
-          <p class="home-hero__authors">{{ hero_edition.creator_names | join(", ") }}</p>
-        {% endif %}
-        <span class="home-hero__cta">{% if hero_edition.is_announcement %}Przedpremiera{% else %}Zobacz wydanie{% endif %}</span>
+<section class="hero-carousel" aria-label="Wyróżnione wydania">
+  <div class="hero-carousel__shell">
+
+    {% for slide in hero_slides %}
+    <article class="hero-slide {{ slide.hero_slide_class }}{% if loop.first %} is-active{% endif %}"
+             data-duration="{{ slide.featured_duration * 1000 }}"
+             {% if not loop.first %}aria-hidden="true"{% endif %}>
+      <div class="hero-slide__media">
+        <img src="{{ slide.hero_image }}" alt="{{ slide.hero_image_alt or slide.title }}">
       </div>
-    </a>
-  {% else %}
-    <div class="home-hero__empty">
-      <a class="home-hero__brand" href="/komiksy/">
-        <h1>Wydawnictwo Diablaq</h1>
-        <p>Piekielnie dobre komiksy!</p>
-        <span class="home-hero__cta">Przeglądaj katalog</span>
-      </a>
+      <div class="hero-slide__panel">
+        <p class="hero-slide__eyebrow">Wyróżnione wydanie</p>
+        <h1 class="hero-slide__title">{{ slide.title }}</h1>
+        {% if slide.creator_names or slide.release_date %}
+        <p class="hero-slide__meta">
+          {%- if slide.creator_names %}{{ slide.creator_names | join(", ") }}{% endif %}
+          {%- if slide.creator_names and slide.release_date %} &middot; {% endif %}
+          {%- if slide.release_date %}{{ slide.release_date | format_date_pl }}{% endif -%}
+        </p>
+        {% endif %}
+        {% if slide.summary %}
+        <p class="hero-slide__summary">{{ slide.summary }}</p>
+        {% endif %}
+        <div class="hero-slide__actions">
+          <a class="btn btn-primary" href="{{ slide.url }}">{% if slide.is_announcement %}Przedpremiera{% else %}Zobacz wydanie{% endif %}</a>
+          <a class="btn btn-secondary" href="/komiksy/">Przeglądaj katalog</a>
+        </div>
+      </div>
+    </article>
+    {% else %}
+    <div class="hero-slide hero-slide--empty is-active">
+      <div class="hero-slide__panel" style="grid-column: 1 / -1">
+        <h1 class="hero-slide__title">Wydawnictwo Diablaq</h1>
+        <p class="hero-slide__summary">Piekielnie dobre komiksy!</p>
+        <div class="hero-slide__actions">
+          <a class="btn btn-primary" href="/komiksy/">Przeglądaj katalog</a>
+        </div>
+      </div>
     </div>
+    {% endfor %}
+
+    {% if hero_slides | length > 1 %}
+    <button class="hero-carousel__arrow hero-carousel__arrow--prev" type="button" aria-label="Poprzednie wydanie" data-prev>&#8249;</button>
+    <button class="hero-carousel__arrow hero-carousel__arrow--next" type="button" aria-label="Następne wydanie" data-next>&#8250;</button>
+
+    <nav class="hero-carousel__dots" role="tablist" aria-label="Slajdy hero">
+      {% for slide in hero_slides %}
+      <button class="hero-carousel__dot{% if loop.first %} is-active{% endif %}"
+              type="button" role="tab"
+              aria-selected="{{ 'true' if loop.first else 'false' }}"
+              data-slide="{{ loop.index0 }}"
+              aria-label="{{ slide.title }}"></button>
+      {% endfor %}
+    </nav>
+
+    <button class="hero-carousel__toggle" type="button" aria-label="Pauza" aria-pressed="false">&#9646;&#9646;</button>
+    {% endif %}
+
+  </div><!-- /.hero-carousel__shell -->
+
+  {% if hero_slides | length > 1 %}
+  <div class="hero-carousel__progress" aria-hidden="true">
+    <span class="hero-carousel__progress-bar"></span>
+  </div>
   {% endif %}
+
 </section>
+
+<noscript><style>.hero-carousel__arrow,.hero-carousel__dots,.hero-carousel__toggle,.hero-carousel__progress{display:none}</style></noscript>
+
+{% if hero_slides | length > 1 %}
+<script>
+(() => {
+  const root = document.querySelector('.hero-carousel');
+  if (!root) return;
+
+  const slides   = Array.from(root.querySelectorAll('.hero-slide'));
+  const dots     = Array.from(root.querySelectorAll('.hero-carousel__dot'));
+  const bar      = root.querySelector('.hero-carousel__progress-bar');
+  const toggle   = root.querySelector('.hero-carousel__toggle');
+  const prevBtn  = root.querySelector('[data-prev]');
+  const nextBtn  = root.querySelector('[data-next]');
+  const noMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let idx       = 0;
+  let playing   = !noMotion;
+  let duration  = dur(slides[0]);
+  let remaining = duration;
+  let startedAt = performance.now();
+  let timerId   = null;
+  let rafId     = null;
+  let suspended = false;
+
+  function dur(slide) {
+    const d = Number(slide?.dataset.duration ?? 10000);
+    return Number.isFinite(d) && d > 0 ? d : 10000;
+  }
+
+  function setBar(ratio) {
+    if (bar) bar.style.transform = `scaleX(${Math.min(1, Math.max(0, ratio))})`;
+  }
+
+  function clearAll() {
+    clearTimeout(timerId);
+    cancelAnimationFrame(rafId);
+    timerId = rafId = null;
+  }
+
+  function render() {
+    slides.forEach((s, i) => {
+      s.classList.toggle('is-active', i === idx);
+      s.setAttribute('aria-hidden', String(i !== idx));
+    });
+    dots.forEach(d => {
+      const active = Number(d.dataset.slide) === idx;
+      d.classList.toggle('is-active', active);
+      d.setAttribute('aria-selected', String(active));
+    });
+    if (toggle) {
+      toggle.innerHTML = playing ? '&#9646;&#9646;' : '&#9654;';
+      toggle.setAttribute('aria-label',   playing ? 'Pauza' : 'Wznów');
+      toggle.setAttribute('aria-pressed', String(!playing));
+    }
+  }
+
+  function tick() {
+    if (!playing || suspended) return;
+    setBar((performance.now() - startedAt) / duration);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function arm(useRemaining = false) {
+    clearAll();
+    if (!playing || suspended) { render(); return; }
+    duration  = useRemaining ? remaining : dur(slides[idx]);
+    remaining = duration;
+    startedAt = performance.now();
+    setBar(0);
+    tick();
+    timerId = setTimeout(() => advance(idx + 1, false), duration);
+    render();
+  }
+
+  function pause(save = true) {
+    if (!playing) return;
+    if (save) {
+      remaining = Math.max(0, duration - (performance.now() - startedAt));
+      setBar((duration - remaining) / duration);
+    }
+    playing = false;
+    clearAll();
+    render();
+  }
+
+  function play(resume = true) {
+    playing = true;
+    arm(resume && remaining > 0);
+  }
+
+  function advance(n, userInitiated = false) {
+    idx = ((n % slides.length) + slides.length) % slides.length;
+    remaining = dur(slides[idx]);
+    setBar(0);
+    if (userInitiated) { pause(false); render(); return; }
+    arm(false);
+  }
+
+  if (toggle) toggle.addEventListener('click',  () => playing ? pause() : play(true));
+  if (prevBtn) prevBtn.addEventListener('click', () => advance(idx - 1, true));
+  if (nextBtn) nextBtn.addEventListener('click', () => advance(idx + 1, true));
+  dots.forEach(d => d.addEventListener('click', () => advance(Number(d.dataset.slide), true)));
+
+  root.addEventListener('mouseenter', () => { if (!playing) return; suspended = true;  pause(); });
+  root.addEventListener('mouseleave', () => { if (!suspended) return; suspended = false; play(true); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+  render();
+  if (playing) arm(false); else setBar(1);
+})();
+</script>
+{% endif %}
 {% endblock %}
 
 {% block content %}

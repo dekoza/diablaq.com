@@ -83,14 +83,14 @@ _HOME_CATALOG_CAP = 8
 def _build_home_per_line_sections(
     projects,
     editions,
-    hero_edition,
+    hero_slides: list,
     newest_anytime,
 ) -> list[dict]:
     """Build per-line edition sections for the homepage mini-catalog.
 
     Each section shows up to _HOME_CATALOG_CAP of the most recently released
     editions for that line, sorted newest first.  Excludes:
-    - the hero edition
+    - all hero carousel slides
     - editions already shown in newest_anytime ("Ostatnio wydane")
     - announcements (is_announcement=True)
     - TBA editions (release_date.year == 9999)
@@ -99,8 +99,8 @@ def _build_home_per_line_sections(
     Only lines that have at least one remaining edition after exclusions are included.
     """
     excluded = set()
-    if hero_edition is not None:
-        excluded.add(hero_edition.url)
+    for slide in hero_slides:
+        excluded.add(slide.url)
     for e in newest_anytime:
         excluded.add(e.url)
 
@@ -167,12 +167,13 @@ def render_home_page(
     new_editions,
     announcements,
     newest_anytime,
-    hero_edition,
+    hero_slides,
     per_line_sections,
     _render_fn,
     _write_html_fn,
 ) -> None:
     """Render home page."""
+    hero_edition = hero_slides[0] if hero_slides else None
     _write_html_fn(
         out_dir / "index.html",
         _render_fn(
@@ -183,6 +184,7 @@ def render_home_page(
             canonical_url=(site_url + "/"),
             announcements=announcements,
             newest_anytime=newest_anytime,
+            hero_slides=hero_slides,
             hero_edition=hero_edition,
             per_line_sections=per_line_sections,
         ),

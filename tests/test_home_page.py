@@ -153,19 +153,29 @@ def _edition_no_cover(
 # ── hero fallback ─────────────────────────────────────────────────────────
 
 
-def _pick_hero(editions: list[Edition]) -> Edition | None:
-    """Replicate the hero selection logic from builder._render_all."""
-    featured = next((e for e in editions if e.featured and e.cover_image), None)
+def _pick_hero_slides(editions: list[Edition]) -> list[Edition]:
+    """Replicate the carousel hero selection logic from builder._render_all."""
+    featured = sorted(
+        [e for e in editions if e.featured and e.cover_image],
+        key=lambda e: e.featured_order,
+    )
     if featured:
         return featured
     past_with_cover = sorted(
-        [e for e in editions if not e.is_announcement
+        [e for e in editions
+         if not e.is_announcement
          and e.release_date.year < 9999
          and e.cover_image],
         key=lambda e: e.release_date,
         reverse=True,
     )
-    return past_with_cover[0] if past_with_cover else None
+    return past_with_cover[:1]
+
+
+def _pick_hero(editions: list[Edition]) -> Edition | None:
+    """Return the first hero slide, or None."""
+    slides = _pick_hero_slides(editions)
+    return slides[0] if slides else None
 
 
 def test_hero_prefers_featured_over_latest_release():
@@ -220,7 +230,7 @@ def test_per_line_sections_excludes_hero():
     other = _edition_with_cover(slug="other", project_slug="proj", release_date=date(2024, 3, 1))
     editions = [hero, other]
 
-    sections = _build_home_per_line_sections(projects, editions, hero, newest_anytime=[])
+    sections = _build_home_per_line_sections(projects, editions, [hero], newest_anytime=[])
 
     assert len(sections) == 1
     shown_urls = {e.url for e in sections[0]["editions"]}
@@ -235,7 +245,7 @@ def test_per_line_sections_excludes_newest_anytime_items():
     e3 = _edition_with_cover(slug="e3", project_slug="proj", release_date=date(2024, 4, 1))
 
     sections = _build_home_per_line_sections(
-        projects, [e1, e2, e3], hero_edition=None, newest_anytime=[e1, e2]
+        projects, [e1, e2, e3], [], newest_anytime=[e1, e2]
     )
 
     shown_urls = {e.url for e in sections[0]["editions"]}
@@ -254,7 +264,7 @@ def test_per_line_sections_excludes_announcements():
         slug="rel", project_slug="proj", release_date=date(2024, 1, 1)
     )
 
-    sections = _build_home_per_line_sections(projects, [ann, release], None, [])
+    sections = _build_home_per_line_sections(projects, [ann, release], [], [])
 
     shown_urls = {e.url for e in sections[0]["editions"]}
     assert ann.url not in shown_urls
@@ -268,7 +278,7 @@ def test_per_line_sections_caps_at_8():
         for i in range(12)
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     assert len(sections[0]["editions"]) == 8
 
@@ -280,7 +290,7 @@ def test_per_line_sections_has_more_true_when_over_cap():
         for i in range(9)
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     assert sections[0]["has_more"] is True
 
@@ -292,7 +302,7 @@ def test_per_line_sections_has_more_false_at_cap():
         for i in range(8)
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     assert sections[0]["has_more"] is False
 
@@ -304,7 +314,7 @@ def test_per_line_sections_has_more_false_under_cap():
         for i in range(3)
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     assert sections[0]["has_more"] is False
 
@@ -313,7 +323,7 @@ def test_per_line_sections_empty_when_all_excluded():
     projects = [_project(slug="proj", line="diablaq")]
     e = _edition_with_cover(slug="e", project_slug="proj", release_date=date(2024, 1, 1))
 
-    sections = _build_home_per_line_sections(projects, [e], hero_edition=e, newest_anytime=[])
+    sections = _build_home_per_line_sections(projects, [e], [e], newest_anytime=[])
 
     assert sections == []
 
@@ -326,7 +336,7 @@ def test_per_line_sections_sorted_newest_first():
         _edition_with_cover(slug="mid", project_slug="proj", release_date=date(2024, 3, 1)),
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     dates = [e.release_date for e in sections[0]["editions"]]
     assert dates == sorted(dates, reverse=True)
@@ -338,7 +348,7 @@ def test_per_line_sections_groups_by_line():
     ed_a = _edition_with_cover(slug="ea", project_slug="proj-a", release_date=date(2024, 1, 1))
     ed_b = _edition_with_cover(slug="eb", project_slug="proj-b", release_date=date(2024, 2, 1))
 
-    sections = _build_home_per_line_sections([proj_a, proj_b], [ed_a, ed_b], None, [])
+    sections = _build_home_per_line_sections([proj_a, proj_b], [ed_a, ed_b], [], [])
 
     ids = [s["id"] for s in sections]
     assert "diablaq" in ids
@@ -356,7 +366,7 @@ def test_per_line_sections_has_url_and_label():
         _edition_with_cover(slug="e", project_slug="proj", release_date=date(2024, 1, 1))
     ]
 
-    sections = _build_home_per_line_sections(projects, editions, None, [])
+    sections = _build_home_per_line_sections(projects, editions, [], [])
 
     s = sections[0]
     assert s["url"] == "/komiksy/dobre-licho/"
@@ -372,7 +382,7 @@ def test_per_line_sections_unknown_project_slug_skipped():
         slug="known-e", project_slug="known", release_date=date(2024, 1, 1)
     )
 
-    sections = _build_home_per_line_sections(projects, [orphan, known], None, [])
+    sections = _build_home_per_line_sections(projects, [orphan, known], [], [])
 
     all_editions = [e for s in sections for e in s["editions"]]
     urls = {e.url for e in all_editions}
@@ -392,9 +402,6 @@ def test_full_build_homepage_has_no_full_catalog(tmp_path: Path) -> None:
     build_site(root=repo_root, out_dir=out_dir)
 
     html = (out_dir / "index.html").read_text(encoding="utf-8")
-    # The catalog grid on the old homepage had the line IDs as section ids.
-    # The per-line SECTIONS may exist but as edition tiles, not 30 project cards.
-    # The reliable signal: catalog.html page header text should NOT be on homepage.
     assert "Wszystkie komiksy wydawnictwa Diablaq." not in html
 
 
@@ -409,3 +416,89 @@ def test_full_build_homepage_per_line_sections_link_to_subline_pages(tmp_path: P
     html = (out_dir / "index.html").read_text(encoding="utf-8")
     assert "/komiksy/diablaq/" in html
     assert "/komiksy/dobre-licho/" in html
+
+
+# ── hero carousel ─────────────────────────────────────────────────────────
+
+
+def test_hero_all_featured_editions_become_slides():
+    e1 = _edition_with_cover(slug="e1", project_slug="p", release_date=date(2024, 1, 1), featured=True)
+    e2 = _edition_with_cover(slug="e2", project_slug="p", release_date=date(2024, 6, 1), featured=True)
+    non = _edition_with_cover(slug="non", project_slug="p", release_date=date(2024, 9, 1))
+
+    slides = _pick_hero_slides([e1, e2, non])
+
+    assert len(slides) == 2
+    assert e1 in slides
+    assert e2 in slides
+    assert non not in slides
+
+
+def test_hero_slides_sorted_by_featured_order():
+    from diablaq_site.models import EditionCover
+
+    def _feat(slug, order):
+        cover = EditionCover(
+            id="primary", label=None, image=f"/img/{slug}.jpg",
+            alt=slug, artist_name=None, person_slug=None,
+        )
+        return Edition(
+            url=f"/komiksy/p/{slug}/", title=slug, project_slug="p",
+            release=None, release_date=date(2024, 1, 1),
+            is_new=False, is_announcement=False, presale_url=None,
+            legacy_anchor=None, primary_cover=cover,
+            cover_aspect_class="cover--standard", alternate_covers=[],
+            previews=[], creators=[], creator_names=[], edition_specs={},
+            products=[], html_body="", standalone=False, subseries=None,
+            issue_number=None, issue_number_display=None,
+            featured=True, featured_order=order,
+        )
+
+    e_second = _feat("second", order=2)
+    e_first = _feat("first", order=1)
+    e_third = _feat("third", order=3)
+
+    slides = _pick_hero_slides([e_second, e_third, e_first])
+
+    assert slides == [e_first, e_second, e_third]
+
+
+def test_hero_fallback_returned_as_single_element_list():
+    e = _edition_with_cover(slug="e", project_slug="p", release_date=date(2024, 3, 1))
+
+    slides = _pick_hero_slides([e])
+
+    assert slides == [e]
+
+
+def test_hero_fallback_empty_list_when_no_cover():
+    e = _edition_no_cover(slug="e", project_slug="p", release_date=date(2024, 3, 1))
+
+    assert _pick_hero_slides([e]) == []
+
+
+def test_per_line_excludes_all_hero_slides():
+    projects = [_project(slug="proj", line="diablaq")]
+    s1 = _edition_with_cover(slug="s1", project_slug="proj", release_date=date(2024, 1, 1), featured=True)
+    s2 = _edition_with_cover(slug="s2", project_slug="proj", release_date=date(2024, 2, 1), featured=True)
+    other = _edition_with_cover(slug="other", project_slug="proj", release_date=date(2024, 3, 1))
+
+    sections = _build_home_per_line_sections(projects, [s1, s2, other], [s1, s2], [])
+
+    shown_urls = {e.url for s in sections for e in s["editions"]}
+    assert s1.url not in shown_urls
+    assert s2.url not in shown_urls
+    assert other.url in shown_urls
+
+
+def test_full_build_homepage_renders_hero_carousel(tmp_path: Path) -> None:
+    """Built homepage must contain the hero carousel markup."""
+    from diablaq_site.builder import build_site
+
+    repo_root = Path(__file__).resolve().parents[1]
+    out_dir = tmp_path / "dist"
+    build_site(root=repo_root, out_dir=out_dir)
+
+    html = (out_dir / "index.html").read_text(encoding="utf-8")
+    assert "hero-carousel" in html
+    assert "hero-slide" in html

@@ -252,8 +252,8 @@ class TestEdition:
 
         assert edition.product_title(product) == "Limitowana"
 
-    def test_is_frozen(self) -> None:
-        edition = Edition(
+    def _bare(self) -> Edition:
+        return Edition(
             url="/test",
             title="Test",
             project_slug="test",
@@ -277,8 +277,89 @@ class TestEdition:
             issue_number=None,
             issue_number_display=None,
         )
+
+    def _with_cover(self, *, aspect: str = "cover--standard") -> Edition:
+        cover = EditionCover(
+            id="primary", label=None,
+            image="/img/cover.jpg", alt="Alt text",
+            artist_name=None, person_slug=None,
+        )
+        return Edition(
+            url="/test",
+            title="Test",
+            project_slug="test",
+            release=None,
+            release_date=date(2024, 1, 1),
+            is_new=False,
+            is_announcement=False,
+            presale_url=None,
+            legacy_anchor=None,
+            primary_cover=cover,
+            cover_aspect_class=aspect,
+            alternate_covers=[],
+            previews=[],
+            creators=[],
+            creator_names=[],
+            edition_specs={},
+            products=[],
+            html_body="",
+            standalone=False,
+            subseries=None,
+            issue_number=None,
+            issue_number_display=None,
+        )
+
+    def test_is_frozen(self) -> None:
         with pytest.raises(Exception):
-            edition.title = "Changed"
+            self._bare().title = "Changed"  # type: ignore[misc]
+
+    def test_hero_fields_have_correct_defaults(self) -> None:
+        e = self._bare()
+        assert e.featured_img is None
+        assert e.featured_img_alt is None
+        assert e.featured_order == 0
+        assert e.featured_duration == 10
+        assert e.summary is None
+
+    def test_hero_image_returns_featured_img_when_set(self) -> None:
+        e = Edition(
+            **{**self._with_cover().__dict__,
+               "featured_img": "/img/hero.jpg"},
+        )
+        assert e.hero_image == "/img/hero.jpg"
+
+    def test_hero_image_falls_back_to_cover_image(self) -> None:
+        e = self._with_cover()
+        assert e.hero_image == "/img/cover.jpg"
+
+    def test_hero_image_returns_none_when_neither_set(self) -> None:
+        assert self._bare().hero_image is None
+
+    def test_hero_image_alt_returns_featured_img_alt_when_set(self) -> None:
+        e = Edition(
+            **{**self._with_cover().__dict__,
+               "featured_img_alt": "Custom alt"},
+        )
+        assert e.hero_image_alt == "Custom alt"
+
+    def test_hero_image_alt_falls_back_to_cover_alt(self) -> None:
+        assert self._with_cover().hero_image_alt == "Alt text"
+
+    def test_hero_slide_class_wide_for_standard_cover(self) -> None:
+        assert self._with_cover(aspect="cover--standard").hero_slide_class == "hero-slide--wide"
+
+    def test_hero_slide_class_wide_for_wide_cover(self) -> None:
+        assert self._with_cover(aspect="cover--wide").hero_slide_class == "hero-slide--wide"
+
+    def test_hero_slide_class_poster_for_tall_cover_without_editorial_art(self) -> None:
+        assert self._with_cover(aspect="cover--tall").hero_slide_class == "hero-slide--poster"
+
+    def test_hero_slide_class_wide_when_featured_img_overrides_tall_cover(self) -> None:
+        e = Edition(
+            **{**self._with_cover(aspect="cover--tall").__dict__,
+               "featured_img": "/img/wide-hero.jpg"},
+        )
+        assert e.hero_slide_class == "hero-slide--wide"
 
 
 class TestProject:
