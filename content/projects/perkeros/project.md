@@ -1,11 +1,11 @@
 ---
-title: "Psycho Satyra"
+title: Perkeros
 line:  diablaq
 kind: title
 # universe_slug:
-summary:
+summary: Diabeł tkwi w muzyce
 # legacy_path:
-cover_image:
+cover_image: /img/perkeros.jpg
 # draft: true | false
 # legacy_landing: true | false
 ---

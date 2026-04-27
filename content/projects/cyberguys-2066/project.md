@@ -1,6 +1,6 @@
 ---
-title: Cyberguys 2066
-line: diablaq 
+title: "Cyberguys 2066"
+line: diablaq
 kind: title
 # universe_slug:
 summary:

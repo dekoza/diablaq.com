@@ -1,6 +1,6 @@
 ---
 title: Lunatyk
-line:  diablaq
+line: diablaq
 kind: title
 # universe_slug:
 summary:
