@@ -10,6 +10,7 @@ from pathlib import Path
 import frontmatter
 from markdown import markdown
 
+from diablaq_site.frontmatter_errors import format_frontmatter_error
 from diablaq_site.models import (
     BlogPost,
     BuyLink,
@@ -34,7 +35,13 @@ def read_markdown_file(path: Path) -> tuple[dict, str]:
     try:
         post = frontmatter.load(str(path))
     except Exception as exc:  # noqa: BLE001 - preserve parser detail for authors
-        raise ValueError(f"Nie udało się wczytać frontmatter w {path}: {exc}") from exc
+        source_text = ""
+        try:
+            source_text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            pass
+        details = format_frontmatter_error(exc, source_text=source_text)
+        raise ValueError(f"Nie udało się wczytać frontmatter w {path}:\n{details}") from exc
     meta = dict(post.metadata or {})
     body_md = post.content or ""
     body_html = markdown(body_md, extensions=["extra", "sane_lists"])

@@ -403,6 +403,64 @@ Te dane nie powinny zostać zapisane.
     assert not invalid_edition_path.exists()
 
 
+def test_apply_workbook_reports_workbook_lines_and_excerpt_for_invalid_frontmatter(
+    tmp_path: Path,
+) -> None:
+    from diablaq_site.project_workbook import apply_workbook
+
+    root = tmp_path
+    _write_file(
+        root / "content" / "projects" / "alpha" / "project.md",
+        """\
+---
+title: Alpha
+line: diablaq
+summary: Alpha summary
+cover_image: /img/alpha.jpg
+---
+""",
+    )
+
+    workbook_text = (
+        WORKBOOK_HEADER
+        + """\
+## alpha
+<!-- EDITION FRONTMATTER START: alpha/02 -->
+---
+title: "Alpha #2"
+release_date 2026-02-01
+summary: "Alpha summary"
+---
+<!-- EDITION FRONTMATTER END: alpha/02 -->
+
+<!-- EDITION BODY START: alpha/02 -->
+Te dane nie powinny zostać zapisane.
+<!-- EDITION BODY END: alpha/02 -->
+"""
+    )
+    workbook_path = root / "project-page-workbook.md"
+    workbook_path.write_text(workbook_text, encoding="utf-8")
+
+    with pytest.raises(ValueError) as exc_info:
+        apply_workbook(root, workbook_path)
+
+    message = str(exc_info.value)
+    release_line = workbook_text.splitlines().index("release_date 2026-02-01") + 1
+    summary_line = workbook_text.splitlines().index('summary: "Alpha summary"') + 1
+
+    assert "Wydanie alpha/02 ma nieprawidłowy frontmatter" in message
+    assert "Kontekst parsera: while scanning a simple key" in message
+    assert (
+        f"Problem YAML: could not find expected ':' (linia 4, kolumna 1; skoroszyt linia {summary_line})"
+        in message
+    )
+    assert f"linia 3, kolumna 1; skoroszyt linia {release_line}" in message
+    assert "Fragment:" in message
+    assert "3 | release_date 2026-02-01" in message
+    assert '4 | summary: "Alpha summary"' in message
+    assert "<unicode string>" not in message
+
+
 def test_main_exports_workbook_to_default_path(monkeypatch, capsys, tmp_path: Path) -> None:
     from diablaq_site import project_workbook
 

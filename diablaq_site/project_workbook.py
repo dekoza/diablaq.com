@@ -12,6 +12,7 @@ from pathlib import Path
 
 import frontmatter
 
+from diablaq_site.frontmatter_errors import format_frontmatter_error
 
 DEFAULT_WORKBOOK_NAME = "project-page-workbook.md"
 _NEW_EDITION_PLACEHOLDER = "__new_edition__"
@@ -114,6 +115,12 @@ class ProjectEntry:
     editable_editions: tuple[EditionEntry, ...]
     new_edition_template: EditionEntry
     parse_error: str | None
+
+
+@dataclass(frozen=True)
+class WorkbookBlock:
+    content: str
+    start_line: int
 
 
 def _string_value(value: object) -> str | None:
@@ -1011,19 +1018,28 @@ def _extract_blocks(
     pattern: re.Pattern[str],
     label: str,
     key_builder,
-) -> dict[str, str]:
-    blocks: dict[str, str] = {}
+) -> dict[str, WorkbookBlock]:
+    blocks: dict[str, WorkbookBlock] = {}
     for match in pattern.finditer(workbook_text):
         identifier = key_builder(match)
         if identifier in blocks:
             raise ValueError(f"Duplikat sekcji {label} dla {identifier}.")
-        blocks[identifier] = match.group("content").strip("\n")
+
+        raw_content = match.group("content")
+        stripped_content = raw_content.strip("\n")
+        leading_blank_lines = len(raw_content) - len(raw_content.lstrip("\n"))
+        start_line = (
+            workbook_text.count("\n", 0, match.start("content"))
+            + 1
+            + leading_blank_lines
+        )
+        blocks[identifier] = WorkbookBlock(content=stripped_content, start_line=start_line)
     return blocks
 
 
 def _assert_matching_block_sets(
-    frontmatters: dict[str, str],
-    bodies: dict[str, str],
+    frontmatters: dict[str, WorkbookBlock],
+    bodies: dict[str, WorkbookBlock],
     *,
     prefix: str,
 ) -> None:
@@ -1043,7 +1059,13 @@ def _assert_matching_block_sets(
     raise ValueError("Niespójny skoroszyt: " + "; ".join(problems))
 
 
-def _validate_frontmatter_block(identifier: str, block: str, *, subject_label: str) -> str:
+def _validate_frontmatter_block(
+    identifier: str,
+    block: str,
+    *,
+    subject_label: str,
+    workbook_line: int | None = None,
+) -> str:
     block = block.strip("\n")
     frontmatter_block, _ = split_frontmatter(block + "\n")
     if frontmatter_block is None:
@@ -1054,7 +1076,15 @@ def _validate_frontmatter_block(identifier: str, block: str, *, subject_label: s
     try:
         frontmatter.loads(block + "\n")
     except Exception as exc:  # noqa: BLE001 - show exact YAML issue to authors
-        raise ValueError(f"{subject_label} {identifier} ma nieprawidłowy frontmatter: {exc}") from exc
+        details = format_frontmatter_error(
+            exc,
+            source_text=block,
+            parent_label="skoroszyt" if workbook_line is not None else None,
+            parent_start_line=workbook_line,
+        )
+        raise ValueError(
+            f"{subject_label} {identifier} ma nieprawidłowy frontmatter:\n{details}"
+        ) from exc
     return block
 
 
@@ -1108,8 +1138,13 @@ def apply_workbook(root: Path, workbook_path: Path) -> list[Path]:
 
     updates: list[tuple[Path, str]] = []
     for slug, frontmatter_block in project_frontmatters.items():
-        validated_frontmatter = _validate_frontmatter_block(slug, frontmatter_block, subject_label="Projekt")
-        body = project_bodies[slug].strip("\n")
+        validated_frontmatter = _validate_frontmatter_block(
+            slug,
+            frontmatter_block.content,
+            subject_label="Projekt",
+            workbook_line=frontmatter_block.start_line,
+        )
+        body = project_bodies[slug].content.strip("\n")
         baseline = baseline_projects.get(slug)
         if baseline is not None and (
             validated_frontmatter == baseline.frontmatter_block and body == baseline.body.strip("\n")
@@ -1124,10 +1159,11 @@ def apply_workbook(root: Path, workbook_path: Path) -> list[Path]:
     for identifier, frontmatter_block in edition_frontmatters.items():
         validated_frontmatter = _validate_frontmatter_block(
             identifier,
-            frontmatter_block,
+            frontmatter_block.content,
             subject_label="Wydanie",
+            workbook_line=frontmatter_block.start_line,
         )
-        body = edition_bodies[identifier].strip("\n")
+        body = edition_bodies[identifier].content.strip("\n")
         template = edition_templates.get(identifier)
         if template is not None:
             if validated_frontmatter == template.frontmatter_block and body == template.body.strip("\n"):

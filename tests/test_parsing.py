@@ -110,7 +110,13 @@ Body.
     with pytest.raises(ValueError, match=r"broken\.md") as exc_info:
         read_markdown_file(test_file)
 
-    assert "Nie udało się wczytać frontmatter" in str(exc_info.value)
+    message = str(exc_info.value)
+
+    assert "Nie udało się wczytać frontmatter" in message
+    assert "Problem YAML: mapping values are not allowed in this context (linia 3, kolumna 17)" in message
+    assert "Fragment:" in message
+    assert "3 | summary: Invalid: YAML: value" in message
+    assert "<unicode string>" not in message
 
 
 # --- parse_date tests ---
