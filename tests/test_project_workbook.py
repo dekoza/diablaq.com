@@ -488,3 +488,110 @@ cover_image: /img/delta.jpg
 
     assert workbook_path.exists()
     assert "Zapisano skoroszyt" in captured.out
+
+
+# ── Hero carousel fields in workbook ─────────────────────────────────────
+
+
+def test_render_edition_frontmatter_includes_hero_fields_when_set(tmp_path: Path) -> None:
+    """When hero carousel fields are present they appear uncommented in export."""
+    from diablaq_site.project_workbook import export_workbook
+
+    root = tmp_path
+    _write_file(
+        root / "content" / "projects" / "cudowni" / "project.md",
+        "---\ntitle: Cudowni\nline: diablaq\nsummary: Projekt\ncover_image: /img/c.jpg\n---\n",
+    )
+    _write_file(
+        root / "content" / "projects" / "cudowni" / "editions" / "index.md",
+        """\
+---
+title: "Cudowni"
+release_date: 2024-11-01
+standalone: true
+featured: true
+featured_img: /img/hero-cudowni.jpg
+featured_img_alt: "Bohaterowie na tle nieba"
+featured_order: 1
+featured_duration: 12
+summary: "Piękna historia o miłości i stracie."
+---
+Tekst wydania.
+""",
+    )
+
+    workbook_path = root / "workbook.md"
+    export_workbook(root, workbook_path, include_complete=True)
+    workbook = workbook_path.read_text(encoding="utf-8")
+
+    assert "featured: true" in workbook
+    assert "featured_img: /img/hero-cudowni.jpg" in workbook
+    assert "featured_img_alt:" in workbook
+    assert "featured_order: 1" in workbook
+    assert "featured_duration: 12" in workbook
+    assert "summary: " in workbook
+
+
+def test_render_edition_frontmatter_hero_fields_commented_out_when_absent(tmp_path: Path) -> None:
+    """Hero carousel fields are commented-out placeholders when not present."""
+    from diablaq_site.project_workbook import export_workbook
+
+    root = tmp_path
+    _write_file(
+        root / "content" / "projects" / "cudowni" / "project.md",
+        "---\ntitle: Cudowni\nline: diablaq\nsummary: Projekt\ncover_image: /img/c.jpg\n---\n",
+    )
+    _write_file(
+        root / "content" / "projects" / "cudowni" / "editions" / "index.md",
+        "---\ntitle: Cudowni\nrelease_date: 2024-11-01\nstandalone: true\n---\n",
+    )
+
+    workbook_path = root / "workbook.md"
+    export_workbook(root, workbook_path, include_complete=True)
+    workbook = workbook_path.read_text(encoding="utf-8")
+
+    assert "# featured:" in workbook
+    assert "# featured_img:" in workbook
+    assert "# featured_img_alt:" in workbook
+    assert "# featured_order:" in workbook
+    assert "# featured_duration:" in workbook
+    assert "# summary:" in workbook
+
+
+def test_apply_workbook_round_trips_hero_carousel_fields(tmp_path: Path) -> None:
+    """Fields set in the workbook are written back correctly to the edition file."""
+    from diablaq_site.project_workbook import apply_workbook, export_workbook
+
+    root = tmp_path
+    edition_path = root / "content" / "projects" / "cudowni" / "editions" / "index.md"
+    _write_file(
+        root / "content" / "projects" / "cudowni" / "project.md",
+        "---\ntitle: Cudowni\nline: diablaq\nsummary: Projekt\ncover_image: /img/c.jpg\n---\n",
+    )
+    _write_file(
+        edition_path,
+        "---\ntitle: Cudowni\nrelease_date: 2024-11-01\nstandalone: true\n---\n",
+    )
+
+    workbook_path = root / "workbook.md"
+    export_workbook(root, workbook_path, include_complete=True)
+
+    # Editor fills in the hero carousel fields (count=1 to avoid touching the __new_edition__ template)
+    workbook = workbook_path.read_text(encoding="utf-8")
+    workbook = workbook.replace("# featured:", "featured: true", 1)
+    workbook = workbook.replace("# featured_img:", "featured_img: /img/hero.jpg", 1)
+    workbook = workbook.replace("# featured_img_alt:", "featured_img_alt: Alt text", 1)
+    workbook = workbook.replace("# featured_order:", "featured_order: 2", 1)
+    workbook = workbook.replace("# featured_duration:", "featured_duration: 15", 1)
+    workbook = workbook.replace("# summary:", "summary: Świetna historia.", 1)
+    workbook_path.write_text(workbook, encoding="utf-8")
+
+    apply_workbook(root, workbook_path)
+
+    result = edition_path.read_text(encoding="utf-8")
+    assert "featured: true" in result
+    assert "featured_img: /img/hero.jpg" in result
+    assert "featured_img_alt: Alt text" in result
+    assert "featured_order: 2" in result
+    assert "featured_duration: 15" in result
+    assert "summary: Świetna historia." in result

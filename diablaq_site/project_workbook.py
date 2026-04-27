@@ -223,6 +223,14 @@ def _options_suffix(options: tuple[str, ...], *, current: str | None = None) -> 
     return " # " + " | ".join(remaining)
 
 
+def _render_int_field(name: str, value: object | None, *, comment_out_if_missing: bool = False) -> str:
+    text = _string_value(value)
+    if text is None or not _INTEGER_RE.fullmatch(text):
+        prefix = "# " if comment_out_if_missing else ""
+        return f"{prefix}{name}:"
+    return f"{name}: {text}"
+
+
 def _render_text_field(name: str, value: object | None, *, comment_out_if_missing: bool = False) -> str:
     text = _string_value(value)
     if text is None:
@@ -632,6 +640,26 @@ def _render_edition_frontmatter(
         _render_text_field("presale_url", meta.get("presale_url"), comment_out_if_missing=True)
     )
     lines.append(_render_bool_field("featured", meta.get("featured"), comment_out_if_missing=True))
+    # Hero carousel fields — fill in when featured: true
+    lines.append(
+        _render_text_field("featured_img", meta.get("featured_img"), comment_out_if_missing=True)
+    )
+    lines.append(
+        _render_text_field(
+            "featured_img_alt", meta.get("featured_img_alt"), comment_out_if_missing=True
+        )
+    )
+    lines.append(
+        _render_int_field(
+            "featured_order", meta.get("featured_order"), comment_out_if_missing=True
+        )
+    )
+    lines.append(
+        _render_int_field(
+            "featured_duration", meta.get("featured_duration"), comment_out_if_missing=True
+        )
+    )
+    lines.append(_render_text_field("summary", meta.get("summary"), comment_out_if_missing=True))
     lines.append(
         _render_bool_field("standalone", meta.get("standalone"), comment_out_if_missing=True)
     )
