@@ -147,9 +147,9 @@ def test_repo_build_moves_universe_titles_to_top_level_urls(tmp_path: Path) -> N
 def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: Path) -> None:
     """Real catalog should list titles, while title pages link back to their universe.
 
-    The /komiksy/ overview and sub-line pages now show at most 4 titles per line,
-    sorted by newest edition date. Universe nodes (MidGuard™, Herosi vs Horrory)
-    must not appear as project cards.
+    The /komiksy/ overview shows at most 4 titles per line.
+    Sub-line pages show ALL projects, split into "Zapowiedzi" (TBA) and released sections.
+    Universe nodes (MidGuard™, Herosi vs Horrory) must not appear as project cards.
     """
     repo_root = Path(__file__).resolve().parents[1]
     out_dir = tmp_path / "dist"
@@ -170,9 +170,10 @@ def test_repo_catalog_hides_universe_cards_and_title_pages_link_back(tmp_path: P
     assert "Herosi vs Horrory" not in subline_html
     assert "MidGuard™" not in subline_html
 
-    # Sub-line pages are truncated to 4 newest — verify "see all" link exists
-    assert "Zobacz wszystkie" in subline_html
-    assert "/komiksy/" in subline_html
+    # Sub-line pages show ALL projects, split into TBA and released sections
+    assert "Zapowiedzi" in subline_html
+    assert "Hyphrodisia" in subline_html  # TBA project
+    assert "cyberguys-2066" in subline_html  # recently released project
 
     # Title pages must link back to their universe
     assert "Z uniwersum: <a href=\"/komiksy/herosi-vs-horrory/\">Herosi vs Horrory</a>" in drzazga_html

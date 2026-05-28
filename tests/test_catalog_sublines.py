@@ -132,21 +132,25 @@ def test_overview_total_reflects_full_count(minimal_env, tmp_path):
 
 
 def test_subline_page_receives_all_projects(minimal_env, tmp_path):
-    captured: dict[str, list] = {}
+    captured: dict[str, dict] = {}
 
     def fake_write(path, html):
         pass
 
     def fake_render(env_, template, **ctx):
         if template == "catalog_line.html":
-            captured[ctx["group"]["id"]] = ctx["group"]["projects"]
+            captured[ctx["group"]["id"]] = ctx["group"]
         return env_.get_template(template).render(**ctx)
 
     projects = [_make_project(slug=f"proj-{i}", line="diablaq") for i in range(6)]
     render_catalog_page(minimal_env, tmp_path, "", [], projects, [], fake_render, fake_write)
 
     assert "diablaq" in captured, "No sub-line render for diablaq"
-    assert len(captured["diablaq"]) == 4, "Sub-line page limited to 4 projects"
+    group = captured["diablaq"]
+    assert "tba_projects" in group, "Sub-line page missing tba_projects"
+    assert "released_projects" in group, "Sub-line page missing released_projects"
+    assert len(group["tba_projects"]) == 6, "All projects should be TBA when no editions provided"
+    assert len(group["released_projects"]) == 0, "No released projects when no editions provided"
 
 
 def test_line_meta_has_required_keys():

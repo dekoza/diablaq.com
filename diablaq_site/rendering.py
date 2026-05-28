@@ -206,12 +206,15 @@ def render_catalog_page(
 
     Overview (/komiksy/): each line shows up to _CATALOG_PREVIEW_LIMIT projects
     sorted by newest edition date (descending), with a link to the full sub-line page.
-    Sub-line pages (/komiksy/{slug}/): also limited to _CATALOG_PREVIEW_LIMIT newest
-    projects, with a link back to the overview to see everything.
+    Sub-line pages (/komiksy/{slug}/): show ALL projects, grouped into two sections:
+    "Zapowiedzi" (TBA projects first) and released projects sorted by date descending.
     """
-    # Build a mapping: project_slug → latest edition release_date
+    # Build a mapping: project_slug → latest *published* edition release_date
+    # Exclude TBA editions (year 9999) from the sort key.
     project_latest_date: dict[str, date] = {}
     for e in editions:
+        if e.release_date.year == 9999:
+            continue
         slug = e.project_slug
         if slug not in project_latest_date or e.release_date > project_latest_date[slug]:
             project_latest_date[slug] = e.release_date
@@ -267,9 +270,11 @@ def render_catalog_page(
         ),
     )
 
-    # Sub-line pages: also limited to _CATALOG_PREVIEW_LIMIT newest projects
+    # Sub-line pages: ALL projects, split into TBA and released sections
     for group in all_groups:
         url_slug = _LINE_META.get(group["id"], {"url_slug": group["id"]})["url_slug"]
+        tba_projects = [p for p in group["projects"] if project_latest_date.get(p.slug) is None]
+        released_projects = [p for p in group["projects"] if project_latest_date.get(p.slug) is not None]
         _write_html_fn(
             out_dir / "komiksy" / url_slug / "index.html",
             _render_fn(
@@ -278,7 +283,7 @@ def render_catalog_page(
                 nav_projects=nav_projects,
                 site_url=site_url,
                 canonical_url=(site_url + f"/komiksy/{url_slug}/"),
-                group={**group, "projects": group["projects"][:_CATALOG_PREVIEW_LIMIT]},
+                group={**group, "tba_projects": tba_projects, "released_projects": released_projects},
                 breadcrumb=[{"label": "Komiksy", "url": "/komiksy/"}],
             ),
         )
