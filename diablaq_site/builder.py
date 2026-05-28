@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from collections import defaultdict
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -82,6 +83,22 @@ def _process_content(
         key=lambda e: e.release_date,
         reverse=True,
     )[:8]
+
+    # Enrich each project with its latest edition's cover image.
+    _latest_by_project: dict[str, Edition] = {}
+    for e in editions:
+        slug = e.project_slug
+        if slug not in _latest_by_project or e.release_date > _latest_by_project[slug].release_date:
+            _latest_by_project[slug] = e
+    for i, p in enumerate(projects):
+        latest = _latest_by_project.get(p.slug)
+        if latest is not None and latest.cover_image:
+            projects[i] = replace(
+                p,
+                latest_cover_image=latest.cover_image,
+                latest_cover_aspect_class=latest.cover_aspect_class,
+            )
+
     return (
         new_editions,
         announcements,

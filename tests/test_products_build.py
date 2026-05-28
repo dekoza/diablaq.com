@@ -162,5 +162,5 @@ Issue two.
     catalog_html = (out_dir / "komiksy" / "index.html").read_text(encoding="utf-8")
     project_html = (out_dir / "komiksy" / "fallback" / "index.html").read_text(encoding="utf-8")
 
-    assert "/img/lunatyk1.jpg" in catalog_html
-    assert "/img/lunatyk1.jpg" in project_html
+    assert "/img/lunatyk2.jpg" in catalog_html
+    assert "/img/lunatyk2.jpg" in project_html

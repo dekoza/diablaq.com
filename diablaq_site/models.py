@@ -196,6 +196,8 @@ class Project:
     draft: bool = False
     kind: str = "title"
     universe_slug: str | None = None
+    latest_cover_image: str | None = None
+    latest_cover_aspect_class: str = "cover--standard"
 
 
 @dataclass(frozen=True)
