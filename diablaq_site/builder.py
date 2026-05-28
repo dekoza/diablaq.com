@@ -115,7 +115,7 @@ def _render_all(
     )
 
     # Hero carousel: all featured editions (sorted by featured_order), or
-    # fallback to the single latest past release with a cover image.
+    # fallback to all past releases sharing the latest release date with a cover image.
     # Announcements never auto-promote — they have their own section.
     featured_slides = sorted(
         [e for e in editions if e.featured and e.cover_image],
@@ -130,7 +130,11 @@ def _render_all(
             key=lambda e: e.release_date,
             reverse=True,
         )
-        hero_slides = past_with_cover[:1]
+        if past_with_cover:
+            max_date = past_with_cover[0].release_date
+            hero_slides = [e for e in past_with_cover if e.release_date == max_date]
+        else:
+            hero_slides = []
 
     hero_edition = hero_slides[0] if hero_slides else None
 
