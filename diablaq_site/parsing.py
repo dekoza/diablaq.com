@@ -675,6 +675,7 @@ def load_people(people_dir: Path) -> list:
     from diablaq_site.models import Person
     from diablaq_site.images import thumb_path_from_photo
 
+    root = people_dir.parent.parent
     people: list[Person] = []
     for person_md in sorted(people_dir.glob("*.md")):
         meta, body_html = read_markdown_file(person_md)
@@ -684,6 +685,14 @@ def load_people(people_dir: Path) -> list:
         if not name and not credit_name:
             raise ValueError(f"Person must define name or credit_name in {person_md}")
         photo = str(meta.get("photo") or "").strip() or None
+        if photo:
+            photo_path = root / photo.lstrip("/")
+            if not photo_path.exists():
+                print(
+                    f"WARNING: Person photo not found: {photo_path}",
+                    file=sys.stderr,
+                )
+                photo = None
         people.append(
             Person(
                 slug=slug,
