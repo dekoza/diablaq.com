@@ -17,15 +17,30 @@
   {% if group.description %}<p class="page-header__lead">{{ group.description }}</p>{% endif %}
 </header>
 
+{% if group.tba_projects %}
 <section class="catalog-section">
-  {% if group.projects %}
-    <div class="tiles">
-      {% for p in group.projects %}
-        {% include "_partials/project_card.html" with context %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <p>Brak pozycji.</p>
-  {% endif %}
+  <header class="catalog-section__head">
+    <h2>Zapowiedzi</h2>
+  </header>
+  <div class="tiles">
+    {% for p in group.tba_projects %}
+      {% include "_partials/project_card.html" with context %}
+    {% endfor %}
+  </div>
 </section>
+{% endif %}
+
+{% if group.released_projects %}
+<section class="catalog-section">
+  <div class="tiles">
+    {% for p in group.released_projects %}
+      {% include "_partials/project_card.html" with context %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if not group.tba_projects and not group.released_projects %}
+<p>Brak pozycji.</p>
+{% endif %}
 {% endblock %}

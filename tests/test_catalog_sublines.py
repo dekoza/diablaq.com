@@ -46,7 +46,7 @@ def _run(env, tmp_path, projects):
     def fake_render(env_, template, **ctx):
         return env_.get_template(template).render(**ctx)
 
-    render_catalog_page(env, tmp_path, "", [], projects, fake_render, fake_write)
+    render_catalog_page(env, tmp_path, "", [], projects, [], fake_render, fake_write)
     return written
 
 
@@ -86,7 +86,7 @@ def test_overview_groups_have_url_and_description(minimal_env, tmp_path):
         _make_project(slug="karmiciel", line="diablaq"),
         _make_project(slug="pisto", line="dobre-licho"),
     ]
-    render_catalog_page(minimal_env, tmp_path, "", [], projects, fake_render, fake_write)
+    render_catalog_page(minimal_env, tmp_path, "", [], projects, [], fake_render, fake_write)
 
     assert captured, "No groups passed to catalog.html"
     for group in captured:
@@ -107,7 +107,7 @@ def test_overview_limits_preview_to_4(minimal_env, tmp_path):
         return env_.get_template(template).render(**ctx)
 
     projects = [_make_project(slug=f"proj-{i}", line="diablaq") for i in range(6)]
-    render_catalog_page(minimal_env, tmp_path, "", [], projects, fake_render, fake_write)
+    render_catalog_page(minimal_env, tmp_path, "", [], projects, [], fake_render, fake_write)
 
     main = next(g for g in captured if g["id"] == "diablaq")
     assert len(main["projects"]) <= 4, "Overview exposes more than 4 projects per line"
@@ -125,28 +125,32 @@ def test_overview_total_reflects_full_count(minimal_env, tmp_path):
         return env_.get_template(template).render(**ctx)
 
     projects = [_make_project(slug=f"proj-{i}", line="diablaq") for i in range(6)]
-    render_catalog_page(minimal_env, tmp_path, "", [], projects, fake_render, fake_write)
+    render_catalog_page(minimal_env, tmp_path, "", [], projects, [], fake_render, fake_write)
 
     main = next(g for g in captured if g["id"] == "diablaq")
     assert main["total"] == 6, "Overview 'total' does not reflect full project count"
 
 
 def test_subline_page_receives_all_projects(minimal_env, tmp_path):
-    captured: dict[str, list] = {}
+    captured: dict[str, dict] = {}
 
     def fake_write(path, html):
         pass
 
     def fake_render(env_, template, **ctx):
         if template == "catalog_line.html":
-            captured[ctx["group"]["id"]] = ctx["group"]["projects"]
+            captured[ctx["group"]["id"]] = ctx["group"]
         return env_.get_template(template).render(**ctx)
 
     projects = [_make_project(slug=f"proj-{i}", line="diablaq") for i in range(6)]
-    render_catalog_page(minimal_env, tmp_path, "", [], projects, fake_render, fake_write)
+    render_catalog_page(minimal_env, tmp_path, "", [], projects, [], fake_render, fake_write)
 
     assert "diablaq" in captured, "No sub-line render for diablaq"
-    assert len(captured["diablaq"]) == 6, "Sub-line page missing projects"
+    group = captured["diablaq"]
+    assert "tba_projects" in group, "Sub-line page missing tba_projects"
+    assert "released_projects" in group, "Sub-line page missing released_projects"
+    assert len(group["tba_projects"]) == 6, "All projects should be TBA when no editions provided"
+    assert len(group["released_projects"]) == 0, "No released projects when no editions provided"
 
 
 def test_line_meta_has_required_keys():

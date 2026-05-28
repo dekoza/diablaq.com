@@ -162,6 +162,7 @@ def _render_all(
         site_url,
         nav_projects,
         projects,
+        editions,
         _render,
         _write_html,
     )
