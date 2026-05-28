@@ -1,4 +1,4 @@
 ---
 name: Maciej Pałka
-image: /img/people/maciej-palka.jpg
+photo: /img/people/maciej-palka.jpg
 ---
