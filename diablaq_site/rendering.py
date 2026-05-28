@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from datetime import date as _date
 
 from jinja2 import Environment  # noqa: F811 (re-export used by builder)
@@ -197,15 +198,27 @@ def render_catalog_page(
     site_url,
     nav_projects,
     projects,
+    editions,
     _render_fn,
     _write_html_fn,
 ) -> None:
     """Render the /komiksy/ overview and one sub-line page per publication line.
 
     Overview (/komiksy/): each line shows up to _CATALOG_PREVIEW_LIMIT projects
-    and a link to the full sub-line page.
-    Sub-line pages (/komiksy/{slug}/): full grids for a single line.
+    sorted by newest edition date (descending), with a link to the full sub-line page.
+    Sub-line pages (/komiksy/{slug}/): also limited to _CATALOG_PREVIEW_LIMIT newest
+    projects, with a link back to the overview to see everything.
     """
+    # Build a mapping: project_slug → latest edition release_date
+    project_latest_date: dict[str, date] = {}
+    for e in editions:
+        slug = e.project_slug
+        if slug not in project_latest_date or e.release_date > project_latest_date[slug]:
+            project_latest_date[slug] = e.release_date
+
+    def _project_sort_key(p: Project) -> date:
+        return project_latest_date.get(p.slug, date.min)
+
     lines_order = ["diablaq", "dobre-licho", "mecenat", "studio"]
     display_projects = [p for p in projects if p.kind == "title"]
 
@@ -217,14 +230,18 @@ def render_catalog_page(
             used.add(p.line)
             all_line_ids.append(p.line)
 
-    full_groups: list[dict] = []
+    all_groups: list[dict] = []
     for line in all_line_ids:
-        line_projects = [p for p in display_projects if p.line == line]
+        line_projects = sorted(
+            [p for p in display_projects if p.line == line],
+            key=_project_sort_key,
+            reverse=True,
+        )
         if not line_projects:
             continue
         meta = _LINE_META.get(line, {"label": line, "url_slug": line, "description": ""})
         url_slug = meta["url_slug"]
-        full_groups.append({
+        all_groups.append({
             "id": line,
             "label": meta["label"],
             "description": meta["description"],
@@ -236,7 +253,7 @@ def render_catalog_page(
     # Overview: each group gets at most _CATALOG_PREVIEW_LIMIT projects
     overview_groups = [
         {**g, "projects": g["projects"][:_CATALOG_PREVIEW_LIMIT]}
-        for g in full_groups
+        for g in all_groups
     ]
     _write_html_fn(
         out_dir / "komiksy" / "index.html",
@@ -250,8 +267,8 @@ def render_catalog_page(
         ),
     )
 
-    # Sub-line pages: full grids
-    for group in full_groups:
+    # Sub-line pages: also limited to _CATALOG_PREVIEW_LIMIT newest projects
+    for group in all_groups:
         url_slug = _LINE_META.get(group["id"], {"url_slug": group["id"]})["url_slug"]
         _write_html_fn(
             out_dir / "komiksy" / url_slug / "index.html",
@@ -261,7 +278,7 @@ def render_catalog_page(
                 nav_projects=nav_projects,
                 site_url=site_url,
                 canonical_url=(site_url + f"/komiksy/{url_slug}/"),
-                group=group,
+                group={**group, "projects": group["projects"][:_CATALOG_PREVIEW_LIMIT]},
                 breadcrumb=[{"label": "Komiksy", "url": "/komiksy/"}],
             ),
         )

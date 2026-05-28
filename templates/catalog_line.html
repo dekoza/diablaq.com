@@ -24,6 +24,9 @@
         {% include "_partials/project_card.html" with context %}
       {% endfor %}
     </div>
+    {% if group.total > 4 %}
+    <p class="catalog-section__more"><a href="/komiksy/">Zobacz wszystkie {{ group.total }} →</a></p>
+    {% endif %}
   {% else %}
     <p>Brak pozycji.</p>
   {% endif %}
