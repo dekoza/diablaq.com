@@ -371,7 +371,6 @@ class TestProject:
             summary="A test project",
             legacy_path=None,
             url="/komiksy/test-project/",
-            legacy_landing=False,
             cover_image="cover.jpg",
             cover_aspect_class="cover--standard",
             html_body="<p>Body</p>",

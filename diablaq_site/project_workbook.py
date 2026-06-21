@@ -592,11 +592,6 @@ def _render_project_frontmatter(slug: str, meta: dict[str, object]) -> str:
         _render_text_field("legacy_path", meta.get("legacy_path"), comment_out_if_missing=True),
         _render_text_field("cover_image", meta.get("cover_image")),
         _render_bool_field("draft", meta.get("draft"), comment_out_if_missing=True),
-        _render_bool_field(
-            "legacy_landing",
-            meta.get("legacy_landing"),
-            comment_out_if_missing=True,
-        ),
         "---",
     ]
     return "\n".join(lines)

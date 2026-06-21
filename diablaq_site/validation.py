@@ -18,6 +18,4 @@ def _is_valid_isbn13(isbn13: str) -> bool:
     return total % 10 == 0
 
 
-_ALLOWED_BINDINGS = {"miekka", "twarda"}
-_ALLOWED_VERSIONS = {"elektroniczna"}
-_ALLOWED_VARIANT_KINDS = _ALLOWED_BINDINGS | _ALLOWED_VERSIONS
+

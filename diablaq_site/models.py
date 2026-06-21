@@ -189,7 +189,7 @@ class Project:
     summary: str | None
     legacy_path: str | None
     url: str
-    legacy_landing: bool
+
     cover_image: str | None
     cover_aspect_class: str
     html_body: str

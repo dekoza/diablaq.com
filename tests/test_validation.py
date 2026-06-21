@@ -1,28 +1,7 @@
-"""Tests for validation module: ISBN-13 checksum and variant kinds."""
+"""Tests for validation module: ISBN-13 checksum."""
 
 import pytest
-from diablaq_site.validation import _is_valid_isbn13, _ALLOWED_VARIANT_KINDS
-
-
-class TestVariantKinds:
-    """Test _ALLOWED_VARIANT_KINDS constant."""
-
-    def test_variant_kinds_contains_required_bindings(self):
-        """ALLOWED_VARIANT_KINDS should include 'miekka' and 'twarda'."""
-        assert "miekka" in _ALLOWED_VARIANT_KINDS
-        assert "twarda" in _ALLOWED_VARIANT_KINDS
-
-    def test_variant_kinds_contains_required_versions(self):
-        """ALLOWED_VARIANT_KINDS should include 'elektroniczna'."""
-        assert "elektroniczna" in _ALLOWED_VARIANT_KINDS
-
-    def test_variant_kinds_is_set(self):
-        """ALLOWED_VARIANT_KINDS should be a set."""
-        assert isinstance(_ALLOWED_VARIANT_KINDS, set)
-
-    def test_variant_kinds_exactly_three_items(self):
-        """ALLOWED_VARIANT_KINDS should contain exactly 3 items."""
-        assert len(_ALLOWED_VARIANT_KINDS) == 3
+from diablaq_site.validation import _is_valid_isbn13
 
 
 class TestIsValidIsbn13:

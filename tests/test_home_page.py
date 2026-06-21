@@ -59,7 +59,6 @@ def _project(*, slug: str, line: str) -> Project:
         summary="summary",
         legacy_path=None,
         url=f"/komiksy/{slug}/",
-        legacy_landing=False,
         cover_image="/img/cover.jpg",
         cover_aspect_class="cover--standard",
         html_body="",

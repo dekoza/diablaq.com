@@ -493,7 +493,7 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
                 summary=summary,
                 legacy_path=legacy_path,
                 url=canonical_project_url(line=line, slug=slug),
-                legacy_landing=bool(meta.get("legacy_landing", False)),
+
                 cover_image=cover_image,
                 cover_aspect_class=get_cover_aspect_class(cover_image, root),
                 html_body=body_html,

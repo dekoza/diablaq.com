@@ -11,7 +11,7 @@ from typing import Any
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from diablaq_site.io import _write_html, _copy_tree
-from diablaq_site.images import get_cover_aspect_class, generate_thumbnail, thumb_path_from_photo
+from diablaq_site.images import generate_thumbnail, thumb_path_from_photo
 from diablaq_site.models import BlogPost, Edition, Page, Person, Project
 from diablaq_site.parsing import (
     apply_person_credit_names,
@@ -35,7 +35,7 @@ from diablaq_site.rendering import (
     format_date_pl,
     _build_home_per_line_sections,
 )
-from diablaq_site.urls import canonical_edition_url, canonical_project_url, slugify_tag
+from diablaq_site.urls import slugify_tag
 
 
 def _init_environment(root: Path, out_dir: Path) -> tuple[Environment, Path, Path, str]:
@@ -245,20 +245,6 @@ def _generate_redirects(out_dir: Path, projects: list[Project], editions: list[E
 
     lines.append("/zvyrke/  /ludzie/zvyrke/  301")
     (out_dir / "_redirects").write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def _generate_sitemap(out_dir: Path, site_url: str, pages: list[str]) -> None:
-    """Generate sitemap.xml with all canonical URLs."""
-    entries = "\n".join(
-        f"  <url><loc>{site_url}{p}</loc></url>"
-        for p in pages
-    )
-    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{entries}
-</urlset>
-"""
-    (out_dir / "sitemap.xml").write_text(xml, encoding="utf-8")
 
 
 def _finalize(

@@ -20,7 +20,6 @@ def _make_project(*, slug: str, line: str, title: str | None = None) -> Project:
         summary="Test summary.",
         legacy_path=None,
         url=f"/komiksy/{slug}/",
-        legacy_landing=False,
         cover_image=None,
         cover_aspect_class="cover--standard",
         html_body="",
