@@ -155,7 +155,7 @@ def _edition_no_cover(
 def _pick_hero_slides(editions: list[Edition]) -> list[Edition]:
     """Replicate the carousel hero selection logic from builder._render_all."""
     featured = sorted(
-        [e for e in editions if e.featured and e.cover_image],
+        [e for e in editions if e.featured and e.hero.cover_image],
         key=lambda e: e.featured_order,
     )
     if featured:
@@ -164,7 +164,7 @@ def _pick_hero_slides(editions: list[Edition]) -> list[Edition]:
         [e for e in editions
          if not e.is_announcement
          and e.release_date.year < 9999
-         and e.cover_image],
+         and e.hero.cover_image],
         key=lambda e: e.release_date,
         reverse=True,
     )

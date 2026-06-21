@@ -63,6 +63,30 @@ class EditionProduct:
 
 
 @dataclass(frozen=True)
+class EditionHero:
+    """Computed presentation aspect of an Edition — covers, heroes, contributors.
+
+    Built once at Edition construction time from identity fields.
+    """
+    hero_image: str | None
+    hero_image_alt: str | None
+    hero_slide_class: str
+    cover_image: str | None
+    cover_alt: str | None
+    all_covers: tuple[EditionCover, ...]
+    cover_contributors: tuple[Creator, ...]
+
+    def cover_by_id(self, cover_id: str | None) -> EditionCover | None:
+        normalized = (cover_id or "primary").strip() or "primary"
+        if normalized == "primary":
+            return self.all_covers[0] if self.all_covers else None
+        for cover in self.all_covers:
+            if cover.id == normalized:
+                return cover
+        return None
+
+
+@dataclass(frozen=True)
 class Edition:
     url: str
     title: str
@@ -93,78 +117,29 @@ class Edition:
     featured_order: int = 0
     featured_duration: int = 10
     summary: str | None = None
+    hero: EditionHero = None  # type: ignore[assignment] — set in __post_init__
 
-    @property
-    def hero_image(self) -> str | None:
-        return self.featured_img or self.cover_image
-
-    @property
-    def hero_image_alt(self) -> str | None:
-        return self.featured_img_alt or self.cover_alt
-
-    @property
-    def hero_slide_class(self) -> str:
-        if self.featured_img:
-            return "hero-slide--wide"
-        if self.cover_aspect_class == "cover--tall":
-            return "hero-slide--poster"
-        return "hero-slide--wide"
-
-    @property
-    def cover_image(self) -> str | None:
-        if self.primary_cover is None:
-            return None
-        return self.primary_cover.image
-
-    @property
-    def cover_alt(self) -> str | None:
-        if self.primary_cover is None:
-            return None
-        return self.primary_cover.alt
-
-    @property
-    def all_covers(self) -> tuple[EditionCover, ...]:
-        covers: list[EditionCover] = []
-        if self.primary_cover is not None:
-            covers.append(self.primary_cover)
-        covers.extend(self.alternate_covers)
-        return tuple(covers)
-
-    def cover_by_id(self, cover_id: str | None) -> EditionCover | None:
-        normalized = (cover_id or "primary").strip() or "primary"
-        if normalized == "primary":
-            return self.primary_cover
-        for cover in self.alternate_covers:
-            if cover.id == normalized:
-                return cover
-        return None
-
-    @property
-    def cover_contributors(self) -> tuple[Creator, ...]:
-        contributors: list[Creator] = []
-        for cover in self.all_covers:
-            contributor_name = cover.artist_name or cover.person_slug
-            if not contributor_name:
-                continue
-            role = "Okładka"
-            if cover.label:
-                role = f"Okładka {cover.label.lower()}"
-            contributors.append(
-                Creator(
-                    role=role,
-                    name=contributor_name,
-                    person_slug=cover.person_slug,
-                )
-            )
-        return tuple(contributors)
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self,
+            "hero",
+            Edition._build_hero(
+                primary_cover=self.primary_cover,
+                alternate_covers=self.alternate_covers,
+                cover_aspect_class=self.cover_aspect_class,
+                featured_img=self.featured_img,
+                featured_img_alt=self.featured_img_alt,
+                creators=self.creators,
+            ),
+        )
 
     @property
     def all_contributors(self) -> tuple[Creator, ...]:
-        return tuple([*self.creators, *self.cover_contributors])
+        return tuple([*self.creators, *self.hero.cover_contributors])
 
     def product_title(self, product: EditionProduct) -> str:
         parts: list[str] = []
-        cover = self.cover_by_id(product.cover_id)
+        cover = self.hero.cover_by_id(product.cover_id)
         if product.label:
             parts.append(product.label)
         elif cover and cover.label and (len(self.products) > 1 or cover.id != "primary"):
@@ -179,6 +154,55 @@ class Edition:
             if part and part not in deduped:
                 deduped.append(part)
         return " · ".join(deduped) or "Wersja"
+
+    @staticmethod
+    def _build_hero(
+        primary_cover: EditionCover | None,
+        alternate_covers: list[EditionCover],
+        cover_aspect_class: str,
+        featured_img: str | None,
+        featured_img_alt: str | None,
+        creators: list[Creator],
+    ) -> EditionHero:
+        cover_image = primary_cover.image if primary_cover is not None else None
+        cover_alt = primary_cover.alt if primary_cover is not None else None
+        hero_image = featured_img or cover_image
+        hero_image_alt = featured_img_alt or cover_alt
+
+        if featured_img:
+            hero_slide_class = "hero-slide--wide"
+        elif cover_aspect_class == "cover--tall":
+            hero_slide_class = "hero-slide--poster"
+        else:
+            hero_slide_class = "hero-slide--wide"
+
+        covers_list: list[EditionCover] = []
+        if primary_cover is not None:
+            covers_list.append(primary_cover)
+        covers_list.extend(alternate_covers)
+        all_covers = tuple(covers_list)
+
+        cover_contributors: list[Creator] = []
+        for cover in all_covers:
+            contributor_name = cover.artist_name or cover.person_slug
+            if not contributor_name:
+                continue
+            role = "Okładka"
+            if cover.label:
+                role = f"Okładka {cover.label.lower()}"
+            cover_contributors.append(
+                Creator(role=role, name=contributor_name, person_slug=cover.person_slug)
+            )
+
+        return EditionHero(
+            hero_image=hero_image,
+            hero_image_alt=hero_image_alt,
+            hero_slide_class=hero_slide_class,
+            cover_image=cover_image,
+            cover_alt=cover_alt,
+            all_covers=all_covers,
+            cover_contributors=tuple(cover_contributors),
+        )
 
 
 @dataclass(frozen=True)

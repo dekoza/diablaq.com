@@ -206,7 +206,7 @@ Edition body.
     assert editions[0].products[1].cover_id == "alt"
     assert editions[0].products[1].ean2 == "02"
     assert editions[0].edition_specs == {"Liczba stron": "24"}
-    assert editions[0].cover_image == "/img/alpha-standard.jpg"
+    assert editions[0].hero.cover_image == "/img/alpha-standard.jpg"
 
 
 def test_load_projects_and_editions_rejects_legacy_edition_fields(tmp_path: Path) -> None:

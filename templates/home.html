@@ -2,19 +2,19 @@
 
 {% block title %}Wydawnictwo Diablaq – Piekielnie dobre komiksy{% endblock %}
 {% block og_description %}Wydawnictwo Diablaq – piekielnie dobre komiksy polskich i zagranicznych twórców.{% endblock %}
-{% block og_image %}{% if hero_edition and hero_edition.hero_image %}{{ abs_url(hero_edition.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
-{% block tw_image %}{% if hero_edition and hero_edition.hero_image %}{{ abs_url(hero_edition.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block og_image %}{% if hero_edition and hero_edition.hero.hero_image %}{{ abs_url(hero_edition.hero.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
+{% block tw_image %}{% if hero_edition and hero_edition.hero.hero_image %}{{ abs_url(hero_edition.hero.hero_image) }}{% else %}{{ abs_url('/img/logo.png') }}{% endif %}{% endblock %}
 
 {% block hero %}
 <section class="hero-carousel" aria-label="Wyróżnione wydania">
   <div class="hero-carousel__shell">
 
     {% for slide in hero_slides %}
-    <article class="hero-slide {{ slide.hero_slide_class }}{% if loop.first %} is-active{% endif %}"
+    <article class="hero-slide {{ slide.hero.hero_slide_class }}{% if loop.first %} is-active{% endif %}"
              data-duration="{{ slide.featured_duration * 1000 }}"
              {% if not loop.first %}aria-hidden="true"{% endif %}>
       <div class="hero-slide__media">
-        <img src="{{ slide.hero_image }}" alt="{{ slide.hero_image_alt or slide.title }}">
+        <img src="{{ slide.hero.hero_image }}" alt="{{ slide.hero.hero_image_alt or slide.title }}">
       </div>
       <div class="hero-slide__panel">
         <p class="hero-slide__eyebrow">Wyróżnione wydanie</p>

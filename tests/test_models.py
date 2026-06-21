@@ -144,8 +144,8 @@ class TestEdition:
             issue_number_display=None,
         )
         assert edition.title == "Test Edition"
-        assert edition.cover_image == "cover.jpg"
-        assert edition.cover_alt == "Cover alt"
+        assert edition.hero.cover_image == "cover.jpg"
+        assert edition.hero.cover_alt == "Cover alt"
 
     def test_cover_contributors_are_derived_from_cover_metadata(self) -> None:
         edition = Edition(
@@ -189,7 +189,7 @@ class TestEdition:
             issue_number_display=None,
         )
 
-        assert [contributor.role for contributor in edition.cover_contributors] == [
+        assert [contributor.role for contributor in edition.hero.cover_contributors] == [
             "Okładka standardowa",
             "Okładka limitowana",
         ]
@@ -326,40 +326,40 @@ class TestEdition:
             **{**self._with_cover().__dict__,
                "featured_img": "/img/hero.jpg"},
         )
-        assert e.hero_image == "/img/hero.jpg"
+        assert e.hero.hero_image == "/img/hero.jpg"
 
     def test_hero_image_falls_back_to_cover_image(self) -> None:
         e = self._with_cover()
-        assert e.hero_image == "/img/cover.jpg"
+        assert e.hero.hero_image == "/img/cover.jpg"
 
     def test_hero_image_returns_none_when_neither_set(self) -> None:
-        assert self._bare().hero_image is None
+        assert self._bare().hero.hero_image is None
 
     def test_hero_image_alt_returns_featured_img_alt_when_set(self) -> None:
         e = Edition(
             **{**self._with_cover().__dict__,
                "featured_img_alt": "Custom alt"},
         )
-        assert e.hero_image_alt == "Custom alt"
+        assert e.hero.hero_image_alt == "Custom alt"
 
     def test_hero_image_alt_falls_back_to_cover_alt(self) -> None:
-        assert self._with_cover().hero_image_alt == "Alt text"
+        assert self._with_cover().hero.hero_image_alt == "Alt text"
 
     def test_hero_slide_class_wide_for_standard_cover(self) -> None:
-        assert self._with_cover(aspect="cover--standard").hero_slide_class == "hero-slide--wide"
+        assert self._with_cover(aspect="cover--standard").hero.hero_slide_class == "hero-slide--wide"
 
     def test_hero_slide_class_wide_for_wide_cover(self) -> None:
-        assert self._with_cover(aspect="cover--wide").hero_slide_class == "hero-slide--wide"
+        assert self._with_cover(aspect="cover--wide").hero.hero_slide_class == "hero-slide--wide"
 
     def test_hero_slide_class_poster_for_tall_cover_without_editorial_art(self) -> None:
-        assert self._with_cover(aspect="cover--tall").hero_slide_class == "hero-slide--poster"
+        assert self._with_cover(aspect="cover--tall").hero.hero_slide_class == "hero-slide--poster"
 
     def test_hero_slide_class_wide_when_featured_img_overrides_tall_cover(self) -> None:
         e = Edition(
             **{**self._with_cover(aspect="cover--tall").__dict__,
                "featured_img": "/img/wide-hero.jpg"},
         )
-        assert e.hero_slide_class == "hero-slide--wide"
+        assert e.hero.hero_slide_class == "hero-slide--wide"
 
 
 class TestProject:

@@ -215,9 +215,9 @@ def load_projects_and_editions(projects_dir: Path, root: Path) -> tuple[list, li
         if not cover_image:
             fallback_cover = next(
                 (
-                    edition.cover_image
+                    edition.hero.cover_image
                     for edition in sorted(
-                        [item for item in editions if item.project_slug == project.slug and item.cover_image],
+                        [item for item in editions if item.project_slug == project.slug and item.hero.cover_image],
                         key=lambda item: (item.release_date, item.url),
                     )
                 ),

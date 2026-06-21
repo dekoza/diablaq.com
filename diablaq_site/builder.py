@@ -92,10 +92,10 @@ def _process_content(
             _latest_by_project[slug] = e
     for i, p in enumerate(projects):
         latest = _latest_by_project.get(p.slug)
-        if latest is not None and latest.cover_image:
+        if latest is not None and latest.hero.cover_image:
             projects[i] = replace(
                 p,
-                latest_cover_image=latest.cover_image,
+                latest_cover_image=latest.hero.cover_image,
                 latest_cover_aspect_class=latest.cover_aspect_class,
             )
 
@@ -135,7 +135,7 @@ def _render_all(
     # fallback to all past releases sharing the latest release date with a cover image.
     # Announcements never auto-promote — they have their own section.
     featured_slides = sorted(
-        [e for e in editions if e.featured and e.cover_image],
+        [e for e in editions if e.featured and e.hero.cover_image],
         key=lambda e: e.featured_order,
     )
     if featured_slides:
@@ -143,7 +143,7 @@ def _render_all(
     else:
         past_with_cover = sorted(
             [e for e in editions
-             if not e.is_announcement and e.release_date.year < 9999 and e.cover_image],
+             if not e.is_announcement and e.release_date.year < 9999 and e.hero.cover_image],
             key=lambda e: e.release_date,
             reverse=True,
         )
