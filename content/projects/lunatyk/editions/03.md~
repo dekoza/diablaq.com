@@ -1,13 +1,13 @@
 ---
-title: "Lunatyk #2"
-release_date: 2026-02-21
+title: "Lunatyk #3"
+release_date: 2026-07-04
 # release:
 primary_cover:
   # label:
-  image: /img/lunatyk2.jpg
+  image: /img/lunatyk3.jpg
   alt: "Okładka"
-  artist_name: Kacper Wilk
-  person_slug: kacper-wilk
+  artist_name: Zuzanna Sokół
+  person_slug: zuzanna-sokol
 # alternate_covers:
 #   - id:
 #     label:
@@ -34,7 +34,7 @@ products:
   - format: zeszyt
 #     cover_id: primary # opcjonalne; pomiń albo użyj primary dla primary_cover, w innym razie alternate_covers[*].id
 #     label:
-    isbn13:  9788368353297 
+    isbn13:
 #     ean2:
     price: 19,99 zł
 #     limited: true | false
@@ -43,9 +43,7 @@ products:
 #       "Oprawa":
     buy_links:
       - label: Strefa Komiksu
-        url: https://strefakomiksu.pl/25626-lunatyk-t-2.html
-      - label: Gildia
-        url: https://gildia.pl/lunatyk-02.html
+        url: https://strefakomiksu.pl/25729-lunatyk-t-3.html
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
@@ -57,4 +55,4 @@ products:
 # legacy_path:
 ---
 
-Detektyw Charles Colt odwiedza miejsce, w którym lata temu zginął Gary Graves. Odtwarzając w głowie przebieg zdarzenia, próbuje powiązać śmierć byłego partnera z tajemniczą postacią Lunatyka…
+Detektyw Charles Colt odkrywa straszliwą prawdę. Jego były partner i najlepszy przyjaciel, Gary Graves, wcale nie zginął. Zdeformowany ukrywa się w mieście skrywając twarz pod fioletowym kapturem. Lunatyk znajduje schronienie w samotnej, kościelnej iglicy. Na horyzoncie pojawia się nowy sojusznik. Czy człowiek, który nie zasłużył nawet na śmierć, przyjmie pomocną dłoń?

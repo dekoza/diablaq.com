@@ -1,7 +1,7 @@
 ---
 title: "Cyberguys 2066 – World Wide West #1"
 release_date: 2026-05-28
-# release:
+release: maj 2026
 primary_cover:
   # label:
   image: /img/cyber_www01.jpg
@@ -43,7 +43,7 @@ products:
 #       "Oprawa":
     buy_links:
       - label: Strefa Komiksu
-        url: https://strefakomiksu.pl/szukaj?controller=search&s=cyberguys
+        url: "https://strefakomiksu.pl/25698-cyberguys-2066-5-world-wide-west-1.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
