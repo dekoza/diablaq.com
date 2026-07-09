@@ -1,7 +1,6 @@
 ---
 title: 'BZIK eXXXtra #1'
 release_date: 2024-09-14
-release: premiera - wrzesień 2024
 primary_cover:
   image: /img/bzik_x1.jpg
   alt: 'BZIK eXXXtra #1 – okładka'
@@ -18,13 +17,10 @@ creators:
   - name: Dawid Żurawski
   - name: Adam Szary
   - name: Arnold Woliński
-edition_specs:
-  Wymiary: "148 x 210 mm"
-  Liczba stron: "40"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9788396992871'
+    isbn13: ' 9772957184539'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -35,21 +31,16 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/24938-bzik-exxxtra-t1-przedsprzedaz.html"
+        url: "https://strefakomiksu.pl/25562-bielski-zin-komiksowy-bzik-8.html"
       - label: Gildia
-        url: "https://gildia.pl/626311-bielski-zin-komiksowy-bzik-exxxtra.html"
+        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-8.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
-subseries: BZIK XXXtra
-issue_number: 1
+subseries: BZIK
+issue_number: 8
 # legacy_anchor:
 # legacy_path:
 ---
-BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platforma dla twórców - zarówno początkujących, jaki i tych zaawansowanych - do publikowania swoich dzieł, artystycznego wyżywania się. **Magazyn otrzymał nominację do prestiżowej nagrody w Angoulême.**
-
-Podseria eXXXtra została stworzona, by najbardziej kontrowersyjne treści nie były narażone na cenzurę. To tutaj lądują zgłoszenia zawierające gore, smut i wszelkie wulgarności. Zostaliście ostrzeżeni!
-
-Tylko dla osób pełnoletnich!

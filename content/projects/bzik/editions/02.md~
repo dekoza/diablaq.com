@@ -1,4 +1,13 @@
 ---
+title: 'BZIK #2'
+release_date: 2024-03-09
+primary_cover:
+  image: /img/bzik2.jpg
+  alt: 'BZIK #2 – okładka'
+  artist_name: Łukasz Dolny
+legacy_anchor: bzik2
+---
+---
 title: 'BZIK #1'
 release_date: 2024-01-26
 release: styczeń 2024
@@ -37,16 +46,7 @@ products:
       - label: Strefa Komiksu
         url: "https://strefakomiksu.pl/25034-bzik-1.html"
       - label: Gildia
-        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-1-ii-wydanie.html"
-# force_new: true | false
-# force_announcement: true | false
-# presale_url:
-# featured: true | false
-# standalone: true | false
-subseries: BZIK
-issue_number: 1
-# legacy_anchor:
-# legacy_path:
+        url: "https://gildia.pl/626307-bielski-zin-komiksowy-bzik-1.html"
 ---
 
 BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platforma dla twórców - zarówno początkujących, jaki i tych zaawansowanych - do publikowania swoich dzieł, artystycznego wyżywania się. **Magazyn otrzymał nominację do prestiżowej nagrody w Angoulême.**

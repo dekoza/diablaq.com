@@ -20,6 +20,9 @@ products:
     buy_links:
       - label: Strefa Komiksu
         url: https://strefakomiksu.pl/pl/polskie/25188-zvyrke-obietnica-9788368353082.html
+      - label: Gildia
+        url: https://gildia.pl/obietnica.html
+    
 standalone: true
 legacy_anchor: zvyrke1
 ---

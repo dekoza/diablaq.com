@@ -22,6 +22,8 @@ products:
     buy_links:
       - label: Strefa Komiksu
         url: https://strefakomiksu.pl/niezal-underground/24937-boska-czastka-korposzczura-winona-tesli-9788397237247.html
+      - label: Gildia
+        url: https://gildia.pl/626306-boska-czastka-korposzczura-winona-tesli.html
 standalone: true
 ---
 

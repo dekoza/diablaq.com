@@ -1,39 +1,56 @@
 ---
 title: 'BZIK #5'
 release_date: 2024-12-15
-release: premiera - grudzień 2024
 primary_cover:
   image: /img/bzik5.jpg
   alt: 'BZIK #5 – okładka'
   artist_name: Otto Ich
+edition_specs:
+  format: A5
+products:
+  - format: zeszyt
+    cover_id: primary
+    buy_links:
+      - label: Strefa Komiksu
+        url: https://strefakomiksu.pl/
+legacy_anchor: bzik5
+---
+
+Lista autorów i krótki opis numeru 5.
+
+---
+title: 'BZIK #4'
+release_date: 2024-09-14
+release: premiera - wrzesień 2024
+primary_cover:
+  image: /img/bzik4.jpg
+  alt: 'BZIK #4 – okładka'
+  artist_name: ALGOYO
 creators:
   - name: JP Ahonen
-  - name: Paweł Kicman
-  - name: Miko Dołhun
-  - name: Antonina Czech
+  - name: Marcin Bałczewski
+  - name: Disparo
+  - name: Piotr Burzyński
+  - name: Agata Tokarczyk
   - name: Daniel Koziarski
   - name: Mateusz Mieleszko
   - name: Joanna Kozaczko
   - name: Dominik Kozaczko
-  - name: Bartek Sutor
-  - name: Telari
-  - name: Eryk K.
-  - name: Mc$
-  - name: Maks Borkowski
-  - name: Maja Napiórkowska
-  - name: Bofzin
+  - name: Konrad Lorek
   - name: Dawid Bordewicz
-  - name: Michał Fryc
-  - name: Dawid Żurawski
+  - name: Mc$
+  - name: Maksymilian Borkowski
+  - name: Paweł Przygoda
+  - name: Telari
+  - name: Arnold Woliński
   - name: Roddy Thorleifson
-  - name: Anna "Flateel" Poszepczyńska
 edition_specs:
   Wymiary: "148 x 210 mm"
   Liczba stron: "40"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9772957184454'
+    isbn13: '9772957184447'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -44,16 +61,16 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25032-bzik-t5.html"
+        url: "https://strefakomiksu.pl/25059-bzik-t4-wyd-2.html"
       - label: Gildia
-        url: "https://gildia.pl/629754-bielski-zin-komiksowy-bzik-5.html"
+        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-4-ii-wydanie.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
 subseries: BZIK
-issue_number: 5
+issue_number: 4
 # legacy_anchor:
 # legacy_path:
 ---

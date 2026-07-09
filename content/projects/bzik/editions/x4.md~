@@ -1,37 +1,30 @@
 ---
-title: 'BZIK #7'
-release_date: 2025-05-19
-release: premiera - maj 2025
+title: 'BZIK eXXXtra #4'
+release_date: 2025-07-04
 primary_cover:
-  image: /img/bzik7.jpg
-  alt: 'BZIK #7 – okładka'
-  artist_name: V. Farina
+  image: /img/bzik_x4.jpg
+  alt: 'BZIK eXXXtra #4 – okładka'
+  artist_name: Telari
 creators:
   - name: JP Ahonen
-  - name: Alexa
-  - name: Kinga Kalicińska
+  - name: Marcin Bartoś
+  - name: Krystian Narzekała
+  - name: Dawid Bordewicz
+  - name: Bartosz Sztybor
+  - name: Marcin Ponomarew
+  - name: Bofzin
+  - name: Adam Szary
   - name: Daniel Koziarski
   - name: Paweł Przygoda
-  - name: Otoczak
-  - name: Telari
-  - name: Tomek Grodecki
-  - name: Rafa Janko
-  - name: Mc$
-  - name: Adam Kołodziejski
-  - name: Szilárd Pap
-  - name: Gyula Pozsgay
-  - name: Artúr Várai
-  - name: Maciej Bińkowski
-  - name: Mateusz Smoter
-  - name: Łukasz Dolny
-  - name: Dorota Ryst
+  - name: Robert Adler
+  - name: TotemPole
 edition_specs:
   Wymiary: "148 x 210 mm"
-  Liczba stron: "44"
+  Liczba stron: "40"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9772957184522'
+    isbn13: '9788396992895'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -42,22 +35,23 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25171-bzik-t-7.html"
+        url: "https://strefakomiksu.pl/25057-bzik-exxxtra-3.html"
       - label: Gildia
-        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-7.html"
+        url: "https://gildia.pl/636014-bielski-zin-komiksowy-bzik-exxxtra-3.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
-subseries: BZIK
-issue_number: 7
+subseries: BZIK XXXtra
+issue_number: 3
 # legacy_anchor:
 # legacy_path:
 ---
-
 BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platforma dla twórców - zarówno początkujących, jaki i tych zaawansowanych - do publikowania swoich dzieł, artystycznego wyżywania się. **Magazyn otrzymał nominację do prestiżowej nagrody w Angoulême.**
 
-W siódmym numerze magazynu znajdziecie 8 stron w kolorze!
+Podseria eXXXtra została stworzona, by najbardziej kontrowersyjne treści nie były narażone na cenzurę. To tutaj lądują zgłoszenia zawierające gore, smut i wszelkie wulgarności. Zostaliście ostrzeżeni!
 
+Tylko dla osób pełnoletnich!
+---
 

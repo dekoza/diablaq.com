@@ -1,37 +1,38 @@
 ---
-title: 'BZIK #7'
-release_date: 2025-05-19
-release: premiera - maj 2025
+title: 'BZIK #6'
+release_date: 2025-02-15
 primary_cover:
-  image: /img/bzik7.jpg
-  alt: 'BZIK #7 – okładka'
-  artist_name: V. Farina
+  image: /img/bzik6.jpg
+  alt: 'BZIK #6 – okładka'
+  artist_name: Miko Dołhun
 creators:
   - name: JP Ahonen
-  - name: Alexa
-  - name: Kinga Kalicińska
+  - name: Paweł Kicman
+  - name: Miko Dołhun
+  - name: Antonina Czech
   - name: Daniel Koziarski
-  - name: Paweł Przygoda
-  - name: Otoczak
+  - name: Mateusz Mieleszko
+  - name: Joanna Kozaczko
+  - name: Dominik Kozaczko
+  - name: Bartek Sutor
   - name: Telari
-  - name: Tomek Grodecki
-  - name: Rafa Janko
+  - name: Eryk K.
   - name: Mc$
-  - name: Adam Kołodziejski
-  - name: Szilárd Pap
-  - name: Gyula Pozsgay
-  - name: Artúr Várai
-  - name: Maciej Bińkowski
-  - name: Mateusz Smoter
-  - name: Łukasz Dolny
-  - name: Dorota Ryst
+  - name: Maks Borkowski
+  - name: Maja Napiórkowska
+  - name: Bofzin
+  - name: Dawid Bordewicz
+  - name: Michał Fryc
+  - name: Dawid Żurawski
+  - name: Roddy Thorleifson
+  - name: Anna "Flateel" Poszepczyńska
 edition_specs:
   Wymiary: "148 x 210 mm"
-  Liczba stron: "44"
+  Liczba stron: "40"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9772957184522'
+    isbn13: '9772957184454'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -42,22 +43,20 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25171-bzik-t-7.html"
+        url: "https://strefakomiksu.pl/25032-bzik-t5.html"
       - label: Gildia
-        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-7.html"
+        url: "https://gildia.pl/629754-bielski-zin-komiksowy-bzik-5.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
 subseries: BZIK
-issue_number: 7
+issue_number: 5
 # legacy_anchor:
 # legacy_path:
 ---
 
 BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platforma dla twórców - zarówno początkujących, jaki i tych zaawansowanych - do publikowania swoich dzieł, artystycznego wyżywania się. **Magazyn otrzymał nominację do prestiżowej nagrody w Angoulême.**
-
-W siódmym numerze magazynu znajdziecie 8 stron w kolorze!
-
+---
 

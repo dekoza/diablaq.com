@@ -1,7 +1,7 @@
 ---
 title: Psu z gardła
 release_date: 2024-09-15
-release: premiera - połowa września 2024
+release: premiera - wrzesień 2024
 primary_cover:
   image: /img/pzg.jpg
   alt: Psu z gardła – okładka
@@ -20,6 +20,8 @@ products:
     buy_links:
       - label: Strefa Komiksu
         url: https://strefakomiksu.pl/niezal-underground/24936-psu-z-gardla-9788397237223.html
+      - label: Gildia
+        url: https://gildia.pl/615623-psu-z-gardla.html
     specs:
       Oprawa: miękka ze skrzydełkami
 standalone: true

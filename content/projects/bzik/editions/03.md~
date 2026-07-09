@@ -1,7 +1,6 @@
 ---
 title: 'BZIK #3'
 release_date: 2024-05-02
-release: premiera - maj 2024
 primary_cover:
   image: /img/bzik3.png
   alt: 'BZIK #3 – okładka'
@@ -31,11 +30,11 @@ creators:
     name: Paweł Przygoda, Alviusz, JP Ahonen, Joanna Kozaczko, Błażej Kurowski
 edition_specs:
   Wymiary: "148 x 210 mm"
-  Liczba stron: "44"
+  Liczba stron: "52"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9772957184430'
+    isbn13: '9788396992826'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -46,22 +45,22 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25058-bzik-t3-wyd-2.html"
+        url: "https://strefakomiksu.pl/24158-bzik-t2.html"
       - label: Gildia
-        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-3-ii-wydanie.html"
+        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-2-ii-wydanie.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
 subseries: BZIK
-issue_number: 3
+issue_number: 2
 # legacy_anchor:
 # legacy_path:
 ---
 
 BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platforma dla twórców - zarówno początkujących, jaki i tych zaawansowanych - do publikowania swoich dzieł, artystycznego wyżywania się. **Magazyn otrzymał nominację do prestiżowej nagrody w Angoulême.**
 
-W trzecim numerze aż 44 strony komiksów + arkusz z kolorowymi naklejkami!
-
+W drugim numerze aż 52 strony komiksowego zbzikowania!
+---
 

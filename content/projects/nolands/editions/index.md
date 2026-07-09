@@ -42,6 +42,8 @@ products:
     buy_links:
       - label: "Strefa Komiksu"
         url: "https://strefakomiksu.pl/25661-nolands-przemyslaw-widel.html"
+      - label: Gildia
+        url: https://gildia.pl/nolands.html
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
