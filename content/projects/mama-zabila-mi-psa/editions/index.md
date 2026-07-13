@@ -20,6 +20,8 @@ products:
     buy_links:
       - label: Strefa Komiksu
         url: https://strefakomiksu.pl/polskie/24912-mama-zabila-mi-psa-przedsprzedaz-9788397237209.html
+      - label: Gildia
+        url: https://gildia.pl/612980-mama-zabila-mi-psa-wyd-ii.html
     specs:
       Oprawa: miękka ze skrzydełkami
 standalone: true

@@ -45,6 +45,8 @@ products:
     buy_links:
       - label: "Strefa Komiksu"
         url: "https://strefakomiksu.pl/25016-jak-bede-duzy-to-zostane-hadfieldem.html"
+      - label: "Gildia"
+        url: "https://gildia.pl/615929-jak-bede-duzy-to-zostane-hadfieldem.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:

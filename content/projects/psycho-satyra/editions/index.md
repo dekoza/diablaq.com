@@ -1,7 +1,7 @@
 ---
 title: "Psycho Satyra"
 release_date: 2025-09-26
-# release:
+release: premiera - wrzesień 2025
 primary_cover:
 #   label:
   image: /img/psycho-satyra.jpg
@@ -38,9 +38,9 @@ products:
 #     numbered_copies:
 #     specs:
 #       "Oprawa":
-#     buy_links:
-#       - label:
-#         url:
+    buy_links:
+      - label: Gildia
+        url: https://gildia.pl/psycho-satyra.html
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:

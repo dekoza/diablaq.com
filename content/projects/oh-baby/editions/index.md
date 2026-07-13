@@ -41,6 +41,8 @@ products:
     buy_links:
       - label: Strefa Komiksu
         url: https://strefakomiksu.pl/25675-oh-baby-wyd-zbiorcze.html
+      - label: Gildia
+        url: https://gildia.pl/oh-baby-wydanie-zbiorcze.html
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:

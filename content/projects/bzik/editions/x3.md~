@@ -1,27 +1,29 @@
 ---
-title: 'BZIK eXXXtra #4'
-release_date: 2025-07-04
+title: 'BZIK eXXXtra #3'
+release_date: 2025-02-15
 primary_cover:
-  image: /img/bzik_x4.jpg
-  alt: 'BZIK eXXXtra #4 – okładka'
-  artist_name: Telari
+  image: /img/bzik_x3.jpg
+  alt: 'BZIK eXXXtra #3 – okładka'
+  artist_name: Adam Szary
 creators:
-  - name: JP Ahonen,
-  - name: Dominik Kozaczko & Farina
-  - name: Dawid Bordewicz,
-  - name: Bartosz Sujkowski,
-  - name: Patrycja Krzemień,
-  - name: Adam Szary (rozkładówka),
-  - name: Paweł Więzik & Łukasz Dolny,
-  - name: Telari,
-  - name: Totempole.
+  - name: Fujcik
+  - name: Marcin Bartoś
+  - name: Patrycja Krzemień
+  - name: JP Ahonen
+  - name: Dawid Bordewicz
+  - name: Bofzin
+  - name: Jaro
+  - name: Werka Dobro
+  - name: Dawid Żurawski
+  - name: Nina Paley
+Anna "Flateel" Poszepczyńska
 edition_specs:
   Wymiary: "148 x 210 mm"
   Liczba stron: "40"
 products:
   - format: miekka
     cover_id: primary
-    isbn13: '9788396992864'
+    isbn13: '9788396992871'
     # ean2:
     price: "10 zł"
     # limited: true | false
@@ -32,16 +34,16 @@ products:
     #   "Wymiary":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25320-bzik-exxxtra-4.html"
+        url: "https://strefakomiksu.pl/25033-bzik-exxxtra-2.html"
       - label: Gildia
-        url: "https://gildia.pl/bielski-zin-komiksowy-bzik-exxxtra-4.html"
+        url: "https://gildia.pl/629755-bielski-zin-komiksowy-bzik-exxxtra-2.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
 # featured: true | false
 # standalone: true | false
 subseries: BZIK XXXtra
-issue_number: 4
+issue_number: 1
 # legacy_anchor:
 # legacy_path:
 ---
@@ -50,5 +52,4 @@ BZIK - Bielski Zin Komiksowy - jest nieperiodyczną serią komiksową. To platfo
 Podseria eXXXtra została stworzona, by najbardziej kontrowersyjne treści nie były narażone na cenzurę. To tutaj lądują zgłoszenia zawierające gore, smut i wszelkie wulgarności. Zostaliście ostrzeżeni!
 
 Tylko dla osób pełnoletnich!
-
 

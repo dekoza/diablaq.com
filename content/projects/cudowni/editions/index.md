@@ -36,20 +36,25 @@ products:
     isbn13: "9788397237261"
     ean2: 01
     price: "19,99 zł"
-    # limited: true | false
+    # limited: false
     # numbered_copies:
     # specs:
     #   "Liczba stron":
     #   "Oprawa":
     #   "Wymiary":
-    # buy_links:
-    #   - label: "Strefa Komiksu"
-    #     url: "https://strefakomiksu.pl/sci-fi/24978-68-cudowni-9788397237261.html"
+    buy_links:
+      - label: "Strefa Komiksu"
+        url: "https://strefakomiksu.pl/sci-fi/24978-68-cudowni-9788397237261.html"
+      - label: "Gildia"
+        url: "https://gildia.pl/626303-midguard-cudowni.html"
   - format: zeszyt
     cover_id: limitowana
     isbn13: "9788397237261"
     ean2: 02
     limited: true
+    buy_links:
+      - label: "Gildia"
+        url: "https://gildia.pl/626305-midguard-cudowni-okladka-limitowana.html"
     
 # force_new: true | false
 # force_announcement: true | false
