@@ -44,7 +44,7 @@ products:
 #       "Oprawa":
     buy_links:
       - label: Strefa Komiksu
-        url: "https://strefakomiksu.pl/25732-cyberguys-2066-t-6-world-wide-west-cz-2.html"
+        url: "https://strefakomiksu.pl/25776-cyberguys-2066-mardi-gras.html"
 # force_new: true | false
 # force_announcement: true | false
 # presale_url:
@@ -55,3 +55,5 @@ issue_number: "0"
 # legacy_anchor:
 # legacy_path:
 ---
+
+Po trudach pracy nie ma jak porządny urlop w tropikach. Pod warunkiem, że nie jesteś ścigany przez mordercze roboty magnesem na kłopoty…
