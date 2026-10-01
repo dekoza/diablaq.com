@@ -1,11 +1,11 @@
 ---
-title: "Kult Baranka"
+title: Kult Baranka
 line:  diablaq
-# kind: title | universe
+kind: title
 # universe_slug:
 summary:
-# legacy_path:
-cover_image:
-draft: true
+legacy_path: /kult-baranka/
+cover_image: /img/baranek1.jpg
+#draft: true
 # legacy_landing: true | false
 ---
