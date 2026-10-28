@@ -102,6 +102,36 @@ Bio.
     assert "Okładka standardowa" in person_html or "Okładka" in person_html
 
 
+def test_mksp_issue_two_renders_metadata_not_raw_frontmatter(
+    tmp_path: Path, repo_root: Path, minimal_content_tree: Path
+) -> None:
+    (minimal_content_tree / "content" / "projects" / "mksp").symlink_to(
+        repo_root / "content" / "projects" / "mksp"
+    )
+    out_dir = tmp_path / "dist"
+    build_site(root=minimal_content_tree, out_dir=out_dir)
+
+    edition_html = (out_dir / "komiksy" / "mksp" / "02" / "index.html").read_text(
+        encoding="utf-8"
+    )
+
+    assert "release_date:" not in edition_html
+    assert "primary_cover:" not in edition_html
+    assert "products:" not in edition_html
+    assert '<h1 class="edition-details__title">Mój kochany straszny potwór #2</h1>' in edition_html
+    assert 'src="/img/mksp2b.jpg"' in edition_html
+    assert "Marek Turek" in edition_html
+    assert "<dt>Liczba stron</dt><dd>24</dd>" in edition_html
+    assert "<dt>EAN-2</dt><dd>02</dd>" in edition_html
+    for url in (
+        "https://strefakomiksu.pl/25631-246-moj-kochany-straszny-potwor-t-2.html#/7-wersja_okladki-standardowa",
+        "https://gildia.pl/moj-kochany-straszny-potwor-02-dyskoteka.html",
+        "https://strefakomiksu.pl/25631-247-moj-kochany-straszny-potwor-t-2.html#/8-wersja_okladki-limitowana",
+        "https://gildia.pl/moj-kochany-straszny-potwor-02-dyskoteka-okladka-b.html",
+    ):
+        assert f'href="{url}"' in edition_html
+
+
 def test_build_uses_first_edition_primary_cover_as_project_fallback(tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[1]
     work_root = tmp_path / "repo"
