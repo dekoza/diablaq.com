@@ -12,7 +12,9 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  # Let Pages finish: canceling Actions can leave its deployment running and
+  # block the next run with an "in progress deployment" error.
+  cancel-in-progress: false
 
 jobs:
   build:
